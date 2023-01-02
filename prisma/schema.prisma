@@ -1,0 +1,145 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id         String      @id @default(uuid())
+  email      String      @unique
+  password   String
+  created_at DateTime    @default(now())
+  updated_at DateTime    @updatedAt
+  active     UserStatus  @default(INACTIVE)
+  name       String
+  Dentist    Dentist[]
+  Patient    Patient[]
+  Secretary  Secretary[]
+  user_role  UserRole[]
+
+  @@map("usuarios")
+}
+
+model Role {
+  id          String     @id @default(uuid())
+  name        String     @unique
+  description String
+  UserRole    UserRole[]
+
+  @@map("permissoes")
+}
+
+model UserRole {
+  userId String @default(uuid())
+  roleId String @default(uuid())
+  role   Role   @relation(fields: [roleId], references: [id])
+  user   User   @relation(fields: [userId], references: [id])
+
+  @@id([userId, roleId])
+  @@index([roleId], map: "usuarios_permissoes_roleId_fkey")
+  @@map("usuarios_permissoes")
+}
+
+model Secretary {
+  id     String @id @default(uuid())
+  userId String
+  user   User   @relation(fields: [userId], references: [id])
+
+  @@index([userId], map: "secretarias_userId_fkey")
+  @@map("secretarias")
+}
+
+model Dentist {
+  id               String             @id @default(uuid())
+  userId           String
+  user             User               @relation(fields: [userId], references: [id])
+  DentistProcedure DentistProcedure[]
+  HealthHistory    HealthHistory[]
+
+  @@index([userId], map: "dentistas_userId_fkey")
+  @@map("dentistas")
+}
+
+model Procedure {
+  id               String             @id @default(uuid())
+  name             String             @unique
+  price            Float              @default(0)
+  DentistProcedure DentistProcedure[]
+
+  @@map("procedimento")
+}
+
+model DentistProcedure {
+  dentistId     String
+  procedureId   String
+  scheduled_at  DateTime          @default(now())
+  scheduled_for DateTime
+  approved      ProcedureApproval @default(NOT_APPROVED)
+  dentist       Dentist           @relation(fields: [dentistId], references: [id])
+  procedure     Procedure         @relation(fields: [procedureId], references: [id])
+
+  @@id([dentistId, procedureId])
+  @@index([procedureId], map: "dentistas_procedimentos_procedureId_fkey")
+  @@map("dentistas_procedimentos")
+}
+
+model HealthInsurance {
+  id                     String                   @id @default(uuid())
+  name                   String
+  code                   String?
+  PatientHealthInsurance PatientHealthInsurance[]
+
+  @@map("convenios")
+}
+
+model Patient {
+  id                           String                   @id @default(uuid())
+  birth_date                   DateTime
+  health_insurance_card_number String?
+  userId                       String
+  HealthHistory                HealthHistory[]
+  user                         User                     @relation(fields: [userId], references: [id])
+  PatientHealthInsurance       PatientHealthInsurance[]
+
+  @@index([userId], map: "pacientes_userId_fkey")
+  @@map("pacientes")
+}
+
+model PatientHealthInsurance {
+  patientId         String
+  healthInsuranceId String
+  healthInsurance   HealthInsurance @relation(fields: [healthInsuranceId], references: [id])
+  patient           Patient         @relation(fields: [patientId], references: [id])
+
+  @@id([patientId, healthInsuranceId])
+  @@index([healthInsuranceId], map: "pacientes_convenios_healthInsuranceId_fkey")
+  @@map("pacientes_convenios")
+}
+
+model HealthHistory {
+  id          String   @id @default(uuid())
+  description String
+  created_at  DateTime @default(now())
+  updated_up  DateTime @updatedAt
+  dentistId   String
+  patientId   String
+  updated_by  Dentist  @relation(fields: [dentistId], references: [id])
+  patient     Patient  @relation(fields: [patientId], references: [id])
+
+  @@index([dentistId], map: "historico_medico_dentistId_fkey")
+  @@index([patientId], map: "historico_medico_patientId_fkey")
+  @@map("historico_medico")
+}
+
+enum UserStatus {
+  ACTIVE
+  INACTIVE
+}
+
+enum ProcedureApproval {
+  APPROVED
+  NOT_APPROVED
+}
