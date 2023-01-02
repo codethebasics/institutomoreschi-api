@@ -24,7 +24,7 @@ export default class RoleService {
             return await this.prisma.role.findMany(filter)            
         } catch (e) {
             console.error(e)
-            throw ""
+            throw "Erro durante a listagem das permissões"
         }
     }
 
@@ -45,7 +45,7 @@ export default class RoleService {
             })
         } catch (e) {
             console.error(e)
-            throw ""
+            throw "Erro durante a listagem das permissões"
         }
     }
 
@@ -66,7 +66,7 @@ export default class RoleService {
             })
         } catch (e) {
             console.error(e)
-            throw ""
+            throw "Erro durante a listagem das permissões"
         }
     }
 
@@ -81,7 +81,7 @@ export default class RoleService {
             return await this.prisma.role.create(role)
         } catch (e) {
             console.error(e)
-            throw ""
+            throw "Erro durante a criação da permissão"
         }
     }
 
@@ -96,7 +96,7 @@ export default class RoleService {
             return await this.prisma.role.update(role)
         } catch (e) {
             console.error(e)
-            throw ""
+            throw "Erro durante a atualização da permissão"
         }
     }
 
@@ -111,7 +111,7 @@ export default class RoleService {
             return await this.prisma.role.delete(role)
         } catch (e) {
             console.error(e)
-            throw ""
+            throw "Erro durante a remoção da permissão"
         }
     }
 }
