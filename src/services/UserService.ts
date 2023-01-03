@@ -30,7 +30,7 @@ export default class UserService {
         } catch (e: any) {
             return {
                 status: 500,
-                message: "Não foi possível criar o usuário",
+                message: "Erro durante a listagem de usuários",
                 error: e.message
             }
         }
@@ -56,7 +56,7 @@ export default class UserService {
         } catch (e: any) {
             return {
                 status: 500,
-                message: "Não foi possível criar o usuário",
+                message: "Erro durante a listagem de usuários",
                 data: _name,
                 error: e.message
             }
@@ -82,7 +82,7 @@ export default class UserService {
         } catch (e: any) {
             return {
                 status: 500,
-                message: "Não foi possível criar o usuário",
+                message: "Erro durante a listagem de usuários",
                 data: _email,
                 error: e.message
             }
