@@ -6,9 +6,17 @@ const secretaryService = new SecretaryService();
 
 router
     .route ('/')
-    .get   (async (req, res) => await secretaryService.findAll(req.body))
-    .post  (async (req, res) => await secretaryService.create (req.body))
-    .put   (async (req, res) => await secretaryService.update (req.body))
-    .delete(async (req, res) => await secretaryService.remove (req.body))
+    .get(async (req, res) => {
+        const { name } = req.query
+
+        if (name) {
+            res.json(await secretaryService.findByName(name.toString()))
+        } else {
+            res.json(await secretaryService.findAll(req.body))
+        }        
+    })
+    .post  (async (req, res) => res.json(await secretaryService.create (req.body)))
+    .put   (async (req, res) => res.json(await secretaryService.update (req.body)))
+    .delete(async (req, res) => res.json(await secretaryService.remove (req.body)))
 
 export default router;
