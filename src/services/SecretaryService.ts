@@ -2,11 +2,11 @@ import { PrismaClient } from "@prisma/client";
 
 /**
  * -----------------
- * Procedure Service
+ * Secretary service
  * -----------------
  * @author codethebasics
  */
-export default class ProcedureService {
+export default class SecretaryService {
     private prisma: PrismaClient
 
     constructor() {
@@ -21,10 +21,10 @@ export default class ProcedureService {
      */
     async findAll(filter: {}) {
         try {
-            return await this.prisma.procedure.findMany(filter)
+            return await this.prisma.secretary.findMany(filter)
         } catch (e) {
             console.error(e)
-            throw "Erro durante a listagem dos procedimentos"
+            throw "Erro durante a listagem das secretárias"
         }
     }
 
@@ -36,16 +36,18 @@ export default class ProcedureService {
      */
     async findByName(name: string) {
         try {
-            return await this.prisma.procedure.findMany({
+            return await this.prisma.secretary.findMany({
                 where: {
-                    name: {
-                        startsWith: name
+                    user: {
+                        name: {
+                            startsWith: name
+                        }
                     }
                 }
             })
         } catch (e) {
             console.error(e)
-            throw "Erro durante a listagem dos procedimentos"
+            throw "Erro durante a listagem das secretárias"
         }
     }
 
@@ -53,14 +55,14 @@ export default class ProcedureService {
      * ------
      * Create
      * ------
-     * @param procedure 
+     * @param secretary
      */
-     async create(procedure: any) {
+    async create(secretary: any) {
         try {
-            return await this.prisma.procedure.create(procedure)
+            return await this.prisma.secretary.create(secretary)
         } catch (e) {
             console.error(e)
-            throw "Erro durante o cadastro do procedimento"
+            throw "Erro durante a criação da secretária"
         }
     }
 
@@ -68,14 +70,14 @@ export default class ProcedureService {
      * ------
      * Update
      * ------
-     * @param procedure 
+     * @param secretary 
      */
-     async update(procedure: any) {
+    async update(secretary: any) {
         try {
-            return await this.prisma.procedure.update(procedure)
+            return await this.prisma.secretary.update(secretary)
         } catch (e) {
             console.error(e)
-            throw "Erro durante a atualização do procedimento"
+            throw "Erro durante a atualização da secretária"
         }
     }
 
@@ -83,14 +85,14 @@ export default class ProcedureService {
      * ------
      * Delete
      * ------
-     * @param procedure 
+     * @param secretary 
      */
-     async remove(procedure: any) {
+    async remove(secretary: any) {
         try {
-            return await this.prisma.procedure.delete(procedure)
+            return await this.prisma.secretary.delete(secretary)
         } catch (e) {
             console.error(e)
-            throw "Erro durante a remoção do procedimento"
+            throw "Erro durante a remoção da secretária"
         }
     }
 }

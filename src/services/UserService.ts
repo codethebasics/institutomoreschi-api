@@ -9,8 +9,8 @@ import { PrismaClient } from "@prisma/client";
 export default class UserService {
     private prisma: PrismaClient;
 
-    constructor (_prisma: PrismaClient) {
-        this.prisma = _prisma;
+    constructor () {    
+        this.prisma = new PrismaClient()
     }
 
     /**
@@ -22,7 +22,9 @@ export default class UserService {
      */
     async findAll(filter: {}) {
         try {
-            return await this.prisma.user.findMany(filter)            
+            const response = await this.prisma.user.findMany()
+            console.log(response)
+            return response
         } catch (e) {
             console.error(e)
             throw "Não foi possível realizar a consulta"
@@ -83,7 +85,7 @@ export default class UserService {
      */
     async create(user: any) {
         try {
-            return await this.prisma.user.create({...user})
+            return await this.prisma.user.create(user)
         } catch (e) {
             console.error(e)
             throw "Não foi possível criar o registro na base"
