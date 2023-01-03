@@ -70,7 +70,7 @@ model Procedure {
   price            Float              @default(0)
   DentistProcedure DentistProcedure[]
 
-  @@map("procedimento")
+  @@map("procedimentos")
 }
 
 model DentistProcedure {
