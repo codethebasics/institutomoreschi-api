@@ -1,5 +1,7 @@
 import { PrismaClient } from "@prisma/client";
 
+import argon2 from 'argon2'
+
 /**
  * ------------
  * User service
@@ -25,9 +27,12 @@ export default class UserService {
             const response = await this.prisma.user.findMany()
             console.log(response)
             return response
-        } catch (e) {
-            console.error(e)
-            throw "Não foi possível realizar a consulta"
+        } catch (e: any) {
+            return {
+                status: 500,
+                message: "Não foi possível criar o usuário",
+                error: e.message
+            }
         }
         
     }
@@ -48,9 +53,13 @@ export default class UserService {
                     }
                 }
             })
-        } catch (e) {
-            console.error(e)
-            throw "Não foi possível realizar a consulta"
+        } catch (e: any) {
+            return {
+                status: 500,
+                message: "Não foi possível criar o usuário",
+                data: _name,
+                error: e.message
+            }
         }
     }
 
@@ -66,13 +75,17 @@ export default class UserService {
             return await this.prisma.user.findMany({
                 where: {
                     email: {
-                        startsWith: _email
+                        contains: _email
                     }
                 }
             })
-        } catch (e) {
-            console.error(e)
-            throw "Não foi possível realizar a consulta"
+        } catch (e: any) {
+            return {
+                status: 500,
+                message: "Não foi possível criar o usuário",
+                data: _email,
+                error: e.message
+            }
         }
     }
 
@@ -85,10 +98,20 @@ export default class UserService {
      */
     async create(user: any) {
         try {
-            return await this.prisma.user.create(user)
-        } catch (e) {
-            console.error(e)
-            throw "Não foi possível criar o registro na base"
+            return await this.prisma.user.create({
+                data: {
+                    email: user.email,
+                    name: user.name,
+                    password: await argon2.hash(user.password)
+                }
+            })
+        } catch (e: any) {
+            return {
+                status: 500,
+                message: "Não foi possível criar o usuário",
+                data: user,
+                error: e.message
+            }
         }
     }
 
@@ -101,10 +124,20 @@ export default class UserService {
      */
     async update(user: any) {
         try {
-            return await this.prisma.user.update({...user})
-        } catch (e) {
-            console.error(e)
-            throw "Não foi possível atualizar o registro na base: "
+            user.password = await argon2.hash(user.password)
+            return await this.prisma.user.update({
+                data: user,
+                where: {
+                    id: user.id
+                }
+            })
+        } catch (e: any) {
+            return {
+                status: 500,
+                message: "Não foi possível criar o usuário",
+                data: user,
+                error: e.message
+            }
         }
     }
 
@@ -117,9 +150,18 @@ export default class UserService {
      */
     async remove(user: any) {
         try {
-            return await this.prisma.user.delete(user)
-        } catch (e) {
-            throw "Não foi possível remover o registro da base"
+            return await this.prisma.user.delete({
+                where: {
+                    id: user.id
+                }
+            })
+        } catch (e: any) {
+            return {
+                status: 500,
+                message: "Não foi possível criar o usuário",
+                data: user,
+                error: e.message
+            }
         }
     }
 }

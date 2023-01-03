@@ -1,4 +1,6 @@
 import { PrismaClient } from "@prisma/client";
+import { PrismaClientExtensionError } from "@prisma/client/runtime";
+import argon2 from 'argon2'
 
 /**
  * ---------------
@@ -22,9 +24,12 @@ export default class PatientService {
     async findAll(filter: {}) {
         try {
             return await this.prisma.patient.findMany(filter)
-        } catch (e) {
-            console.error(e)
-            throw "Erro durante a listagem dos pacientes"
+        } catch (e: any) {
+            return {
+                status: 500,
+                message: "Erro durante a listagem dos pacientes",
+                error: e.message
+            }
         }
     }
 
@@ -40,14 +45,27 @@ export default class PatientService {
                 where: {
                     user: {
                         name: {
-                            startsWith: name
+                            contains: name
                         }
                     }
-                }
+                },
+                include: {
+                    user: {
+                        select: {
+                            id: true,
+                            name: true,
+                            email: true
+                        }
+                    }
+                }, 
             })
-        } catch (e) {
-            console.error(e)
-            throw "Erro durante a listagem dos pacientes"
+        } catch (e: any) {
+            return {
+                status: 500,
+                message: "Erro durante a listagem dos pacientes",
+                data: name,
+                error: e.message
+            }
         }
     }
 
@@ -59,10 +77,26 @@ export default class PatientService {
      */
     async create(patient: any) {
         try {
-            return await this.prisma.patient.create(patient)
-        } catch (e) {
-            console.error(e)
-            throw "Erro durante a criação do paciente"
+            return await this.prisma.patient.create({
+                data: {
+                    birth_date: patient.birth_date,
+                    health_insurance_card_number: patient.health_insurance_card_number,
+                    user: {
+                        create: {
+                            name: patient.user.name,
+                            email: patient.user.email,
+                            password: await argon2.hash(patient.user.password)
+                        }
+                    }
+                }
+            })
+        } catch (e: any) {
+            return {
+                status: 500,
+                message: "Erro durante o cadastro do paciente",
+                data: patient,
+                error: e.message
+            }
         }
     }
 
@@ -74,10 +108,19 @@ export default class PatientService {
      */
     async update(patient: any) {
         try {
-            return await this.prisma.patient.update(patient)
-        } catch (e) {
-            console.error(e)
-            throw "Erro durante a atualização do paciente"
+            return await this.prisma.patient.update({
+                data: patient,
+                where: {
+                    id: patient.id
+                }
+            })
+        } catch (e: any) {
+            return {
+                status: 500,
+                message: "Erro durante a atualização do paciente",
+                data: patient,
+                error: e.message
+            }
         }
     }
 
@@ -89,10 +132,18 @@ export default class PatientService {
      */
     async remove(patient: any) {
         try {
-            return await this.prisma.patient.delete(patient)
-        } catch (e) {
-            console.error(e)
-            throw "Erro durante a remoção do paciente"
+            return await this.prisma.patient.delete({
+                where: {
+                    id: patient.id
+                }
+            })
+        } catch (e: any) {
+            return {
+                status: 500,
+                message: "Erro durante a remoção do paciente",
+                data: patient,
+                error: e.message
+            }
         }
     }
 }
