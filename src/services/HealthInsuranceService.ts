@@ -9,8 +9,8 @@ import { PrismaClient } from "@prisma/client";
 export default class HealthInsuranceService {
     private prisma: PrismaClient
 
-    constructor(_prisma: PrismaClient) {
-        this.prisma = _prisma
+    constructor() {
+        this.prisma = new PrismaClient();
     }
 
     /**
@@ -106,7 +106,7 @@ export default class HealthInsuranceService {
      * ------
      * @param healthInsurance 
      */
-    async delete(healthInsurance: any) {
+    async remove(healthInsurance: any) {
         try {
             return await this.prisma.healthInsurance.delete(healthInsurance)
         } catch (e) {
