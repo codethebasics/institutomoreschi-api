@@ -150,7 +150,11 @@ export default class UserService {
      */
     async remove(user: any) {
         try {
-            return await this.prisma.user.delete(user)
+            return await this.prisma.user.delete({
+                where: {
+                    id: user.id
+                }
+            })
         } catch (e: any) {
             return {
                 status: 500,
