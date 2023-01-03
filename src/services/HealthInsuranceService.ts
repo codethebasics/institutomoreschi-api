@@ -1,16 +1,16 @@
 import { PrismaClient } from "@prisma/client";
 
 /**
- * ------------------------
- * Health Insurance Service
- * ------------------------
+ * ---------------
+ * healthInsurance service
+ * ---------------
  * @author codethebasics
  */
 export default class HealthInsuranceService {
-    private prisma: PrismaClient
+    private prisma: PrismaClient;
 
-    constructor() {
-        this.prisma = new PrismaClient();
+    constructor () {    
+        this.prisma = new PrismaClient()
     }
 
     /**
@@ -18,55 +18,46 @@ export default class HealthInsuranceService {
      * Find all
      * --------
      * @param filter 
+     * @returns 
      */
     async findAll(filter: {}) {
         try {
-            return await this.prisma.healthInsurance.findMany(filter)
-        } catch (e) {
-            console.error(e)
-            throw "Erro durante a listagem de convênios"
+            const response = await this.prisma.healthInsurance.findMany()
+            console.log(response)
+            return response
+        } catch (e: any) {
+            return {
+                status: 500,
+                message: "Erro durante a listagem dos convênios",
+                error: e.message
+            }
         }
+        
     }
 
     /**
      * ------------
      * Find by name
      * ------------
-     * @param name 
+     * @param _name 
+     * @returns 
      */
-    async findByName(name: string) {
+    async findByName(_name: string) {
         try {
             return await this.prisma.healthInsurance.findMany({
-                where: {
+                where: {                
                     name: {
-                        startsWith: name
-                    }
+                        startsWith: _name
+                    }                    
                 }
             })
-        } catch (e) {
-            console.error(e)
-            throw "Erro durante a listagem de convênios"
-        }
-    }
-
-    /**
-     * ------------
-     * Find by code
-     * ------------
-     * @param code 
-     */
-    async findByCode(code: string) {
-        try {
-            return await this.prisma.healthInsurance.findMany({
-                where: {
-                    code: {
-                        startsWith: code
-                    }
-                }
-            })
-        } catch (e) {
-            console.error(e)
-            throw "Erro durante a listagem de convênios"
+        } catch (e: any) {
+            return {
+                status: 500,
+                message: "Erro durante a listagem dos convênios",
+                data: _name,
+                error: e.message
+            }
         }
     }
 
@@ -74,14 +65,24 @@ export default class HealthInsuranceService {
      * ------
      * Create
      * ------
-     * @param healthInsurance
+     * @param healthInsurance 
+     * @returns 
      */
     async create(healthInsurance: any) {
-        try {
-            return await this.prisma.healthInsurance.create(healthInsurance)
-        } catch (e) {
-            console.error(e)
-            throw "Erro durante a criação do convênio"
+        try {            
+            return await this.prisma.healthInsurance.create({
+                data: {
+                    name: healthInsurance.name,
+                    code: healthInsurance.code
+                }
+            })
+        } catch (e: any) {
+            return {
+                status: 500,
+                message: "Não foi possível criar o convênio",
+                data: healthInsurance,
+                error: e.message
+            }
         }
     }
 
@@ -90,13 +91,23 @@ export default class HealthInsuranceService {
      * Update
      * ------
      * @param healthInsurance 
+     * @returns 
      */
     async update(healthInsurance: any) {
         try {
-            return await this.prisma.healthInsurance.update(healthInsurance)
-        } catch (e) {
-            console.error(e)
-            throw "Erro durante a atualização do convênio"
+            return await this.prisma.healthInsurance.update({
+                data: healthInsurance,
+                where: {
+                    id: healthInsurance.id
+                }
+            })
+        } catch (e: any) {
+            return {
+                status: 500,
+                message: "Não foi possível atualizar o convênio",
+                data: healthInsurance,
+                error: e.message
+            }
         }
     }
 
@@ -105,13 +116,22 @@ export default class HealthInsuranceService {
      * Delete
      * ------
      * @param healthInsurance 
+     * @returns 
      */
     async remove(healthInsurance: any) {
         try {
-            return await this.prisma.healthInsurance.delete(healthInsurance)
-        } catch (e) {
-            console.error(e)
-            throw "Erro durante a remoção do convênio"
+            return await this.prisma.healthInsurance.delete({
+                where: {
+                    id: healthInsurance.id
+                }
+            })
+        } catch (e: any) {
+            return {
+                status: 500,
+                message: "Não foi possível remover o convênio",
+                data: healthInsurance,
+                error: e.message
+            }
         }
     }
 }

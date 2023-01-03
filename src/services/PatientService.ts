@@ -1,18 +1,17 @@
 import { PrismaClient } from "@prisma/client";
-import { PrismaClientExtensionError } from "@prisma/client/runtime";
 import argon2 from 'argon2'
 
 /**
  * ---------------
- * Patient service
+ * patient service
  * ---------------
  * @author codethebasics
  */
 export default class PatientService {
-    private prisma: PrismaClient
+    private prisma: PrismaClient;
 
-    constructor() {
-        this.prisma = new PrismaClient();
+    constructor () {    
+        this.prisma = new PrismaClient()
     }
 
     /**
@@ -20,10 +19,13 @@ export default class PatientService {
      * Find all
      * --------
      * @param filter 
+     * @returns 
      */
     async findAll(filter: {}) {
         try {
-            return await this.prisma.patient.findMany(filter)
+            const response = await this.prisma.patient.findMany()
+            console.log(response)
+            return response
         } catch (e: any) {
             return {
                 status: 500,
@@ -31,39 +33,32 @@ export default class PatientService {
                 error: e.message
             }
         }
+        
     }
 
     /**
      * ------------
      * Find by name
      * ------------
-     * @param name 
+     * @param _name 
+     * @returns 
      */
-    async findByName(name: string) {
+    async findByName(_name: string) {
         try {
             return await this.prisma.patient.findMany({
                 where: {
                     user: {
                         name: {
-                            contains: name
+                            startsWith: _name
                         }
                     }
-                },
-                include: {
-                    user: {
-                        select: {
-                            id: true,
-                            name: true,
-                            email: true
-                        }
-                    }
-                }, 
+                }
             })
         } catch (e: any) {
             return {
                 status: 500,
                 message: "Erro durante a listagem dos pacientes",
-                data: name,
+                data: _name,
                 error: e.message
             }
         }
@@ -73,10 +68,12 @@ export default class PatientService {
      * ------
      * Create
      * ------
-     * @param patient
+     * @param patient 
+     * @returns 
      */
     async create(patient: any) {
         try {
+            patient.user.password = argon2.hash(patient.user.password)
             return await this.prisma.patient.create({
                 data: {
                     birth_date: patient.birth_date,
@@ -85,7 +82,7 @@ export default class PatientService {
                         create: {
                             name: patient.user.name,
                             email: patient.user.email,
-                            password: await argon2.hash(patient.user.password)
+                            password: patient.user.password
                         }
                     }
                 }
@@ -93,7 +90,7 @@ export default class PatientService {
         } catch (e: any) {
             return {
                 status: 500,
-                message: "Erro durante o cadastro do paciente",
+                message: "Não foi possível criar o paciente",
                 data: patient,
                 error: e.message
             }
@@ -105,6 +102,7 @@ export default class PatientService {
      * Update
      * ------
      * @param patient 
+     * @returns 
      */
     async update(patient: any) {
         try {
@@ -117,7 +115,7 @@ export default class PatientService {
         } catch (e: any) {
             return {
                 status: 500,
-                message: "Erro durante a atualização do paciente",
+                message: "Não foi possível atualizar o paciente",
                 data: patient,
                 error: e.message
             }
@@ -129,6 +127,7 @@ export default class PatientService {
      * Delete
      * ------
      * @param patient 
+     * @returns 
      */
     async remove(patient: any) {
         try {
@@ -140,7 +139,7 @@ export default class PatientService {
         } catch (e: any) {
             return {
                 status: 500,
-                message: "Erro durante a remoção do paciente",
+                message: "Não foi possível remover o paciente",
                 data: patient,
                 error: e.message
             }

@@ -134,7 +134,7 @@ export default class UserService {
         } catch (e: any) {
             return {
                 status: 500,
-                message: "Não foi possível criar o usuário",
+                message: "Não foi possível atualizar o usuário",
                 data: user,
                 error: e.message
             }
@@ -158,7 +158,7 @@ export default class UserService {
         } catch (e: any) {
             return {
                 status: 500,
-                message: "Não foi possível criar o usuário",
+                message: "Não foi possível remover o usuário",
                 data: user,
                 error: e.message
             }

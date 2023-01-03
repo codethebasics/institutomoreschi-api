@@ -79,11 +79,14 @@ model DentistProcedure {
   scheduled_at  DateTime          @default(now())
   scheduled_for DateTime
   approved      ProcedureApproval @default(NOT_APPROVED)
+  patientId     String
   dentist       Dentist           @relation(fields: [dentistId], references: [id])
+  patient       Patient           @relation(fields: [patientId], references: [id])
   procedure     Procedure         @relation(fields: [procedureId], references: [id])
 
-  @@id([dentistId, procedureId])
+  @@id([dentistId, procedureId, patientId])
   @@index([procedureId], map: "dentistas_procedimentos_procedureId_fkey")
+  @@index([patientId], map: "dentistas_procedimentos_patientId_fkey")
   @@map("dentistas_procedimentos")
 }
 
@@ -101,6 +104,7 @@ model Patient {
   birth_date                   DateTime
   health_insurance_card_number String?
   userId                       String
+  DentistProcedure             DentistProcedure[]
   HealthHistory                HealthHistory[]
   user                         User                     @relation(fields: [userId], references: [id])
   PatientHealthInsurance       PatientHealthInsurance[]
