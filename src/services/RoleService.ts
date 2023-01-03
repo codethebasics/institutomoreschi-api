@@ -9,8 +9,8 @@ import { PrismaClient } from "@prisma/client";
 export default class RoleService {
     private prisma: PrismaClient
 
-    constructor(_prisma: PrismaClient) {
-        this.prisma = _prisma
+    constructor() {
+        this.prisma = new PrismaClient();
     }
 
     /**
@@ -106,7 +106,7 @@ export default class RoleService {
      * ------
      * @param role 
      */
-    async delete(role: any) {
+    async remove(role: any) {
         try {
             return await this.prisma.role.delete(role)
         } catch (e) {

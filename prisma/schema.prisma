@@ -55,6 +55,7 @@ model Secretary {
 model Dentist {
   id               String             @id @default(uuid())
   userId           String
+  cro              String
   user             User               @relation(fields: [userId], references: [id])
   DentistProcedure DentistProcedure[]
   HealthHistory    HealthHistory[]

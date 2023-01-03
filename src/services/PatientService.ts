@@ -2,15 +2,15 @@ import { PrismaClient } from "@prisma/client";
 
 /**
  * ---------------
- * Patient Service
+ * Patient service
  * ---------------
  * @author codethebasics
  */
 export default class PatientService {
     private prisma: PrismaClient
 
-    constructor(_prisma: PrismaClient) {
-        this.prisma = _prisma
+    constructor() {
+        this.prisma = new PrismaClient();
     }
 
     /**
@@ -22,27 +22,6 @@ export default class PatientService {
     async findAll(filter: {}) {
         try {
             return await this.prisma.patient.findMany(filter)
-        } catch (e) {
-            console.error(e)
-            throw "Erro durante a listagem dos pacientes"
-        }
-    }
-
-    /**
-     * ------------------------------------
-     * Find by health insurance card number
-     * ------------------------------------
-     * @param healthInsuranceCardNumber 
-     */
-    async findByHealthInsuranceCardNumber(healthInsuranceCardNumber: string) {
-        try {
-            return await this.prisma.patient.findMany({
-                where: {
-                    health_insurance_card_number: {
-                        startsWith: healthInsuranceCardNumber
-                    }
-                }
-            })
         } catch (e) {
             console.error(e)
             throw "Erro durante a listagem dos pacientes"
@@ -76,7 +55,7 @@ export default class PatientService {
      * ------
      * Create
      * ------
-     * @param patient 
+     * @param patient
      */
     async create(patient: any) {
         try {
@@ -108,7 +87,7 @@ export default class PatientService {
      * ------
      * @param patient 
      */
-    async delete(patient: any) {
+    async remove(patient: any) {
         try {
             return await this.prisma.patient.delete(patient)
         } catch (e) {
