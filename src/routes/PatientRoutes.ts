@@ -7,7 +7,7 @@ const patientService = new PatientService();
 router
     .route ('/')
     .get(async (req, res) => {
-        const { name, email } = req.query
+        const { name } = req.query
 
         if (name) {
             res.json(await patientService.findByName(name.toString()))

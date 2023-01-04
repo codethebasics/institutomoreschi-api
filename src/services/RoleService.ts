@@ -1,72 +1,71 @@
-import { PrismaClient } from "@prisma/client";
+import { PrismaClient, Role } from "@prisma/client";
+
+import { GenericResponse } from "../interfaces/response/GenericResponse";
+import { RoleCreateRequest } from "../interfaces/request/role/RoleCreateRequest";
 
 /**
  * ------------
- * Role service
+ * role service
  * ------------
  * @author codethebasics
  */
 export default class RoleService {
-    private prisma: PrismaClient
+    private prisma: PrismaClient;
 
-    constructor() {
-        this.prisma = new PrismaClient();
+    constructor () {    
+        this.prisma = new PrismaClient()
     }
 
     /**
      * --------
      * Find all
      * --------
-     * @param filter
+     * @param filter 
+     * @returns 
      */
     async findAll(filter: {}) {
         try {
-            return await this.prisma.role.findMany(filter)            
-        } catch (e) {
-            console.error(e)
-            throw "Erro durante a listagem das permissões"
+            const response = await this.prisma.role.findMany()
+            console.log(response)
+            return response
+        } catch (e: any) {
+            return {
+                status: 500,
+                message: "Erro durante a listagem dos procedimentos",
+                error: e.message
+            }
         }
+        
     }
 
     /**
      * ------------
      * Find by name
      * ------------
-     * @param name
+     * @param _name 
+     * @returns 
      */
-    async findByName(name: string) {
+    async findByName(_name: string): Promise<GenericResponse> {
         try {
-            return await this.prisma.role.findMany({
+            const response = await this.prisma.role.findMany({
                 where: {
                     name: {
-                        startsWith: name
+                        startsWith: _name
                     }
                 }
             })
-        } catch (e) {
-            console.error(e)
-            throw "Erro durante a listagem das permissões"
-        }
-    }
-
-    /**
-     * -------------------
-     * Find by description
-     * -------------------
-     * @param description 
-     */
-    async findByDescription(description: string) {
-        try {
-            return await this.prisma.role.findMany({
-                where: {
-                    description: {
-                        startsWith: description
-                    }
-                }
-            })
-        } catch (e) {
-            console.error(e)
-            throw "Erro durante a listagem das permissões"
+            return {
+                status: 200,
+                message: 'Consulta realizada com sucesso',
+                data: response
+            }
+        } catch (e: any) {
+            return {
+                status: 500,
+                message: "Erro durante a listagem dos procedimentos",
+                data: _name,
+                error: e.message
+            }
         }
     }
 
@@ -75,13 +74,29 @@ export default class RoleService {
      * Create
      * ------
      * @param role 
+     * @returns 
      */
-    async create(role: any) {
+    async create(role: RoleCreateRequest): Promise<GenericResponse | undefined> {
         try {
-            return await this.prisma.role.create(role)
-        } catch (e) {
+            const response = await this.prisma.role.create({
+                data: {
+                    name: role.name,
+                    description: role.description
+                }
+            })
+            return {
+                status: 200,
+                message: 'Permissão criada com sucesso', 
+                data: response
+            }
+        } catch (e: any) {
             console.error(e)
-            throw "Erro durante a criação da permissão"
+            return {
+                status: 500,
+                message: "Não foi possível criar o procedimento",
+                data: role,
+                error: e.message
+            }
         }
     }
 
@@ -90,13 +105,23 @@ export default class RoleService {
      * Update
      * ------
      * @param role 
+     * @returns 
      */
-    async update(role: any) {
+    async update(role: Role) {
         try {
-            return await this.prisma.role.update(role)
-        } catch (e) {
-            console.error(e)
-            throw "Erro durante a atualização da permissão"
+            return await this.prisma.role.update({
+                data: role,
+                where: {
+                    id: role.id
+                }
+            })
+        } catch (e: any) {
+            return {
+                status: 500,
+                message: "Não foi possível atualizar o procedimento",
+                data: role,
+                error: e.message
+            }
         }
     }
 
@@ -105,13 +130,22 @@ export default class RoleService {
      * Delete
      * ------
      * @param role 
+     * @returns 
      */
-    async remove(role: any) {
+    async remove(role: Role) {
         try {
-            return await this.prisma.role.delete(role)
-        } catch (e) {
-            console.error(e)
-            throw "Erro durante a remoção da permissão"
+            return await this.prisma.role.delete({
+                where: {
+                    id: role.id
+                }
+            })
+        } catch (e: any) {
+            return {
+                status: 500,
+                message: "Não foi possível remover o procedimento",
+                data: role,
+                error: e.message
+            }
         }
     }
 }

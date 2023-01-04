@@ -1,53 +1,74 @@
-import { PrismaClient } from "@prisma/client";
+import { PrismaClient, Role, UserStatus } from "@prisma/client";
 import { randomUUID } from "crypto";
 
-const prisma = new PrismaClient()
+import PatientService from "./services/PatientService";
+import RoleService from "./services/RoleService";
+import UserService from "./services/UserService";
 
+const prisma = new PrismaClient()
+const userService = new UserService()
+const patientService = new PatientService()
+const roleService = new RoleService()
 
 const bruno = {
-    id: undefined,
+    id: randomUUID(),
     name: 'Bruno Carneiro',
     email: 'bruno.carneiro@gmail.com',
-    password: randomUUID()
-}
+    password: randomUUID(),
+    active: UserStatus.ACTIVE
+};
 
-const joao = {
-    id: undefined,
-    name: 'João Pedro Ferreira Almeida',
-    email: 'joao@email.com',
+const pepe = {
+    id: randomUUID(),
+    name: 'João Pedro',
+    email: 'pepe@gmail.com',
     password: randomUUID()
-}
+};
 
 const gabi = {
-    id: undefined,
+    id: randomUUID(),
     name: 'Gabriela Moreschi',
-    email: 'gabi@email.com',
+    email: 'gabi@gmail.com',
     password: randomUUID()
 }
 
-const createUsers = async () => {
-    const users = [bruno, joao, gabi]
-    const response = await prisma.user.createMany({
-        data: users
-    })
-    console.log('criando usuários', response)
+async function createUsers() {    
+    const brunoCreated = await userService.create(bruno);
+    const pepeCreated = await userService.create(pepe);
+    const gabiCreated = await userService.create(gabi); 
+    console.log('User criado: ', brunoCreated)   
+    console.log('User criado: ', pepeCreated)   
+    console.log('User criado: ', gabiCreated)   
 }
 
-
-const createRoles = async () => {
+// Criando Roles
+async function createRoles() {
     const admin = { name: 'admin', description: 'Administrador do sistema' }
     const secretary = { name: 'secretaria', description: 'Secretária da clínica' }
     const patient = { name: 'paciente', description: 'Paciente da clínica'}
     const dentist = { name: 'dentista', description: 'Dentista da clínica'}
+    
     const roles = [admin, secretary, patient, dentist]
 
-    const response = await prisma.role.createMany({
-        data: roles
-    })
-    console.log('Criando permissões', response)
+    for (const role of roles) {
+        const response = await roleService.create(role)
+        console.log('Role criada: ', response)
+    }
+    
 }
 
-const createPatients = async () => {
+// Criando pacientes
+async function createPatients() {
+   
+}
+
+// Adicionando permissões aos usuários
+async function adicionarPermissaoAoUsuario() {
+    
+}
+
+/*const createPatients = async () => {
+
     const userBruno = await prisma.user.findUnique({
         where: {
             email: bruno.email
@@ -118,16 +139,16 @@ const createProcedures = async () => {
         data: procedures
     })
     console.log('Criando procedimentos', response)
-}
+}*/
 
 async function main() {
-    await createUsers();
     await createRoles();
-    await createPatients();
-    await createSecretaries();
-    await createDentists();
-    await createHealthInsurances();
-    await createProcedures();
+    await createUsers();
+    //await createPatients();
+    //await createSecretaries();
+    //await createDentists();
+    //await createHealthInsurances();
+    //await createProcedures();
 }
 
 main()

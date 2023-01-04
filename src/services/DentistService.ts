@@ -1,16 +1,17 @@
-import { PrismaClient } from "@prisma/client";
+import { Dentist, PrismaClient, User } from "@prisma/client";
+import argon2 from 'argon2'
 
 /**
- * ----------------
- * Dentists service
- * ----------------
+ * ---------------
+ * dentist service
+ * ---------------
  * @author codethebasics
  */
 export default class DentistService {
-    private prisma: PrismaClient
+    private prisma: PrismaClient;
 
-    constructor() {
-        this.prisma = new PrismaClient();
+    constructor () {    
+        this.prisma = new PrismaClient()
     }
 
     /**
@@ -18,57 +19,45 @@ export default class DentistService {
      * Find all
      * --------
      * @param filter 
+     * @returns 
      */
     async findAll(filter: {}) {
         try {
-            return await this.prisma.dentist.findMany(filter)
-        } catch (e) {
-            console.error(e)
-            throw "Erro durante a listagem de dentistas"
+            const response = await this.prisma.dentist.findMany()
+            return response
+        } catch (e: any) {
+            return {
+                status: 500,
+                message: "Erro durante a listagem dos dentistas",
+                error: e.message
+            }
         }
+        
     }
 
     /**
      * ------------
      * Find by name
      * ------------
-     * @param name 
-     */
-    async findByName(name: string) {
-        try {
-            return await this.prisma.dentist.findMany({
-                where: {
-                    user: {
-                        name: {
-                            startsWith: name
-                        }
-                    }
-                }
-            })
-        } catch (e) {
-            console.error(e)
-            throw "Erro durante a listagem de dentistas"
-        }
-    }
-
-    /**
-     * -----------
-     * Find by CRO
-     * -----------
      * @param cro 
+     * @returns 
      */
     async findByCRO(cro: string) {
         try {
             return await this.prisma.dentist.findMany({
-                where: {
+                where: {                
                     cro: {
-                        startsWith: cro
-                    }
+                        contains: cro
+                    }                    
                 }
             })
-        } catch (e) {
-            console.error(e)
-            throw "Erro durante a listagem de dentistas"
+        } catch (e: any) {
+            return {
+                status: 500,
+                message: "Erro durante a listagem dos dentistas",
+                data: cro,
+                error: e.message
+            }
         }
     }
 
@@ -76,14 +65,27 @@ export default class DentistService {
      * ------
      * Create
      * ------
-     * @param dentist
+     * @param dentist 
+     * @returns 
      */
-    async create(dentist: any) {
-        try {
-            return await this.prisma.dentist.create(dentist)
-        } catch (e) {
-            console.error(e)
-            throw "Erro durante a criação do dentista"
+    async create(dentist: Dentist, user: User) {
+        try {            
+            user.password = await argon2.hash(user.password)
+            return await this.prisma.dentist.create({
+                data: {
+                    cro: dentist.cro,
+                    user: {
+                        create: user
+                    }
+                }
+            })
+        } catch (e: any) {
+            return {
+                status: 500,
+                message: "Não foi possível criar o dentista",
+                data: dentist,
+                error: e.message
+            }
         }
     }
 
@@ -92,13 +94,23 @@ export default class DentistService {
      * Update
      * ------
      * @param dentist 
+     * @returns 
      */
-    async update(dentist: any) {
+    async update(dentist: Dentist) {
         try {
-            return await this.prisma.dentist.update(dentist)
-        } catch (e) {
-            console.error(e)
-            throw "Erro durante a atualização do dentista"
+            return await this.prisma.dentist.update({
+                data: dentist,
+                where: {
+                    id: dentist.id
+                }
+            })
+        } catch (e: any) {
+            return {
+                status: 500,
+                message: "Não foi possível atualizar o dentista",
+                data: dentist,
+                error: e.message
+            }
         }
     }
 
@@ -107,13 +119,22 @@ export default class DentistService {
      * Delete
      * ------
      * @param dentist 
+     * @returns 
      */
-    async remove(dentist: any) {
+    async remove(dentist: Dentist) {
         try {
-            return await this.prisma.dentist.delete(dentist)
-        } catch (e) {
-            console.error(e)
-            throw "Erro durante a remoção do dentista"
+            return await this.prisma.dentist.delete({
+                where: {
+                    id: dentist.id
+                }
+            })
+        } catch (e: any) {
+            return {
+                status: 500,
+                message: "Não foi possível remover o dentista",
+                data: dentist,
+                error: e.message
+            }
         }
     }
 }
