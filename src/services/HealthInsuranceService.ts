@@ -1,4 +1,4 @@
-import { PrismaClient } from "@prisma/client";
+import { HealthInsurance, PrismaClient } from "@prisma/client";
 
 /**
  * ---------------
@@ -68,7 +68,7 @@ export default class HealthInsuranceService {
      * @param healthInsurance 
      * @returns 
      */
-    async create(healthInsurance: any) {
+    async create(healthInsurance: HealthInsurance) {
         try {            
             return await this.prisma.healthInsurance.create({
                 data: {
@@ -93,7 +93,7 @@ export default class HealthInsuranceService {
      * @param healthInsurance 
      * @returns 
      */
-    async update(healthInsurance: any) {
+    async update(healthInsurance: HealthInsurance) {
         try {
             return await this.prisma.healthInsurance.update({
                 data: healthInsurance,
@@ -118,7 +118,7 @@ export default class HealthInsuranceService {
      * @param healthInsurance 
      * @returns 
      */
-    async remove(healthInsurance: any) {
+    async remove(healthInsurance: HealthInsurance) {
         try {
             return await this.prisma.healthInsurance.delete({
                 where: {

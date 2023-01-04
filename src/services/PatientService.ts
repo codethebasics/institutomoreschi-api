@@ -1,5 +1,7 @@
-import { PrismaClient } from "@prisma/client";
+import { Patient, PrismaClient, User } from "@prisma/client";
 import argon2 from 'argon2'
+import RoleService from "./RoleService";
+import UserRoleService from "./UserRoleService";
 
 /**
  * ---------------
@@ -9,9 +11,13 @@ import argon2 from 'argon2'
  */
 export default class PatientService {
     private prisma: PrismaClient;
+    private roleService: RoleService;
+    private userRoleService: UserRoleService;
 
     constructor () {    
-        this.prisma = new PrismaClient()
+        this.prisma = new PrismaClient();
+        this.roleService = new RoleService();
+        this.userRoleService = new UserRoleService();
     }
 
     /**
@@ -71,30 +77,27 @@ export default class PatientService {
      * @param patient 
      * @returns 
      */
-    async create(patient: any) {
-        try {
-            patient.user.password = argon2.hash(patient.user.password)
-            return await this.prisma.patient.create({
+    async create(patient: Patient): Promise<Patient | undefined> {
+        try {                        
+            const patientCreated = await this.prisma.patient.create({
                 data: {
                     birth_date: patient.birth_date,
-                    health_insurance_card_number: patient.health_insurance_card_number,
+                    health_insurance_card_number: patient.health_insurance_card_number,          
                     user: {
-                        create: {
-                            name: patient.user.name,
-                            email: patient.user.email,
-                            password: patient.user.password
+                        connect: {
+                            id: patient.userId
                         }
-                    }
+                    }          
                 }
             })
+
+            return patientCreated;
+
         } catch (e: any) {
-            return {
-                status: 500,
-                message: "Não foi possível criar o paciente",
-                data: patient,
-                error: e.message
-            }
+            console.error(e);      
         }
+        
+        return undefined
     }
 
     /**
@@ -104,7 +107,7 @@ export default class PatientService {
      * @param patient 
      * @returns 
      */
-    async update(patient: any) {
+    async update(patient: Patient) {
         try {
             return await this.prisma.patient.update({
                 data: patient,
@@ -129,7 +132,7 @@ export default class PatientService {
      * @param patient 
      * @returns 
      */
-    async remove(patient: any) {
+    async remove(patient: Patient) {
         try {
             return await this.prisma.patient.delete({
                 where: {

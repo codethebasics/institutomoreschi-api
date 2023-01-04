@@ -1,4 +1,7 @@
-import { PrismaClient } from "@prisma/client";
+import { PrismaClient, Role } from "@prisma/client";
+
+import { GenericResponse } from "../interfaces/response/GenericResponse";
+import { RoleCreateRequest } from "../interfaces/request/role/RoleCreateRequest";
 
 /**
  * ------------
@@ -42,15 +45,20 @@ export default class RoleService {
      * @param _name 
      * @returns 
      */
-    async findByName(_name: string) {
+    async findByName(_name: string): Promise<GenericResponse> {
         try {
-            return await this.prisma.role.findMany({
+            const response = await this.prisma.role.findMany({
                 where: {
                     name: {
                         startsWith: _name
                     }
                 }
             })
+            return {
+                status: 200,
+                message: 'Consulta realizada com sucesso',
+                data: response
+            }
         } catch (e: any) {
             return {
                 status: 500,
@@ -68,15 +76,21 @@ export default class RoleService {
      * @param role 
      * @returns 
      */
-    async create(role: any) {
+    async create(role: RoleCreateRequest): Promise<GenericResponse | undefined> {
         try {
-            return await this.prisma.role.create({
+            const response = await this.prisma.role.create({
                 data: {
                     name: role.name,
                     description: role.description
                 }
             })
+            return {
+                status: 200,
+                message: 'Permissão criada com sucesso', 
+                data: response
+            }
         } catch (e: any) {
+            console.error(e)
             return {
                 status: 500,
                 message: "Não foi possível criar o procedimento",
@@ -93,7 +107,7 @@ export default class RoleService {
      * @param role 
      * @returns 
      */
-    async update(role: any) {
+    async update(role: Role) {
         try {
             return await this.prisma.role.update({
                 data: role,
@@ -118,7 +132,7 @@ export default class RoleService {
      * @param role 
      * @returns 
      */
-    async remove(role: any) {
+    async remove(role: Role) {
         try {
             return await this.prisma.role.delete({
                 where: {

@@ -1,6 +1,8 @@
-import { PrismaClient } from "@prisma/client";
+import { PrismaClient, User } from "@prisma/client";
 
 import argon2 from 'argon2'
+import { UserCreateRequest } from "../interfaces/request/user/UserCreateRequest";
+import { UserCreatedResponse } from "../interfaces/response/user/UserCreatedResponse";
 
 /**
  * ------------
@@ -96,22 +98,26 @@ export default class UserService {
      * @param user 
      * @returns 
      */
-    async create(user: any) {
+    async create(user: UserCreateRequest): Promise<UserCreatedResponse | undefined> {
         try {
-            return await this.prisma.user.create({
+            const response = await this.prisma.user.create({
                 data: {
                     email: user.email,
                     name: user.name,
-                    password: await argon2.hash(user.password)
+                    password: await argon2.hash(user.password),
+                    active: user.active
                 }
             })
-        } catch (e: any) {
             return {
-                status: 500,
-                message: "Não foi possível criar o usuário",
-                data: user,
-                error: e.message
+                id: response.id,
+                name: response.name,
+                email: response.email,
+                created_at: response.created_at,
+                active: response.active
             }
+        } catch (e: any) {
+            console.error(e)
+            return undefined
         }
     }
 
@@ -122,7 +128,7 @@ export default class UserService {
      * @param user 
      * @returns 
      */
-    async update(user: any) {
+    async update(user: User) {
         try {
             user.password = await argon2.hash(user.password)
             return await this.prisma.user.update({
@@ -148,7 +154,7 @@ export default class UserService {
      * @param user 
      * @returns 
      */
-    async remove(user: any) {
+    async remove(user: User) {
         try {
             return await this.prisma.user.delete({
                 where: {

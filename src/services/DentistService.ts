@@ -1,4 +1,4 @@
-import { PrismaClient } from "@prisma/client";
+import { Dentist, PrismaClient, User } from "@prisma/client";
 import argon2 from 'argon2'
 
 /**
@@ -68,18 +68,14 @@ export default class DentistService {
      * @param dentist 
      * @returns 
      */
-    async create(dentist: any) {
+    async create(dentist: Dentist, user: User) {
         try {            
-            dentist.user.password = argon2.hash(dentist.user.password)
+            user.password = await argon2.hash(user.password)
             return await this.prisma.dentist.create({
                 data: {
                     cro: dentist.cro,
                     user: {
-                        create: {
-                            name: dentist.user.name,
-                            email: dentist.user.email,
-                            password: dentist.user.password
-                        }
+                        create: user
                     }
                 }
             })
@@ -100,7 +96,7 @@ export default class DentistService {
      * @param dentist 
      * @returns 
      */
-    async update(dentist: any) {
+    async update(dentist: Dentist) {
         try {
             return await this.prisma.dentist.update({
                 data: dentist,
@@ -125,7 +121,7 @@ export default class DentistService {
      * @param dentist 
      * @returns 
      */
-    async remove(dentist: any) {
+    async remove(dentist: Dentist) {
         try {
             return await this.prisma.dentist.delete({
                 where: {

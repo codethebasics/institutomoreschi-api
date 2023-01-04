@@ -1,4 +1,4 @@
-import { PrismaClient } from "@prisma/client";
+import { PrismaClient, Secretary } from "@prisma/client";
 import argon2 from 'argon2'
 
 /**
@@ -110,7 +110,7 @@ export default class SecretaryService {
      * ------
      * @param secretary 
      */
-    async update(secretary: any) {
+    async update(secretary: Secretary) {
         try {
             return await this.prisma.secretary.update({
                 data: {
@@ -136,7 +136,7 @@ export default class SecretaryService {
      * ------
      * @param secretary 
      */
-    async remove(secretary: any) {
+    async remove(secretary: Secretary) {
         try {
             return await this.prisma.secretary.delete({
                 where: {

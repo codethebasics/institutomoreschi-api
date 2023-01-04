@@ -1,4 +1,4 @@
-import { PrismaClient } from "@prisma/client";
+import { PrismaClient, Procedure } from "@prisma/client";
 
 /**
  * -----------------
@@ -68,7 +68,7 @@ export default class ProcedureService {
      * @param procedure 
      * @returns 
      */
-    async create(procedure: any) {
+    async create(procedure: Procedure) {
         try {
             return await this.prisma.procedure.create({
                 data: {
@@ -93,7 +93,7 @@ export default class ProcedureService {
      * @param procedure 
      * @returns 
      */
-    async update(procedure: any) {
+    async update(procedure: Procedure) {
         try {
             return await this.prisma.procedure.update({
                 data: procedure,
@@ -118,7 +118,7 @@ export default class ProcedureService {
      * @param procedure 
      * @returns 
      */
-    async remove(procedure: any) {
+    async remove(procedure: Procedure) {
         try {
             return await this.prisma.procedure.delete({
                 where: {
