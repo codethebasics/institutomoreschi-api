@@ -1,5 +1,6 @@
 import { Patient, PrismaClient, User } from "@prisma/client";
 import argon2 from 'argon2'
+import { PatientCreateRequest } from "../interfaces/request/patient/PatientCreateRequest";
 import RoleService from "./RoleService";
 import UserRoleService from "./UserRoleService";
 
@@ -77,7 +78,7 @@ export default class PatientService {
      * @param patient 
      * @returns 
      */
-    async create(patient: Patient): Promise<Patient | undefined> {
+    async create(patient: PatientCreateRequest): Promise<Patient | undefined> {
         try {                        
             const patientCreated = await this.prisma.patient.create({
                 data: {
