@@ -2,7 +2,9 @@ import { PrismaClient, User } from "@prisma/client";
 
 import argon2 from 'argon2'
 import { UserCreateRequest } from "../interfaces/request/user/UserCreateRequest";
+import { UserUpdateRequest } from "../interfaces/request/user/UserUpdateRequest";
 import { UserCreatedResponse } from "../interfaces/response/user/UserCreatedResponse";
+import { UserUpdatedResponse } from "../interfaces/response/user/UserUpdatedResponse";
 
 /**
  * ------------
@@ -72,22 +74,16 @@ export default class UserService {
      * @param _email : email do user a ser pesquisado
      * @returns user
      */
-    async findByEmail(_email: string) {
+    async findByEmail(_email: string): Promise<User | null> {
         try {
-            return await this.prisma.user.findMany({
+            return await this.prisma.user.findUnique({
                 where: {
-                    email: {
-                        contains: _email
-                    }
+                    email: _email
                 }
             })
         } catch (e: any) {
-            return {
-                status: 500,
-                message: "Erro durante a listagem de usuários",
-                data: _email,
-                error: e.message
-            }
+            console.error(e)
+            return null
         }
     }
 
@@ -128,9 +124,11 @@ export default class UserService {
      * @param user 
      * @returns 
      */
-    async update(user: User) {
+    async update(user: UserUpdateRequest): Promise<UserUpdatedResponse | undefined> {
         try {
-            user.password = await argon2.hash(user.password)
+            if (user.password) {
+                user.password = await argon2.hash(user.password)
+            }
             return await this.prisma.user.update({
                 data: user,
                 where: {
@@ -138,12 +136,8 @@ export default class UserService {
                 }
             })
         } catch (e: any) {
-            return {
-                status: 500,
-                message: "Não foi possível atualizar o usuário",
-                data: user,
-                error: e.message
-            }
+            console.error(e)
+            return undefined
         }
     }
 

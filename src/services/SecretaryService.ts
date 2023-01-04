@@ -1,5 +1,6 @@
 import { PrismaClient, Secretary } from "@prisma/client";
 import argon2 from 'argon2'
+import { SecretaryCreateRequest } from "../interfaces/request/secretary/SecreataryCreateRequest";
 
 /**
  * -----------------
@@ -76,22 +77,50 @@ export default class SecretaryService {
     }
 
     /**
+     * ------------
+     * Find by name
+     * ------------
+     * @param email 
+     */
+     async findByEmail(email: string) {
+        try {
+            return await this.prisma.secretary.findMany({
+                where: {
+                    user: {
+                        email: email
+                    }
+                },
+                include: {
+                    user: {
+                        select: {
+                            id: true,
+                            name: true,
+                            email: true
+                        }
+                    }
+                }
+            })
+        } catch (e: any) {
+            return {
+                status: 500,
+                message: "Não foi possível criar o usuário",
+                data: name,
+                error: e.message
+            }
+        }
+    }
+
+    /**
      * ------
      * Create
      * ------
      * @param secretary
      */
-    async create(secretary: any) {        
+    async create(secretary: SecretaryCreateRequest) {        
         try {
             return await this.prisma.secretary.create({
                 data: {                    
-                    user: {
-                        create: {
-                            name: secretary.user.name,
-                            email: secretary.user.email,
-                            password: await argon2.hash(secretary.user.password)
-                        }
-                    }
+                    userId: secretary.userId
                 }
             })
         } catch (e: any) {
