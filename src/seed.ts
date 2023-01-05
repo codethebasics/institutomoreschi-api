@@ -12,6 +12,7 @@ import SecretaryService from "./services/SecretaryService";
 import UserRoleService from "./services/UserRoleService";
 import UserService from "./services/UserService";
 import HealthInsuranceService from "./services/HealthInsuranceService";
+import PacientHealthInsuranceService from "./services/PacientHealthInsuranceService";
 
 const prisma = new PrismaClient()
 const userService = new UserService()
@@ -22,6 +23,7 @@ const dentistService = new DentistService()
 const userRoleService = new UserRoleService()
 const procedureService = new ProcedureService()
 const healthInsuranceService = new HealthInsuranceService()
+const patientHealthInsurance = new PacientHealthInsuranceService() 
 
 // =======
 // USER #1
@@ -222,6 +224,47 @@ async function createHealthInsurances() {
     console.log(amil, goldenCross, proSocial)
 }
 
+/**
+ * ===============================
+ * ADD PATIENT TO HEALTH INSURANCE
+ * ===============================
+ */
+async function addPatientToHealhInsurance() {
+    const patientBruno = await patientService.findByEmail('bruno.carneiro@gmail.com')
+
+    if (!patientBruno) {
+        throw "Não foi possível encontrar o paciente"
+    }
+
+    const amil = await healthInsuranceService.findByCode('001')
+    const goldenCross = await healthInsuranceService.findByCode('002')
+
+    if (!amil || !goldenCross) {
+        throw "Não foi possível encontrar os convênios"
+    }
+    const responseAmil = await patientHealthInsurance
+        .addHealthInsuranceToPatient(amil.id, patientBruno.id)
+
+    console.log('AMIL', responseAmil)
+    
+    const responseGoldenCross = await patientHealthInsurance
+    .addHealthInsuranceToPatient(goldenCross.id, patientBruno.id)
+
+    console.log('GOLDEN CROSS', responseGoldenCross)
+
+    console.log('Convênios vinculados com sucesso')
+    
+}
+
+/**
+ * =========================
+ * ADD PROCEDURE TO DENTISTS
+ * =========================
+ */
+async function addProcedureToDentist() {
+
+}
+
 async function main() {
     await createRoles();
     await createUsers();
@@ -231,6 +274,7 @@ async function main() {
     await addRoleToUser()
     await createProcedures();
     await createHealthInsurances();
+    await addPatientToHealhInsurance();
 }
 
 main()
