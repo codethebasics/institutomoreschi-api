@@ -8,6 +8,7 @@ import DentistService from "./services/DentistService";
 import PatientService from "./services/PatientService";
 import RoleService from "./services/RoleService";
 import SecretaryService from "./services/SecretaryService";
+import UserRoleService from "./services/UserRoleService";
 import UserService from "./services/UserService";
 
 const prisma = new PrismaClient()
@@ -16,6 +17,7 @@ const patientService = new PatientService()
 const roleService = new RoleService()
 const secretaryService = new SecretaryService()
 const dentistService = new DentistService()
+const userRoleService = new UserRoleService()
 
 // =======
 // USER #1
@@ -130,79 +132,38 @@ async function createDentists() {
     }
 }
 
-/*const createPatients = async () => {
-
-    const userBruno = await prisma.user.findUnique({
-        where: {
-            email: bruno.email
-        }
-    })
-    if (userBruno) {
-        const response = await prisma.patient.create({
-            data: {
-                birth_date: new Date(),
-                health_insurance_card_number: '111222333',
-                userId: userBruno.id
-            },        
-        })
-        console.log('Criando pacientes', response)
+/**
+ * ================
+ * ADD ROLE TO USER
+ * ================
+ */
+async function addRoleToUser() {
+    const pacienteBruno = await patientService.findByEmail('bruno.carneiro@gmail.com')
+    
+    if (!pacienteBruno) {
+        throw "Não foi possível encontrar o paciente"
     }
-}
 
-const createSecretaries = async () => {
-    const userJoao = await prisma.user.findUnique({
-        where: {
-            email: joao.email
-        }
-    })
-    if (userJoao) {
-        const response = await prisma.secretary.create({
-            data: {
-                userId: userJoao.id
-            }
-        })
-        console.log('Criando secretárias', response)
+    const pacienteRoleAdmin = await roleService.findByName('paciente')
+    const pacienteRolePaciente = await roleService.findByName('admin')
+    const pacientes = [pacienteRoleAdmin, pacienteRolePaciente]
+    
+    if (!pacienteRolePaciente || !pacienteRoleAdmin) {
+        throw "Não foi possível encontrar a permissão"
     }
-}
 
-const createDentists = async () => {
-    const userGabi = await prisma.user.findUnique({
-        where: {
-            email: gabi.email
-        }
-    })
-    if (userGabi) {
-        const response = await prisma.dentist.create({
-            data: {
-                cro: '1111',
-                userId: userGabi.id
-            }
-        })
-        console.log('Criando dentistas', response)
+    const pacienteUser = await userService.findById(pacienteBruno.userId)
+
+    if (!pacienteUser) {
+        throw "Não foi possível encontrar o usuário do paciente"
     }
-}
 
-const createHealthInsurances = async () => {
-    const amil = { name: 'Amil', code: '001' };
-    const goldenCross = { name: 'Golden Cross', code: '002' };
-    const proSocial = { name: 'ProSocial', code: '002' };
-    const healthInsurances = [amil, goldenCross, proSocial]
-    const response = await prisma.healthInsurance.createMany({
-        data: healthInsurances
-    })
-    console.log('Criando convênios', response)
-}
+    const response = await userRoleService.addRoleToUser(pacientes, pacienteUser)
 
-const createProcedures = async () => {
-    const endodontia = { name: 'Endodontia', price: 50 }
-    const periodontia = { name: 'Periodontia', price: 55 }
-    const ortodontia = { name: 'Ortodontia', price: 60 }
-    const procedures = [endodontia, periodontia, ortodontia]
-    const response = await prisma.procedure.createMany({
-        data: procedures
-    })
-    console.log('Criando procedimentos', response)
-}*/
+    response 
+        ? console.log("Permissões atribuídas com sucesso", response)
+        : console.log("Erro ao atribuir as permissões")
+}
 
 async function main() {
     await createRoles();
@@ -210,8 +171,7 @@ async function main() {
     await createPatients();
     await createSecretaries();
     await createDentists();
-    //await createHealthInsurances();
-    //await createProcedures();
+    await addRoleToUser()
 }
 
 main()

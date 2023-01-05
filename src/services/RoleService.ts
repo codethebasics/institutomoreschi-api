@@ -45,29 +45,22 @@ export default class RoleService {
      * @param _name 
      * @returns 
      */
-    async findByName(_name: string): Promise<GenericResponse> {
+    async findByName(_name: string): Promise<Role> {
         try {
-            const response = await this.prisma.role.findMany({
+            const response = await this.prisma.role.findUnique({
                 where: {
-                    name: {
-                        startsWith: _name
-                    }
+                    name: _name
                 }
             })
-            return {
-                status: 200,
-                message: 'Consulta realizada com sucesso',
-                data: response
+            if (!response) {
+                throw "Não foi possível encontrar a permissão"
             }
+            return response
         } catch (e: any) {
-            return {
-                status: 500,
-                message: "Erro durante a listagem dos procedimentos",
-                data: _name,
-                error: e.message
-            }
+            console.error(e)
+            throw e
         }
-    }
+    }    
 
     /**
      * ------

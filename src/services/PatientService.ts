@@ -72,6 +72,29 @@ export default class PatientService {
     }
 
     /**
+     * ------------
+     * Find by name
+     * ------------
+     * @param email 
+     * @returns 
+     */
+     async findByEmail(email: string): Promise<Patient | undefined> {
+        try {
+            const response = await this.prisma.patient.findMany({
+                where: {
+                    user: {
+                        email: email
+                    }
+                }
+            })
+            return response[0];
+        } catch (e: any) {
+            console.error(e)
+            return undefined
+        }
+    }
+
+    /**
      * ------
      * Create
      * ------
