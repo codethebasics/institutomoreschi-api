@@ -44,22 +44,16 @@ export default class ProcedureService {
      * @param _name 
      * @returns 
      */
-    async findByName(_name: string) {
+    async findByName(_name: string): Promise<Procedure | null> {
         try {
-            return await this.prisma.procedure.findMany({
+            return await this.prisma.procedure.findUnique({
                 where: {
-                    name: {
-                        startsWith: _name
-                    }
+                    name: _name
                 }
             })
         } catch (e: any) {
-            return {
-                status: 500,
-                message: "Erro durante a listagem dos procedimentos",
-                data: _name,
-                error: e.message
-            }
+            console.error(e)
+            throw e
         }
     }
 

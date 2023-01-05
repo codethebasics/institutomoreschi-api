@@ -40,7 +40,7 @@ export default class HealthInsuranceService {
      * ------------
      * Find by name
      * ------------
-     * @param _name 
+     * @param code 
      * @returns 
      */
     async findByCode(code: string): Promise<HealthInsurance | null> {
