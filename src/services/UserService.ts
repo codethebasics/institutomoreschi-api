@@ -1,6 +1,7 @@
 import { PrismaClient, User } from "@prisma/client";
 
 import argon2 from 'argon2'
+import { isNull } from "util";
 import { UserCreateRequest } from "../interfaces/request/user/UserCreateRequest";
 import { UserUpdateRequest } from "../interfaces/request/user/UserUpdateRequest";
 import { UserCreatedResponse } from "../interfaces/response/user/UserCreatedResponse";
@@ -39,6 +40,26 @@ export default class UserService {
             }
         }
         
+    }
+
+    /**
+     * ------------
+     * Find by name
+     * ------------
+     * @param _name 
+     * @returns 
+     */
+     async findById(userId: string): Promise<User | null> {
+        try {
+            return await this.prisma.user.findUnique({
+                where: {
+                    id: userId
+                }
+            })
+        } catch (e: any) {
+            console.error(e)
+            return null
+        }
     }
 
     /**
