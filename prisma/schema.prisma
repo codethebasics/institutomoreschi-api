@@ -97,7 +97,7 @@ model DentistProcedure {
 model HealthInsurance {
   id                     String                   @id @default(uuid())
   name                   String
-  code                   String?
+  code                   String                   @unique
   PatientHealthInsurance PatientHealthInsurance[]
 
   @@map("convenios")

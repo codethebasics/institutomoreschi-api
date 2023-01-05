@@ -43,22 +43,17 @@ export default class HealthInsuranceService {
      * @param _name 
      * @returns 
      */
-    async findByName(_name: string) {
+    async findByCode(code: string): Promise<HealthInsurance | null> {
         try {
-            return await this.prisma.healthInsurance.findMany({
-                where: {                
-                    name: {
-                        startsWith: _name
-                    }                    
+            const response = await this.prisma.healthInsurance.findUnique({
+                where: {
+                    code: code
                 }
             })
+            return response
         } catch (e: any) {
-            return {
-                status: 500,
-                message: "Erro durante a listagem dos convênios",
-                data: _name,
-                error: e.message
-            }
+            console.error(e)
+            throw e
         }
     }
 
