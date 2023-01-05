@@ -59,7 +59,7 @@ model Secretary {
 model Dentist {
   id               String             @id @default(uuid())
   userId           String
-  cro              String
+  cro              String             @unique
   user             User               @relation(fields: [userId], references: [id])
   DentistProcedure DentistProcedure[]
   HealthHistory    HealthHistory[]

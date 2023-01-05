@@ -3,8 +3,8 @@ import { randomUUID } from "crypto";
 import { DentistCreateRequest } from "./interfaces/request/dentists/DentistCreateRequest";
 import { PatientCreateRequest } from "./interfaces/request/patient/PatientCreateRequest";
 import { SecretaryCreateRequest } from "./interfaces/request/secretary/SecreataryCreateRequest";
-import DentistService from "./services/DentistService";
 
+import DentistService from "./services/DentistService";
 import PatientService from "./services/PatientService";
 import ProcedureService from "./services/ProcedureService";
 import RoleService from "./services/RoleService";
@@ -13,6 +13,7 @@ import UserRoleService from "./services/UserRoleService";
 import UserService from "./services/UserService";
 import HealthInsuranceService from "./services/HealthInsuranceService";
 import PacientHealthInsuranceService from "./services/PacientHealthInsuranceService";
+import DentistProcedureService from "./services/DentistProcedureService";
 
 const prisma = new PrismaClient()
 const userService = new UserService()
@@ -23,7 +24,8 @@ const dentistService = new DentistService()
 const userRoleService = new UserRoleService()
 const procedureService = new ProcedureService()
 const healthInsuranceService = new HealthInsuranceService()
-const patientHealthInsurance = new PacientHealthInsuranceService() 
+const patientHealthInsuranceService = new PacientHealthInsuranceService()
+const dentistProcedureService = new DentistProcedureService()
 
 // =======
 // USER #1
@@ -242,12 +244,12 @@ async function addPatientToHealhInsurance() {
     if (!amil || !goldenCross) {
         throw "Não foi possível encontrar os convênios"
     }
-    const responseAmil = await patientHealthInsurance
+    const responseAmil = await patientHealthInsuranceService
         .addHealthInsuranceToPatient(amil.id, patientBruno.id)
 
     console.log('AMIL', responseAmil)
     
-    const responseGoldenCross = await patientHealthInsurance
+    const responseGoldenCross = await patientHealthInsuranceService
     .addHealthInsuranceToPatient(goldenCross.id, patientBruno.id)
 
     console.log('GOLDEN CROSS', responseGoldenCross)
@@ -262,7 +264,21 @@ async function addPatientToHealhInsurance() {
  * =========================
  */
 async function addProcedureToDentist() {
+    const dentistGabi = await dentistService.findByCRO("1234567")
+    const ortodontia = await procedureService.findByName("ortodontia")
+    const patientBruno = await patientService.findByEmail('bruno.carneiro@gmail.com')
 
+    if (!ortodontia || !dentistGabi || !patientBruno) {
+        throw "Erro ao buscar registros"
+    }
+    
+    const add = await dentistProcedureService
+        .addProcedureToDentistAndPatient(
+            ortodontia.id, 
+            dentistGabi.id, 
+            patientBruno.id)
+    
+    console.log('Procedimento registrado com sucesso')
 }
 
 async function main() {
@@ -275,6 +291,7 @@ async function main() {
     await createProcedures();
     await createHealthInsurances();
     await addPatientToHealhInsurance();
+    await addProcedureToDentist();
 }
 
 main()

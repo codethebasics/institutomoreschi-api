@@ -43,22 +43,16 @@ export default class DentistService {
      * @param cro 
      * @returns 
      */
-    async findByCRO(cro: string) {
+    async findByCRO(cro: string): Promise<Dentist | null> {
         try {
-            return await this.prisma.dentist.findMany({
-                where: {                
-                    cro: {
-                        contains: cro
-                    }                    
+            return await this.prisma.dentist.findUnique({
+                where: {
+                    cro: cro
                 }
             })
         } catch (e: any) {
-            return {
-                status: 500,
-                message: "Erro durante a listagem dos dentistas",
-                data: cro,
-                error: e.message
-            }
+            console.error(e)
+            throw e
         }
     }
 
