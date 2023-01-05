@@ -1,4 +1,6 @@
 import { PrismaClient, Procedure } from "@prisma/client";
+import { ProcedureCreateRequest } from "../interfaces/request/procedure/ProcedureCreateRequest";
+import { ProcedureCreateResponse } from "../interfaces/response/procedure/ProcedureCreateResponse";
 
 /**
  * -----------------
@@ -68,7 +70,7 @@ export default class ProcedureService {
      * @param procedure 
      * @returns 
      */
-    async create(procedure: Procedure) {
+    async create(procedure: ProcedureCreateRequest): Promise<ProcedureCreateResponse> {
         try {
             return await this.prisma.procedure.create({
                 data: {
@@ -77,12 +79,27 @@ export default class ProcedureService {
                 }
             })
         } catch (e: any) {
-            return {
-                status: 500,
-                message: "Não foi possível criar o procedimento",
-                data: procedure,
-                error: e.message
-            }
+            console.error(e)
+            throw e
+        }
+    }
+
+    /**
+     * -----------
+     * Create many
+     * -----------
+     * @param procedure 
+     * @returns 
+     */
+     async createMany(procedures: ProcedureCreateRequest[]) {
+        try {
+            const response = await this.prisma.procedure.createMany({
+                data: procedures
+            })
+            return response
+        } catch (e: any) {
+            console.error(e)
+            throw e
         }
     }
 

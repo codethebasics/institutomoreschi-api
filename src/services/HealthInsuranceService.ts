@@ -1,9 +1,10 @@
 import { HealthInsurance, PrismaClient } from "@prisma/client";
+import { HealthInsuranceCreateRequest } from "../interfaces/request/health-insurance/HealthInsuranceCreateRequest";
 
 /**
- * ---------------
- * healthInsurance service
- * ---------------
+ * -----------------------
+ * HealthInsurance service
+ * -----------------------
  * @author codethebasics
  */
 export default class HealthInsuranceService {
@@ -68,7 +69,7 @@ export default class HealthInsuranceService {
      * @param healthInsurance 
      * @returns 
      */
-    async create(healthInsurance: HealthInsurance) {
+    async create(healthInsurance: HealthInsuranceCreateRequest) {
         try {            
             return await this.prisma.healthInsurance.create({
                 data: {
@@ -77,12 +78,8 @@ export default class HealthInsuranceService {
                 }
             })
         } catch (e: any) {
-            return {
-                status: 500,
-                message: "Não foi possível criar o convênio",
-                data: healthInsurance,
-                error: e.message
-            }
+            console.log(e)
+            throw e
         }
     }
 

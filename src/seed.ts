@@ -6,10 +6,12 @@ import { SecretaryCreateRequest } from "./interfaces/request/secretary/Secreatar
 import DentistService from "./services/DentistService";
 
 import PatientService from "./services/PatientService";
+import ProcedureService from "./services/ProcedureService";
 import RoleService from "./services/RoleService";
 import SecretaryService from "./services/SecretaryService";
 import UserRoleService from "./services/UserRoleService";
 import UserService from "./services/UserService";
+import HealthInsuranceService from "./services/HealthInsuranceService";
 
 const prisma = new PrismaClient()
 const userService = new UserService()
@@ -18,6 +20,8 @@ const roleService = new RoleService()
 const secretaryService = new SecretaryService()
 const dentistService = new DentistService()
 const userRoleService = new UserRoleService()
+const procedureService = new ProcedureService()
+const healthInsuranceService = new HealthInsuranceService()
 
 // =======
 // USER #1
@@ -165,6 +169,59 @@ async function addRoleToUser() {
         : console.log("Erro ao atribuir as permissões")
 }
 
+/**
+ * =================
+ * CREATE PROCEDURES
+ * =================
+ */
+async function createProcedures() {
+
+    const periodontia = {
+        name: 'Periodontia',
+        price: 100
+    }
+
+    const ortodontia = {
+        name: 'Ortodontia',
+        price: 150
+    }
+
+    const endodontia = {
+        name: 'Endodontia',
+        price: 200
+    }
+
+    const procedures = [periodontia, ortodontia, endodontia]
+
+    const response = await procedureService.createMany(procedures)
+    console.log('Procedimentos criados com sucesso')
+}
+
+/**
+ * ========================
+ * CREATE HEALTH INSURANCES
+ * ========================
+ */
+async function createHealthInsurances() {
+    const amil = await healthInsuranceService.create({
+        name: 'Amil',
+        code: '001'
+    })
+
+    const goldenCross = await healthInsuranceService.create({
+        name: 'GoldenCross',
+        code: '002'
+    })
+
+    const proSocial = await healthInsuranceService.create({
+        name: 'Pro social',
+        code: '003'
+    })
+
+    console.log('Convênios criados com sucesso')
+    console.log(amil, goldenCross, proSocial)
+}
+
 async function main() {
     await createRoles();
     await createUsers();
@@ -172,6 +229,8 @@ async function main() {
     await createSecretaries();
     await createDentists();
     await addRoleToUser()
+    await createProcedures();
+    await createHealthInsurances();
 }
 
 main()
