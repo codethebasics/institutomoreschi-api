@@ -1,6 +1,5 @@
 import { PrismaClient, Procedure } from "@prisma/client";
-import { ProcedureCreateRequest } from "../interfaces/request/procedure/ProcedureCreateRequest";
-import { ProcedureCreateResponse } from "../interfaces/response/procedure/ProcedureCreateResponse";
+import { ProcedureCreateRequest, ProcedureCreateResponse } from "../interfaces/dto/procedure/ProcedureDTO";
 
 /**
  * -----------------

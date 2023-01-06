@@ -1,6 +1,5 @@
-import { Dentist, PrismaClient, User } from "@prisma/client";
-import argon2 from 'argon2'
-import { DentistCreateRequest } from "../interfaces/request/dentists/DentistCreateRequest";
+import { Dentist, PrismaClient } from "@prisma/client";
+import { DentistCreateRequest, DentistCreateResponse } from "../interfaces/dto/dentist/DentistDTO";
 
 /**
  * ---------------
@@ -63,21 +62,31 @@ export default class DentistService {
      * @param dentist 
      * @returns 
      */
-     async create(dentist: DentistCreateRequest) {        
+     async create(dentist: DentistCreateRequest): Promise<DentistCreateResponse> {        
         try {
             return await this.prisma.dentist.create({
                 data: {
                     cro: dentist.cro,
                     userId: dentist.userId
+                },
+                select: {
+                    id: true,
+                    cro: true,
+                    user: {
+                        select: {
+                            id: true,
+                            name: true,
+                            email: true,
+                            created_at: true,
+                            updated_at: true,
+                            active: true,
+                        }
+                    }
                 }
             })
         } catch (e: any) {
-            return {
-                status: 500,
-                message: "Não foi possível criar a secretaria",
-                data: dentist,
-                error: e.message
-            }
+            console.error(e)
+            throw e
         }
     }
 
