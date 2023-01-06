@@ -8,7 +8,7 @@ export default class UserRoleService {
         this.prisma = new PrismaClient();
     }
 
-    async addRoleToUser(role: Role[], user: User): Promise<Boolean> {
+    async addRoleToUser(role: Role[], user: any): Promise<Boolean> {
         try {
             for (let r of role) {
                 const response =await this.prisma.userRole.create({
@@ -17,7 +17,6 @@ export default class UserRoleService {
                         userId: user.id
                     }
                 })
-                console.log('response', response)
             }
             return true
         } catch (e) {

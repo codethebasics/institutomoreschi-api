@@ -28,11 +28,24 @@ export default class PatientService {
      * @param filter 
      * @returns 
      */
-    async findAll(filter: {}) {
+    async findAll() {
         try {
-            const response = await this.prisma.patient.findMany()
-            console.log(response)
-            return response
+            return await this.prisma.patient.findMany({
+                select: {
+                    id: true,
+                    birth_date: true,
+                    health_insurance_card_number: true,
+                    user: {
+                        select: {
+                            id: true,
+                            name: true,
+                            email: true,
+                            active: true
+                        }
+                    }
+                }
+            })
+            
         } catch (e: any) {
             return {
                 status: 500,
@@ -56,7 +69,20 @@ export default class PatientService {
                 where: {
                     user: {
                         name: {
-                            startsWith: _name
+                            contains: _name
+                        }
+                    }
+                },
+                select: {
+                    id: true,
+                    birth_date: true,
+                    health_insurance_card_number: true,
+                    user: {
+                        select: {
+                            id: true,
+                            name: true,
+                            email: true,
+                            active: true
                         }
                     }
                 }
@@ -84,8 +110,8 @@ export default class PatientService {
                 where: {
                     user: {
                         email: email
-                    }
-                }
+                    },
+                },
             })
             return response[0];
         } catch (e: any) {
