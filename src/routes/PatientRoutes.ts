@@ -7,12 +7,15 @@ const patientService = new PatientService();
 router
     .route ('/')
     .get(async (req, res) => {
-        const { name } = req.query
+        const { name, email } = req.query
 
         if (name) {
             res.json(await patientService.findByName(name.toString()))
+        } else if (email) {
+            console.log('email', email)
+            res.json(await patientService.findByEmail(email.toString()))
         } else {
-            res.json(await patientService.findAll(req.body))
+            res.json(await patientService.findAll())
         }
     })
     .post  (async (req, res) => res.json(await  patientService.create (req.body)))

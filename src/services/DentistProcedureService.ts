@@ -22,7 +22,6 @@ export default class DentistProcedureService {
                 }
             })        
         } catch (e) {
-            console.log('patientId', patientId)
             console.error(e)
             throw e
         }

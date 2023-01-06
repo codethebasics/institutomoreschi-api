@@ -14,6 +14,8 @@ import UserService from "./services/UserService";
 import HealthInsuranceService from "./services/HealthInsuranceService";
 import PacientHealthInsuranceService from "./services/PacientHealthInsuranceService";
 import DentistProcedureService from "./services/DentistProcedureService";
+import { Console } from "console";
+import { UserCreateRequest } from "./interfaces/response/user/UserSelectResponse";
 
 const prisma = new PrismaClient()
 const userService = new UserService()
@@ -30,17 +32,16 @@ const dentistProcedureService = new DentistProcedureService()
 // =======
 // USER #1
 // =======
-let bruno = {
+let bruno: UserCreateRequest = {
     name: 'Bruno Carneiro',
     email: 'bruno.carneiro@gmail.com',
-    password: randomUUID(),
-    active: UserStatus.ACTIVE
+    password: randomUUID()
 };
 
 // =======
 // USER #2
 // =======
-let pepe = {
+let pepe: UserCreateRequest = {
     name: 'João Pedro',
     email: 'pepe@gmail.com',
     password: randomUUID()
@@ -49,7 +50,7 @@ let pepe = {
 // =======
 // USER #3
 // =======
-let gabi = {
+let gabi: UserCreateRequest = {
     name: 'Gabriela Moreschi',
     email: 'gabi@gmail.com',
     password: randomUUID()
@@ -70,8 +71,7 @@ let gabi = {
     const roles = [admin, secretary, patient, dentist]
 
     for (const role of roles) {
-        const response = await roleService.create(role)
-        console.log('Role criada: ', response)
+        await roleService.create(role)
     }    
 }
 
@@ -81,12 +81,9 @@ let gabi = {
  * ============
  */
 async function createUsers() {    
-    const brunoCreated = await userService.create(bruno);
-    const pepeCreated = await userService.create(pepe);
-    const gabiCreated = await userService.create(gabi); 
-    console.log('User criado: ', brunoCreated)   
-    console.log('User criado: ', pepeCreated)   
-    console.log('User criado: ', gabiCreated)
+    await userService.create(bruno);
+    await userService.create(pepe);
+    await userService.create(gabi); 
 }
 
 /**
@@ -102,8 +99,7 @@ async function createPatients() {
             health_insurance_card_number: '7777777',
             userId: brunoRecovered.id
         }
-        const response = await patientService.create(patientBruno)
-        console.log('paciente criado:', response)
+        await patientService.create(patientBruno)
     }
 }
 
@@ -118,8 +114,7 @@ async function createSecretaries() {
         const secreataryJoao: SecretaryCreateRequest = {
             userId: joaoRecovered.id
         }
-        const response = await secretaryService.create(secreataryJoao)
-        console.log('secretária criada:', response)
+        await secretaryService.create(secreataryJoao)
     }
 }
 
@@ -135,8 +130,7 @@ async function createDentists() {
             cro: '1234567',
             userId: gabiRecovered.id
         }
-        const response = await dentistService.create(dentistGabi)
-        console.log('dentista criado:', response)
+        await dentistService.create(dentistGabi)
     }
 }
 
@@ -166,11 +160,7 @@ async function addRoleToUser() {
         throw "Não foi possível encontrar o usuário do paciente"
     }
 
-    const response = await userRoleService.addRoleToUser(pacientes, pacienteUser)
-
-    response 
-        ? console.log("Permissões atribuídas com sucesso", response)
-        : console.log("Erro ao atribuir as permissões")
+    await userRoleService.addRoleToUser(pacientes, pacienteUser)
 }
 
 /**
@@ -197,8 +187,7 @@ async function createProcedures() {
 
     const procedures = [periodontia, ortodontia, endodontia]
 
-    const response = await procedureService.createMany(procedures)
-    console.log('Procedimentos criados com sucesso')
+    await procedureService.createMany(procedures)
 }
 
 /**
@@ -207,23 +196,20 @@ async function createProcedures() {
  * ========================
  */
 async function createHealthInsurances() {
-    const amil = await healthInsuranceService.create({
+    await healthInsuranceService.create({
         name: 'Amil',
         code: '001'
     })
 
-    const goldenCross = await healthInsuranceService.create({
+    await healthInsuranceService.create({
         name: 'GoldenCross',
         code: '002'
     })
 
-    const proSocial = await healthInsuranceService.create({
+    await healthInsuranceService.create({
         name: 'Pro social',
         code: '003'
     })
-
-    console.log('Convênios criados com sucesso')
-    console.log(amil, goldenCross, proSocial)
 }
 
 /**
@@ -244,17 +230,12 @@ async function addPatientToHealhInsurance() {
     if (!amil || !goldenCross) {
         throw "Não foi possível encontrar os convênios"
     }
-    const responseAmil = await patientHealthInsuranceService
-        .addHealthInsuranceToPatient(amil.id, patientBruno.id)
-
-    console.log('AMIL', responseAmil)
     
-    const responseGoldenCross = await patientHealthInsuranceService
-    .addHealthInsuranceToPatient(goldenCross.id, patientBruno.id)
-
-    console.log('GOLDEN CROSS', responseGoldenCross)
-
-    console.log('Convênios vinculados com sucesso')
+    await patientHealthInsuranceService
+        .addHealthInsuranceToPatient(amil.id, patientBruno.id)
+    
+    await patientHealthInsuranceService
+        .addHealthInsuranceToPatient(goldenCross.id, patientBruno.id)
     
 }
 
@@ -272,26 +253,48 @@ async function addProcedureToDentist() {
         throw "Erro ao buscar registros"
     }
     
-    const add = await dentistProcedureService
+    await dentistProcedureService
         .addProcedureToDentistAndPatient(
             ortodontia.id, 
             dentistGabi.id, 
             patientBruno.id)
-    
-    console.log('Procedimento registrado com sucesso')
 }
 
 async function main() {
+
+    console.log()
+    console.log('Seeding database ...')
+    console.log()
+
     await createRoles();
+    console.log('Criando permissões ............................................. [✔]')    
+    
     await createUsers();
+    console.log('Criando usuários ............................................... [✔]')    
+    
     await createPatients();
+    console.log('Criando pacientes .............................................. [✔]')    
+    
     await createSecretaries();
+    console.log('Criando secretárias ............................................ [✔]')    
+    
     await createDentists();
+    console.log('Criando dentistas .............................................. [✔]')    
+    
     await addRoleToUser()
+    console.log('Adicionando permissão ao usuário ............................... [✔]')    
+    
     await createProcedures();
+    console.log('Criando procedimento ........................................... [✔]')    
+    
     await createHealthInsurances();
+    console.log('Criando seguro de saúde .......................................  [✔]')    
+    
     await addPatientToHealhInsurance();
+    console.log('Adicionando paciente ao seguro de saúde .......................  [✔]')    
+    
     await addProcedureToDentist();
+    console.log('Adicionando procedimento ao dentista ........................... [✔]')    
 }
 
 main()

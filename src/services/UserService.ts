@@ -1,11 +1,14 @@
-import { PrismaClient, User } from "@prisma/client";
+import { PrismaClient, User, UserStatus } from "@prisma/client";
 
-import argon2 from 'argon2'
-import { isNull } from "util";
+import argon2 from 'argon2';
+
 import { UserCreateRequest } from "../interfaces/request/user/UserCreateRequest";
+import { UserDTO } from "../interfaces/request/user/UserDTO";
 import { UserUpdateRequest } from "../interfaces/request/user/UserUpdateRequest";
 import { UserCreatedResponse } from "../interfaces/response/user/UserCreatedResponse";
+import { UserSelectResponse } from "../interfaces/response/user/UserSelectResponse";
 import { UserUpdatedResponse } from "../interfaces/response/user/UserUpdatedResponse";
+
 
 /**
  * ------------
@@ -27,9 +30,27 @@ export default class UserService {
      * @param filter 
      * @returns 
      */
-    async findAll(filter: {}) {
+    async findAll() {
         try {
-            const response = await this.prisma.user.findMany()
+            const response = await this.prisma.user.findMany({        
+                select: {
+                    name: true,
+                    email: true,
+                    created_at: true,
+                    updated_at: true,
+                    active: true,
+                    user_role: {
+                        select: {
+                            role: {
+                                select: {
+                                    name: true,
+                                    description: true
+                                }
+                            }
+                        }
+                    }
+                }
+            })
             console.log(response)
             return response
         } catch (e: any) {
@@ -43,17 +64,26 @@ export default class UserService {
     }
 
     /**
-     * ------------
-     * Find by name
-     * ------------
-     * @param _name 
+     * ----------
+     * Find by id
+     * ----------
+     * @param userId 
      * @returns 
      */
-     async findById(userId: string): Promise<User | null> {
+     async findById(userId: string) {
         try {
             return await this.prisma.user.findUnique({
                 where: {
                     id: userId
+                },
+                select: {
+                    id: true,
+                    name: true,
+                    email: true,
+                    created_at: true,
+                    updated_at: true,
+                    active: true,
+                    user_role: true
                 }
             })
         } catch (e: any) {
@@ -74,7 +104,24 @@ export default class UserService {
             return await this.prisma.user.findMany({
                 where: {
                     name: {
-                        startsWith: _name
+                        contains: _name
+                    }
+                },
+                select: {
+                    name: true,
+                    email: true,
+                    created_at: true,
+                    updated_at: true,
+                    active: true,
+                    user_role: {
+                        select: {
+                            role: {
+                                select: {
+                                    name: true,
+                                    description: true
+                                }
+                            }
+                        }
                     }
                 }
             })
@@ -95,16 +142,26 @@ export default class UserService {
      * @param _email : email do user a ser pesquisado
      * @returns user
      */
-    async findByEmail(_email: string): Promise<User | null> {
+    async findByEmail(_email: string): Promise<UserSelectResponse | null> {
         try {
-            return await this.prisma.user.findUnique({
+            const data = await this.prisma.user.findUnique({
                 where: {
                     email: _email
+                },
+                select: {
+                    id: true,
+                    name: true,
+                    email: true,
+                    created_at: true,
+                    updated_at: true,
+                    active: true,
+                    user_role: true
                 }
             })
+            return data
         } catch (e: any) {
             console.error(e)
-            return null
+            throw e
         }
     }
 
@@ -115,7 +172,7 @@ export default class UserService {
      * @param user 
      * @returns 
      */
-    async create(user: UserCreateRequest): Promise<UserCreatedResponse | undefined> {
+    async create(user: UserCreateRequest): Promise<UserCreatedResponse> {
         try {
             const response = await this.prisma.user.create({
                 data: {
@@ -134,7 +191,7 @@ export default class UserService {
             }
         } catch (e: any) {
             console.error(e)
-            return undefined
+            throw e
         }
     }
 
