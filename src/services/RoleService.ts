@@ -1,7 +1,5 @@
 import { PrismaClient, Role } from "@prisma/client";
-
-import { GenericResponse } from "../interfaces/response/GenericResponse";
-import { RoleCreateRequest } from "../interfaces/request/role/RoleCreateRequest";
+import { RoleCreateRequest, RoleCreateResponse } from "../interfaces/dto/role/RoleDTO";
 
 /**
  * ------------
@@ -69,27 +67,17 @@ export default class RoleService {
      * @param role 
      * @returns 
      */
-    async create(role: RoleCreateRequest): Promise<GenericResponse | undefined> {
+    async create(role: RoleCreateRequest): Promise<RoleCreateResponse> {
         try {
-            const response = await this.prisma.role.create({
+            return await this.prisma.role.create({
                 data: {
                     name: role.name,
                     description: role.description
                 }
-            })
-            return {
-                status: 200,
-                message: 'Permissão criada com sucesso', 
-                data: response
-            }
+            })            
         } catch (e: any) {
             console.error(e)
-            return {
-                status: 500,
-                message: "Não foi possível criar o procedimento",
-                data: role,
-                error: e.message
-            }
+            throw e
         }
     }
 

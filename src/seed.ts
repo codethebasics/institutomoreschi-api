@@ -1,21 +1,20 @@
-import { PrismaClient, UserStatus } from "@prisma/client";
+import { PrismaClient } from "@prisma/client";
 import { randomUUID } from "crypto";
-import { DentistCreateRequest } from "./interfaces/request/dentists/DentistCreateRequest";
-import { PatientCreateRequest } from "./interfaces/request/patient/PatientCreateRequest";
-import { SecretaryCreateRequest } from "./interfaces/request/secretary/SecreataryCreateRequest";
+import { DentistCreateRequest } from "./interfaces/dto/dentist/DentistDTO";
+import { PatientCreateRequest } from "./interfaces/dto/patient/PatientDTO";
+import { SecretaryCreateRequest } from "./interfaces/dto/secretary/SecretaryDTO";
+import { UserCreateRequest } from "./interfaces/dto/user/UserDTO";
 
+import DentistProcedureService from "./services/DentistProcedureService";
 import DentistService from "./services/DentistService";
+import HealthInsuranceService from "./services/HealthInsuranceService";
+import PacientHealthInsuranceService from "./services/PacientHealthInsuranceService";
 import PatientService from "./services/PatientService";
 import ProcedureService from "./services/ProcedureService";
 import RoleService from "./services/RoleService";
 import SecretaryService from "./services/SecretaryService";
 import UserRoleService from "./services/UserRoleService";
 import UserService from "./services/UserService";
-import HealthInsuranceService from "./services/HealthInsuranceService";
-import PacientHealthInsuranceService from "./services/PacientHealthInsuranceService";
-import DentistProcedureService from "./services/DentistProcedureService";
-import { Console } from "console";
-import { UserCreateRequest } from "./interfaces/response/user/UserSelectResponse";
 
 const prisma = new PrismaClient()
 const userService = new UserService()
@@ -56,7 +55,6 @@ let gabi: UserCreateRequest = {
     password: randomUUID()
 }
 
-
 /**
  * ============
  * CREATE ROLES
@@ -92,7 +90,7 @@ async function createUsers() {
  * ===============
  */
 async function createPatients() {
-    const brunoRecovered = await userService.findByEmail(bruno.email)
+    const brunoRecovered = await userService.findByEmail(bruno.email);
     if (brunoRecovered) {
         const patientBruno: PatientCreateRequest = {
             birth_date: new Date('1987-07-29'),

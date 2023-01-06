@@ -1,4 +1,5 @@
 import express from 'express'
+import cors from 'cors'
 import bodyParser from 'body-parser'
 
 import { Router } from 'express'
@@ -20,6 +21,7 @@ app.use("/secretaries", Routes.SecretaryRoutes);
 app.use("/procedures", Routes.ProcedureRoutes);
 app.use("/health-insurance", Routes.HealthInsuranceRoutes);
 
+app.use(cors())
 app.use(route)
 
 app.listen(3333, () => 'Server is running on port 3333')

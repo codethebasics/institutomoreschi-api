@@ -1,6 +1,5 @@
-import { Patient, PrismaClient, User } from "@prisma/client";
-import argon2 from 'argon2'
-import { PatientCreateRequest } from "../interfaces/request/patient/PatientCreateRequest";
+import { Patient, PrismaClient } from "@prisma/client";
+import { PatientCreateRequest } from "../interfaces/dto/patient/PatientDTO";
 import RoleService from "./RoleService";
 import UserRoleService from "./UserRoleService";
 

@@ -1,5 +1,5 @@
 import { HealthInsurance, PrismaClient } from "@prisma/client";
-import { HealthInsuranceCreateRequest } from "../interfaces/request/health-insurance/HealthInsuranceCreateRequest";
+import { HealthInsuranceCreateRequest } from "../interfaces/dto/health-insurance/HealthInsuranceDTO";
 
 /**
  * -----------------------

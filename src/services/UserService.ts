@@ -1,14 +1,13 @@
-import { PrismaClient, User, UserStatus } from "@prisma/client";
-
 import argon2 from 'argon2';
 
-import { UserCreateRequest } from "../interfaces/request/user/UserCreateRequest";
-import { UserDTO } from "../interfaces/request/user/UserDTO";
-import { UserUpdateRequest } from "../interfaces/request/user/UserUpdateRequest";
-import { UserCreatedResponse } from "../interfaces/response/user/UserCreatedResponse";
-import { UserSelectResponse } from "../interfaces/response/user/UserSelectResponse";
-import { UserUpdatedResponse } from "../interfaces/response/user/UserUpdatedResponse";
-
+import { Prisma, PrismaClient } from "@prisma/client";
+import {
+    UserCreateRequest,
+    UserCreateResponse, UserRemoveRequest,
+    UserRemoveResponse, UserSelectResponse, UserUpdateRequest,
+    UserUpdateResponse
+} from "../interfaces/dto/user/UserDTO";
+import { ExceptionMessage } from "../interfaces/message/ExceptionMessage";
 
 /**
  * ------------
@@ -30,10 +29,11 @@ export default class UserService {
      * @param filter 
      * @returns 
      */
-    async findAll() {
+    async findAll(): Promise<UserSelectResponse[] | ExceptionMessage> {
         try {
-            const response = await this.prisma.user.findMany({        
+            const data = await this.prisma.user.findMany({        
                 select: {
+                    id: true,
                     name: true,
                     email: true,
                     created_at: true,
@@ -51,13 +51,18 @@ export default class UserService {
                     }
                 }
             })
-            console.log(response)
-            return response
+
+            if (!data.length) {
+                return {
+                    message: 'Nenhum usuário encontrado'
+                }
+            }
+
+            return data
         } catch (e: any) {
             return {
-                status: 500,
                 message: "Erro durante a listagem de usuários",
-                error: e.message
+                cause: e.message
             }
         }
         
@@ -126,11 +131,10 @@ export default class UserService {
                 }
             })
         } catch (e: any) {
+            console.error(e)
             return {
-                status: 500,
-                message: "Erro durante a listagem de usuários",
-                data: _name,
-                error: e.message
+                message: 'Erro ao buscar usuário pelo nome',
+                cause: e
             }
         }
     }
@@ -142,9 +146,9 @@ export default class UserService {
      * @param _email : email do user a ser pesquisado
      * @returns user
      */
-    async findByEmail(_email: string): Promise<UserSelectResponse | null> {
+    async findByEmail(_email: string): Promise<UserSelectResponse> {
         try {
-            const data = await this.prisma.user.findUnique({
+            return await this.prisma.user.findUniqueOrThrow({
                 where: {
                     email: _email
                 },
@@ -158,7 +162,6 @@ export default class UserService {
                     user_role: true
                 }
             })
-            return data
         } catch (e: any) {
             console.error(e)
             throw e
@@ -172,25 +175,17 @@ export default class UserService {
      * @param user 
      * @returns 
      */
-    async create(user: UserCreateRequest): Promise<UserCreatedResponse> {
+    async create(user: UserCreateRequest): Promise<UserCreateResponse> {
         try {
-            const response = await this.prisma.user.create({
+            return await this.prisma.user.create({
                 data: {
                     email: user.email,
                     name: user.name,
                     password: await argon2.hash(user.password),
                     active: user.active
                 }
-            })
-            return {
-                id: response.id,
-                name: response.name,
-                email: response.email,
-                created_at: response.created_at,
-                active: response.active
-            }
+            })            
         } catch (e: any) {
-            console.error(e)
             throw e
         }
     }
@@ -202,7 +197,7 @@ export default class UserService {
      * @param user 
      * @returns 
      */
-    async update(user: UserUpdateRequest): Promise<UserUpdatedResponse | undefined> {
+    async update(user: UserUpdateRequest): Promise<UserUpdateResponse | ExceptionMessage> {
         try {
             if (user.password) {
                 user.password = await argon2.hash(user.password)
@@ -215,7 +210,10 @@ export default class UserService {
             })
         } catch (e: any) {
             console.error(e)
-            return undefined
+            return {
+                message: 'Não foi possível atualizar o usuário',
+                cause: e
+            }
         }
     }
 
@@ -226,19 +224,23 @@ export default class UserService {
      * @param user 
      * @returns 
      */
-    async remove(user: User) {
+    async remove(user: UserRemoveRequest): Promise<UserRemoveResponse | ExceptionMessage> {
         try {
             return await this.prisma.user.delete({
                 where: {
                     id: user.id
+                },
+                select: {
+                    id: true,
+                    name: true,
+                    email: true
                 }
             })
         } catch (e: any) {
+            console.log(e)
             return {
-                status: 500,
-                message: "Não foi possível remover o usuário",
-                data: user,
-                error: e.message
+                message: 'Erro ao remover usuário',
+                cause: e
             }
         }
     }

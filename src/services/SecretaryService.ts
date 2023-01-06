@@ -1,6 +1,5 @@
 import { PrismaClient, Secretary } from "@prisma/client";
-import argon2 from 'argon2'
-import { SecretaryCreateRequest } from "../interfaces/request/secretary/SecreataryCreateRequest";
+import { SecretaryCreateRequest } from "../interfaces/dto/secretary/SecretaryDTO";
 
 /**
  * -----------------
