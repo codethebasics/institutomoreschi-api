@@ -132,7 +132,7 @@ model HealthHistory {
   id          String   @id @default(uuid())
   description String
   created_at  DateTime @default(now())
-  updated_up  DateTime @updatedAt
+  updated_at  DateTime @updatedAt
   dentistId   String?
   patientId   String?
   updated_by  Dentist? @relation(fields: [dentistId], references: [id], onDelete: SetNull)
