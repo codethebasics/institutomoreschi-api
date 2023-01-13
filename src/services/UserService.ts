@@ -43,6 +43,7 @@ export default class UserService {
                         select: {
                             role: {
                                 select: {
+                                    id: true,
                                     name: true,
                                     description: true
                                 }
@@ -224,24 +225,24 @@ export default class UserService {
      * @param user 
      * @returns 
      */
-    async remove(user: UserRemoveRequest): Promise<UserRemoveResponse | ExceptionMessage> {
+    async remove(user: UserRemoveRequest): Promise<UserRemoveResponse> {
         try {
-            return await this.prisma.user.delete({
-                where: {
-                    id: user.id
-                },
-                select: {
-                    id: true,
-                    name: true,
-                    email: true
-                }
-            })
-        } catch (e: any) {
-            console.log(e)
-            return {
-                message: 'Erro ao remover usuário',
-                cause: e
+            if (user.id || user.email) {
+                return await this.prisma.user.delete({
+                    where: {
+                        id: user.id
+                    },
+                    select: {
+                        id: true,
+                        name: true,
+                        email: true
+                    }
+                })
             }
+            throw "Parâmetros inválidos"
+        } catch (e: any) {
+            console.error(e)
+            throw e
         }
     }
 }

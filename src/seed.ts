@@ -139,26 +139,37 @@ async function createDentists() {
  */
 async function addRoleToUser() {
     const pacienteBruno = await patientService.findByEmail('bruno.carneiro@gmail.com')
-    
-    if (!pacienteBruno) {
-        throw "Não foi possível encontrar o paciente"
+    const dentistaGabi = await dentistService.findByCRO('1234567')
+    const secretariaJoao = await secretaryService.findByEmail('pepe@gmail.com')
+
+
+
+
+    if (!pacienteBruno || !dentistaGabi || !secretariaJoao) {
+        throw "ERRO: Não foi possível encontrar os usuários"
     }
 
-    const pacienteRoleAdmin = await roleService.findByName('paciente')
-    const pacienteRolePaciente = await roleService.findByName('admin')
-    const pacientes = [pacienteRoleAdmin, pacienteRolePaciente]
+    const roleAdmin = await roleService.findByName('admin')
+    const rolePaciente = await roleService.findByName('paciente')
+    const roleSecretaria = await roleService.findByName('secretaria')
+    const roleDentista = await roleService.findByName('dentista')
     
-    if (!pacienteRolePaciente || !pacienteRoleAdmin) {
+    
+    if (!rolePaciente || !roleAdmin || !roleSecretaria || !roleDentista) {
         throw "Não foi possível encontrar a permissão"
     }
-
+    
     const pacienteUser = await userService.findById(pacienteBruno.userId)
+    const dentistaUser = await userService.findById(dentistaGabi.userId)
+    const secretariaUser = await userService.findById(secretariaJoao.user.id)
 
-    if (!pacienteUser) {
-        throw "Não foi possível encontrar o usuário do paciente"
+    if (!pacienteUser || !dentistaUser || !secretariaUser) {
+        throw "ERRO: Não foi possível encontrar o usuário do paciente"
     }
-
-    await userRoleService.addRoleToUser(pacientes, pacienteUser)
+    
+    await userRoleService.addRoleToUser([roleAdmin, rolePaciente], pacienteUser)
+    await userRoleService.addRoleToUser([roleDentista], dentistaUser)
+    await userRoleService.addRoleToUser([roleSecretaria], secretariaUser)
 }
 
 /**

@@ -11,7 +11,7 @@ export default class UserRoleService {
     async addRoleToUser(role: Role[], user: any): Promise<Boolean> {
         try {
             for (let r of role) {
-                const response =await this.prisma.userRole.create({
+                await this.prisma.userRole.create({
                     data: {
                         roleId: r.id,
                         userId: user.id

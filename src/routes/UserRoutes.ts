@@ -15,7 +15,7 @@ router
         } else if (email) {
             res.json(await userService.findByEmail(email.toString()))
         } else {
-            res.json(await userService.findAll(req.query))
+            res.json(await userService.findAll())
         }
         
     })

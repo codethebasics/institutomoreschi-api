@@ -47,6 +47,9 @@ export default class DentistService {
             return await this.prisma.dentist.findUnique({
                 where: {
                     cro: cro
+                },
+                include: {
+                    user: true
                 }
             })
         } catch (e: any) {

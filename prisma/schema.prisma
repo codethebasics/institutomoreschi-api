@@ -39,8 +39,8 @@ model Role {
 model UserRole {
   userId String @default(uuid())
   roleId String @default(uuid())
-  role   Role   @relation(fields: [roleId], references: [id])
-  user   User   @relation(fields: [userId], references: [id])
+  role   Role   @relation(fields: [roleId], references: [id], onDelete: Cascade)
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@id([userId, roleId])
   @@index([roleId], map: "usuarios_permissoes_roleId_fkey")
@@ -50,7 +50,7 @@ model UserRole {
 model Secretary {
   id     String @id @default(uuid())
   userId String
-  user   User   @relation(fields: [userId], references: [id])
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([userId], map: "secretarias_userId_fkey")
   @@map("secretarias")
@@ -60,7 +60,7 @@ model Dentist {
   id               String             @id @default(uuid())
   userId           String
   cro              String             @unique
-  user             User               @relation(fields: [userId], references: [id])
+  user             User               @relation(fields: [userId], references: [id], onDelete: Cascade)
   DentistProcedure DentistProcedure[]
   HealthHistory    HealthHistory[]
 
@@ -84,9 +84,9 @@ model DentistProcedure {
   scheduled_for DateTime
   approved      ProcedureApproval @default(NOT_APPROVED)
   patientId     String
-  dentist       Dentist           @relation(fields: [dentistId], references: [id])
-  patient       Patient           @relation(fields: [patientId], references: [id])
-  procedure     Procedure         @relation(fields: [procedureId], references: [id])
+  dentist       Dentist           @relation(fields: [dentistId], references: [id], onDelete: Cascade)
+  patient       Patient           @relation(fields: [patientId], references: [id], onDelete: Cascade)
+  procedure     Procedure         @relation(fields: [procedureId], references: [id], onDelete: Cascade)
 
   @@id([dentistId, procedureId, patientId])
   @@index([procedureId], map: "dentistas_procedimentos_procedureId_fkey")
@@ -110,7 +110,7 @@ model Patient {
   userId                       String
   DentistProcedure             DentistProcedure[]
   HealthHistory                HealthHistory[]
-  user                         User                     @relation(fields: [userId], references: [id])
+  user                         User                     @relation(fields: [userId], references: [id], onDelete: Cascade)
   PatientHealthInsurance       PatientHealthInsurance[]
 
   @@index([userId], map: "pacientes_userId_fkey")
@@ -120,8 +120,8 @@ model Patient {
 model PatientHealthInsurance {
   patientId         String
   healthInsuranceId String
-  healthInsurance   HealthInsurance @relation(fields: [healthInsuranceId], references: [id])
-  patient           Patient         @relation(fields: [patientId], references: [id])
+  healthInsurance   HealthInsurance @relation(fields: [healthInsuranceId], references: [id], onDelete: Cascade)
+  patient           Patient         @relation(fields: [patientId], references: [id], onDelete: Cascade)
 
   @@id([patientId, healthInsuranceId])
   @@index([healthInsuranceId], map: "pacientes_convenios_healthInsuranceId_fkey")
@@ -133,10 +133,10 @@ model HealthHistory {
   description String
   created_at  DateTime @default(now())
   updated_up  DateTime @updatedAt
-  dentistId   String
-  patientId   String
-  updated_by  Dentist  @relation(fields: [dentistId], references: [id])
-  patient     Patient  @relation(fields: [patientId], references: [id])
+  dentistId   String?
+  patientId   String?
+  updated_by  Dentist? @relation(fields: [dentistId], references: [id], onDelete: SetNull)
+  patient     Patient? @relation(fields: [patientId], references: [id], onDelete: SetNull)
 
   @@index([dentistId], map: "historico_medico_dentistId_fkey")
   @@index([patientId], map: "historico_medico_patientId_fkey")

@@ -83,29 +83,36 @@ export default class SecretaryService {
      */
      async findByEmail(email: string) {
         try {
-            return await this.prisma.secretary.findMany({
+            const response = await this.prisma.secretary.findMany({
                 where: {
                     user: {
                         email: email
                     }
                 },
-                include: {
+                select: {
+                    id: true,
                     user: {
                         select: {
                             id: true,
                             name: true,
-                            email: true
+                            email: true,
+                            user_role: {
+                                select: {
+                                    role: {
+                                        select: {
+                                            name: true
+                                        }
+                                    }
+                                }
+                            }
                         }
                     }
-                }
+                }  
             })
+            return response[0]
         } catch (e: any) {
-            return {
-                status: 500,
-                message: "Não foi possível criar o usuário",
-                data: name,
-                error: e.message
-            }
+            console.error(e)
+            throw e
         }
     }
 
