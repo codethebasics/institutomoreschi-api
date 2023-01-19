@@ -1,13 +1,18 @@
 import argon2 from 'argon2';
 
-import { Prisma, PrismaClient } from "@prisma/client";
+import { PrismaClient } from "@prisma/client";
 import {
-    UserCreateRequest,
-    UserCreateResponse, UserRemoveRequest,
-    UserRemoveResponse, UserSelectResponse, UserUpdateRequest,
-    UserUpdateResponse
+    UserCreateResponse, 
+    UserRemoveRequest,
+    UserRemoveResponse, 
+    UserSelectResponse, 
+    UserUpdateRequest,
+    UserUpdateResponse,
+    UserCreateRequest
 } from "../interfaces/dto/user/UserDTO";
 import { ExceptionMessage } from "../interfaces/message/ExceptionMessage";
+
+
 
 /**
  * ------------
@@ -89,7 +94,16 @@ export default class UserService {
                     created_at: true,
                     updated_at: true,
                     active: true,
-                    user_role: true
+                    user_role: {
+                        select: {                            
+                            role: {
+                                select: {
+                                    id: true,
+                                    name: true
+                                }
+                            }
+                        }
+                    }
                 }
             })
         } catch (e: any) {
@@ -176,7 +190,7 @@ export default class UserService {
      * @param user 
      * @returns 
      */
-    async create(user: UserCreateRequest): Promise<UserCreateResponse> {
+    async create(user: UserCreateRequest): Promise<UserCreateResponse> {        
         try {
             return await this.prisma.user.create({
                 data: {

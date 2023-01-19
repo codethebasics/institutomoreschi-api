@@ -8,9 +8,11 @@ const userService = new UserService();
 router
     .route('/')
     .get(async (req, res) => {
-        const { name, email, active } = req.query
-
-        if (name) {
+        const { id, name, email, active } = req.query
+        
+        if (id) {
+            res.json(await userService.findById(id.toString()))
+        } else if (name) {
             res.json(await userService.findByName(name.toString()))
         } else if (email) {
             res.json(await userService.findByEmail(email.toString()))

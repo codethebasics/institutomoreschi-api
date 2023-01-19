@@ -6,9 +6,9 @@ const dentistService = new DentistService();
 
 router
     .route ('/')
-    .get   (async (req, res) => await dentistService.findAll(req.body))
-    .post  (async (req, res) => await dentistService.create (req.body))
-    .put   (async (req, res) => await dentistService.update (req.body))
-    .delete(async (req, res) => await dentistService.remove (req.body))
+    .get   (async (req, res) => res.json(await dentistService.findAll()))
+    .post  (async (req, res) => res.json(await dentistService.create (req.body)))
+    .put   (async (req, res) => res.json(await dentistService.update (req.body)))
+    .delete(async (req, res) => res.json(await dentistService.remove (req.body)))
 
 export default router;

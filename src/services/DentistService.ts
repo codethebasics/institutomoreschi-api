@@ -21,16 +21,28 @@ export default class DentistService {
      * @param filter 
      * @returns 
      */
-    async findAll(filter: {}) {
+    async findAll() {
         try {
-            const response = await this.prisma.dentist.findMany()
+            const response = await this.prisma.dentist.findMany({
+                select: {
+                    id: true,
+                    cro: true,
+                    user: {
+                        select: {
+                            id: true,
+                            name: true,
+                            email: true,
+                            created_at: true,
+                            updated_at: true,
+                            active: true
+                        }
+                    }
+                }
+            })
             return response
         } catch (e: any) {
-            return {
-                status: 500,
-                message: "Erro durante a listagem dos dentistas",
-                error: e.message
-            }
+            console.error(e)
+            throw e
         }
         
     }

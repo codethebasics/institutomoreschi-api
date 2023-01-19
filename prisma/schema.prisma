@@ -62,7 +62,7 @@ model Dentist {
   cro              String             @unique
   user             User               @relation(fields: [userId], references: [id], onDelete: Cascade)
   DentistProcedure DentistProcedure[]
-  HealthHistory    HealthHistory[]
+  MedicalHistory   MedicalHistory[]
 
   @@index([userId], map: "dentistas_userId_fkey")
   @@map("dentistas")
@@ -109,7 +109,7 @@ model Patient {
   health_insurance_card_number String?
   userId                       String
   DentistProcedure             DentistProcedure[]
-  HealthHistory                HealthHistory[]
+  MedicalHistory               MedicalHistory[]
   user                         User                     @relation(fields: [userId], references: [id], onDelete: Cascade)
   PatientHealthInsurance       PatientHealthInsurance[]
 
@@ -128,15 +128,16 @@ model PatientHealthInsurance {
   @@map("pacientes_convenios")
 }
 
-model HealthHistory {
+model MedicalHistory {
   id          String   @id @default(uuid())
   description String
   created_at  DateTime @default(now())
-  updated_at  DateTime @updatedAt
   dentistId   String?
   patientId   String?
-  updated_by  Dentist? @relation(fields: [dentistId], references: [id], onDelete: SetNull)
-  patient     Patient? @relation(fields: [patientId], references: [id], onDelete: SetNull)
+  updated_at  DateTime @updatedAt
+
+  patient Patient? @relation(fields: [patientId], references: [id])
+  dentist Dentist? @relation(fields: [dentistId], references: [id])
 
   @@index([dentistId], map: "historico_medico_dentistId_fkey")
   @@index([patientId], map: "historico_medico_patientId_fkey")

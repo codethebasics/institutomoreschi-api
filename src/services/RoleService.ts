@@ -24,14 +24,10 @@ export default class RoleService {
     async findAll(filter: {}) {
         try {
             const response = await this.prisma.role.findMany()
-            console.log(response)
             return response
         } catch (e: any) {
-            return {
-                status: 500,
-                message: "Erro durante a listagem dos procedimentos",
-                error: e.message
-            }
+            console.error(e)
+            throw e
         }
         
     }

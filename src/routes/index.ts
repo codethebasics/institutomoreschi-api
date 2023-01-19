@@ -5,6 +5,7 @@ import SecretaryRoutes from './SecretaryRoutes'
 import PatientRoutes from './PatientRoutes'
 import HealthInsuranceRoutes from './HealthInsuranceRoutes'
 import ProcedureRoutes from './ProcedureRoutes'
+import MedicalHistoryRoutes from './MedicalHistoryRoutes'
 
 export default {
     UserRoutes,
@@ -13,5 +14,6 @@ export default {
     SecretaryRoutes,
     PatientRoutes,
     HealthInsuranceRoutes,
-    ProcedureRoutes
+    ProcedureRoutes,
+    MedicalHistoryRoutes
 }

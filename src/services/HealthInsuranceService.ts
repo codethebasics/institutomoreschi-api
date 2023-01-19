@@ -21,17 +21,26 @@ export default class HealthInsuranceService {
      * @param filter 
      * @returns 
      */
-    async findAll(filter: {}) {
+    async findAll(options: {
+        includePatient: boolean
+    }) {
         try {
-            const response = await this.prisma.healthInsurance.findMany()
-            console.log(response)
+            const response = await this.prisma.healthInsurance.findMany({
+                select: {
+                    id: true,
+                    name: true,
+                    code: true,
+                    PatientHealthInsurance: options.includePatient && {
+                        select: {
+                            patient: true
+                        }
+                    }
+                }
+            })
             return response
         } catch (e: any) {
-            return {
-                status: 500,
-                message: "Erro durante a listagem dos convênios",
-                error: e.message
-            }
+            console.error(e)
+            throw e
         }
         
     }

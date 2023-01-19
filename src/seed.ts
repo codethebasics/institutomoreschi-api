@@ -15,6 +15,7 @@ import RoleService from "./services/RoleService";
 import SecretaryService from "./services/SecretaryService";
 import UserRoleService from "./services/UserRoleService";
 import UserService from "./services/UserService";
+import MedicalHistoryService from "./services/MedicalHistoryService";
 
 const prisma = new PrismaClient()
 const userService = new UserService()
@@ -27,6 +28,7 @@ const procedureService = new ProcedureService()
 const healthInsuranceService = new HealthInsuranceService()
 const patientHealthInsuranceService = new PacientHealthInsuranceService()
 const dentistProcedureService = new DentistProcedureService()
+const medicalHistoryService = new MedicalHistoryService()
 
 // =======
 // USER #1
@@ -269,6 +271,40 @@ async function addProcedureToDentist() {
             patientBruno.id)
 }
 
+/**
+ * ======================
+ * CREATE MEDICAL HISTORY
+ * ======================
+ */
+type MedicalHistoryRequestType = {
+    description: string,
+    patientId: string,
+    dentistId: string
+}
+
+type MedicalHistoryResponseType = {
+    id: string,
+    description: string,
+    patientId: string,
+    dentistId: string
+}
+
+async function createMedicalHistory() {
+    const patientBruno = await patientService.findByEmail('bruno.carneiro@gmail.com')
+    const dentistGabi = await dentistService.findByCRO("1234567")
+
+    if (patientBruno && dentistGabi) {
+
+        const _medicalHistoryRequest: MedicalHistoryRequestType = {
+            description: 'Histórico odontológico',
+            patientId: patientBruno.id,
+            dentistId: dentistGabi.id
+        }
+    
+        await medicalHistoryService.create(_medicalHistoryRequest)        
+    }
+}
+
 async function main() {
 
     console.log()
@@ -304,6 +340,9 @@ async function main() {
     
     await addProcedureToDentist();
     console.log('Adicionando procedimento ao dentista ........................... [✔]')    
+    
+    await createMedicalHistory();
+    console.log('Criando histórico médico ....................................... [✔]')    
 }
 
 main()
