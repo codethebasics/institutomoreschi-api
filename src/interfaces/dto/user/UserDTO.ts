@@ -10,13 +10,10 @@ export interface UserDTO {
     active?: UserStatus
 }
 
-export interface UserSelectResponse {
+export interface UserSelectResponse extends UserDTO {
     id: string,
     name: string,
-    email: string,
-    created_at?: Date,
-    updated_at?: Date
-    active?: UserStatus
+    email: string    
 }
 
 export interface UserCreateRequest extends UserDTO {

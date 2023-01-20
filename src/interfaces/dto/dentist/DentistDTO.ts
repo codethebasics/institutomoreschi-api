@@ -11,11 +11,22 @@ export interface DentistCreateRequest extends DentistDTO {
     userId: string
 }
 
+export interface DentistSelectResponse extends DentistDTO {
+    id: string,
+    cro: string,
+    user: UserSelectResponse
+}
+
 export interface DentistCreateResponse extends DentistDTO {
     user?: UserSelectResponse
 }
 
 export interface DentistUpdateRequest extends DentistDTO {
+    cro: string
+}
+
+export interface DentistUpdateResponse extends DentistDTO {
+    id: string,
     cro: string
 }
 

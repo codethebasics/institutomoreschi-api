@@ -1,5 +1,4 @@
 import express from "express";
-import querystring from "querystring"
 import UserService from "../services/UserService";
 
 const router = express.Router();

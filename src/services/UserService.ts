@@ -1,259 +1,96 @@
 import argon2 from 'argon2';
 
-import { PrismaClient } from "@prisma/client";
 import {
-    UserCreateResponse, 
+    UserCreateRequest,
+    UserCreateResponse,
     UserRemoveRequest,
-    UserRemoveResponse, 
-    UserSelectResponse, 
+    UserRemoveResponse,
+    UserSelectResponse,
     UserUpdateRequest,
-    UserUpdateResponse,
-    UserCreateRequest
+    UserUpdateResponse
 } from "../interfaces/dto/user/UserDTO";
-import { ExceptionMessage } from "../interfaces/message/ExceptionMessage";
+import UserRepository from '../repository/UserRepository';
 
-
-
-/**
- * ------------
- * User service
- * ------------
- * @author codethebasics
- */
 export default class UserService {
-    private prisma: PrismaClient;
+    private userRepository: UserRepository
 
     constructor () {    
-        this.prisma = new PrismaClient()
+        this.userRepository = new UserRepository()
     }
 
-    /**
-     * --------
-     * Find all
-     * --------
-     * @param filter 
-     * @returns 
-     */
-    async findAll(): Promise<UserSelectResponse[] | ExceptionMessage> {
+    async findAll(): Promise<UserSelectResponse[]> {
         try {
-            const data = await this.prisma.user.findMany({        
-                select: {
-                    id: true,
-                    name: true,
-                    email: true,
-                    created_at: true,
-                    updated_at: true,
-                    active: true,
-                    user_role: {
-                        select: {
-                            role: {
-                                select: {
-                                    id: true,
-                                    name: true,
-                                    description: true
-                                }
-                            }
-                        }
-                    }
-                }
-            })
-
-            if (!data.length) {
-                return {
-                    message: 'Nenhum usuário encontrado'
-                }
-            }
-
-            return data
-        } catch (e: any) {
-            return {
-                message: "Erro durante a listagem de usuários",
-                cause: e.message
-            }
-        }
-        
-    }
-
-    /**
-     * ----------
-     * Find by id
-     * ----------
-     * @param userId 
-     * @returns 
-     */
-     async findById(userId: string) {
-        try {
-            return await this.prisma.user.findUnique({
-                where: {
-                    id: userId
-                },
-                select: {
-                    id: true,
-                    name: true,
-                    email: true,
-                    created_at: true,
-                    updated_at: true,
-                    active: true,
-                    user_role: {
-                        select: {                            
-                            role: {
-                                select: {
-                                    id: true,
-                                    name: true
-                                }
-                            }
-                        }
-                    }
-                }
-            })
-        } catch (e: any) {
-            console.error(e)
-            return null
-        }
-    }
-
-    /**
-     * ------------
-     * Find by name
-     * ------------
-     * @param _name 
-     * @returns 
-     */
-    async findByName(_name: string) {
-        try {
-            return await this.prisma.user.findMany({
-                where: {
-                    name: {
-                        contains: _name
-                    }
-                },
-                select: {
-                    name: true,
-                    email: true,
-                    created_at: true,
-                    updated_at: true,
-                    active: true,
-                    user_role: {
-                        select: {
-                            role: {
-                                select: {
-                                    name: true,
-                                    description: true
-                                }
-                            }
-                        }
-                    }
-                }
-            })
-        } catch (e: any) {
-            console.error(e)
-            return {
-                message: 'Erro ao buscar usuário pelo nome',
-                cause: e
-            }
-        }
-    }
-
-    /**
-     * -------------
-     * Find by email
-     * -------------
-     * @param _email : email do user a ser pesquisado
-     * @returns user
-     */
-    async findByEmail(_email: string): Promise<UserSelectResponse> {
-        try {
-            return await this.prisma.user.findUniqueOrThrow({
-                where: {
-                    email: _email
-                },
-                select: {
-                    id: true,
-                    name: true,
-                    email: true,
-                    created_at: true,
-                    updated_at: true,
-                    active: true,
-                    user_role: true
-                }
-            })
+            const response = await this.userRepository.findAll()
+            return response
         } catch (e: any) {
             console.error(e)
             throw e
         }
     }
 
-    /**
-     * ------
-     * Create
-     * ------
-     * @param user 
-     * @returns 
-     */
+    async findById(id: string): Promise<UserSelectResponse> {
+        try {
+            return await this.userRepository.findById(id)
+        } catch (e: any) {
+            console.error(e)
+            throw e
+        }
+    }
+
+    async findByName(name: string): Promise<UserSelectResponse[]> {
+        try {
+            return await this.userRepository.findByName(name)
+        } catch (e: any) {
+            console.error(e)
+            throw e
+        }
+    }
+
+    async findByEmail(email: string): Promise<UserSelectResponse> {
+        try {
+            return await this.userRepository.findByEmail(email)
+        } catch (e: any) {
+            console.error(e)
+            throw e
+        }
+    }
+
     async create(user: UserCreateRequest): Promise<UserCreateResponse> {        
         try {
-            return await this.prisma.user.create({
-                data: {
-                    email: user.email,
-                    name: user.name,
-                    password: await argon2.hash(user.password),
-                    active: user.active
-                }
-            })            
+            return await this.userRepository.save(user)     
         } catch (e: any) {
+            console.error(e)
             throw e
         }
     }
 
-    /**
-     * ------
-     * Update
-     * ------
-     * @param user 
-     * @returns 
-     */
-    async update(user: UserUpdateRequest): Promise<UserUpdateResponse | ExceptionMessage> {
+    async update(user: UserUpdateRequest): Promise<UserUpdateResponse> {
         try {
-            if (user.password) {
+            if (user.password && argon2.needsRehash(user.password)) {
                 user.password = await argon2.hash(user.password)
             }
-            return await this.prisma.user.update({
-                data: user,
-                where: {
-                    id: user.id
-                }
-            })
+            return await this.userRepository.update(user)
         } catch (e: any) {
             console.error(e)
-            return {
-                message: 'Não foi possível atualizar o usuário',
-                cause: e
-            }
+            throw e
         }
     }
 
-    /**
-     * ------
-     * Delete
-     * ------
-     * @param user 
-     * @returns 
-     */
     async remove(user: UserRemoveRequest): Promise<UserRemoveResponse> {
         try {
-            if (user.id || user.email) {
-                return await this.prisma.user.delete({
-                    where: {
-                        id: user.id
-                    },
-                    select: {
-                        id: true,
-                        name: true,
-                        email: true
-                    }
-                })
-            }
-            throw "Parâmetros inválidos"
+            if (!user) throw "O usuário deve ser informado"
+            if (!user.id) throw "O id do usuário deve ser informado"
+            return await this.userRepository.remove(user)
+        } catch (e: any) {
+            console.error(e)
+            throw e
+        }
+    }
+
+    async removeByEmail(email: string): Promise<UserRemoveResponse> {
+        try {
+            if (!email) throw "O email do usuário deve ser informado"
+            return await this.userRepository.removeByEmail(email)
         } catch (e: any) {
             console.error(e)
             throw e

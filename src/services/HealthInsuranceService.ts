@@ -1,5 +1,5 @@
 import { HealthInsurance, PrismaClient } from "@prisma/client";
-import { HealthInsuranceCreateRequest } from "../interfaces/dto/health-insurance/HealthInsuranceDTO";
+import { HealthInsuranceCreateRequest, HealthInsuranceCreateResponse, HealthInsuranceDTO } from "../interfaces/dto/health-insurance/HealthInsuranceDTO";
 
 /**
  * -----------------------
@@ -23,7 +23,7 @@ export default class HealthInsuranceService {
      */
     async findAll(options: {
         includePatient: boolean
-    }) {
+    }): Promise<HealthInsuranceCreateResponse[]> {
         try {
             const response = await this.prisma.healthInsurance.findMany({
                 select: {
@@ -52,14 +52,22 @@ export default class HealthInsuranceService {
      * @param code 
      * @returns 
      */
-    async findByCode(code: string): Promise<HealthInsurance | null> {
+    async findByCode(code: string): Promise<HealthInsuranceDTO> {
         try {
-            const response = await this.prisma.healthInsurance.findUnique({
+            if (!code) {
+                throw "O código deve ser informado"
+            }
+            
+            return await this.prisma.healthInsurance.findUniqueOrThrow({
                 where: {
                     code: code
+                },
+                select: {
+                    id: true,
+                    name: true,
+                    code: true
                 }
             })
-            return response
         } catch (e: any) {
             console.error(e)
             throw e

@@ -8,6 +8,7 @@ import { UserCreateRequest } from "./interfaces/dto/user/UserDTO";
 import DentistProcedureService from "./services/DentistProcedureService";
 import DentistService from "./services/DentistService";
 import HealthInsuranceService from "./services/HealthInsuranceService";
+import MedicalHistoryService from "./services/MedicalHistoryService";
 import PacientHealthInsuranceService from "./services/PacientHealthInsuranceService";
 import PatientService from "./services/PatientService";
 import ProcedureService from "./services/ProcedureService";
@@ -15,7 +16,6 @@ import RoleService from "./services/RoleService";
 import SecretaryService from "./services/SecretaryService";
 import UserRoleService from "./services/UserRoleService";
 import UserService from "./services/UserService";
-import MedicalHistoryService from "./services/MedicalHistoryService";
 
 const prisma = new PrismaClient()
 const userService = new UserService()
@@ -229,25 +229,31 @@ async function createHealthInsurances() {
  * ===============================
  */
 async function addPatientToHealhInsurance() {
-    const patientBruno = await patientService.findByEmail('bruno.carneiro@gmail.com')
+    try {
+        const patientBruno = await patientService.findByEmail('bruno.carneiro@gmail.com')
 
-    if (!patientBruno) {
-        throw "Não foi possível encontrar o paciente"
+        if (!patientBruno) {
+            throw "Não foi possível encontrar o paciente"
+        }
+    
+        const amil = await healthInsuranceService.findByCode('001')
+        const goldenCross = await healthInsuranceService.findByCode('002')
+    
+        if (!amil || !goldenCross) {
+            throw "Não foi possível encontrar os convênios"
+        }
+        
+        if (amil.id && goldenCross.id) {
+            await patientHealthInsuranceService
+                .addHealthInsuranceToPatient(amil.id, patientBruno.id)
+            
+            await patientHealthInsuranceService
+                .addHealthInsuranceToPatient(goldenCross.id, patientBruno.id)
+        }
+    } catch (e) {
+        console.error(e)
+        throw e
     }
-
-    const amil = await healthInsuranceService.findByCode('001')
-    const goldenCross = await healthInsuranceService.findByCode('002')
-
-    if (!amil || !goldenCross) {
-        throw "Não foi possível encontrar os convênios"
-    }
-    
-    await patientHealthInsuranceService
-        .addHealthInsuranceToPatient(amil.id, patientBruno.id)
-    
-    await patientHealthInsuranceService
-        .addHealthInsuranceToPatient(goldenCross.id, patientBruno.id)
-    
 }
 
 /**
@@ -333,10 +339,10 @@ async function main() {
     console.log('Criando procedimento ........................................... [✔]')    
     
     await createHealthInsurances();
-    console.log('Criando seguro de saúde .......................................  [✔]')    
+    console.log('Criando seguro de saúde ........................................ [✔]')    
     
     await addPatientToHealhInsurance();
-    console.log('Adicionando paciente ao seguro de saúde .......................  [✔]')    
+    console.log('Adicionando paciente ao seguro de saúde ........................ [✔]')    
     
     await addProcedureToDentist();
     console.log('Adicionando procedimento ao dentista ........................... [✔]')    
