@@ -3,8 +3,7 @@ import { PrismaClient } from '@prisma/client'
 const prisma = new PrismaClient();
 
 async function main() {
-    const patients = await prisma.patient.findMany()
-    console.log(patients)
+    await prisma.patient.findMany()
 }
 
 main()

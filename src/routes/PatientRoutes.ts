@@ -12,7 +12,6 @@ router
         if (name) {
             res.json(await patientService.findByName(name.toString()))
         } else if (email) {
-            console.log('email', email)
             res.json(await patientService.findByEmail(email.toString()))
         } else {
             res.json(await patientService.findAll())

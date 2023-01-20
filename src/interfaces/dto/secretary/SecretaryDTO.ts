@@ -2,25 +2,35 @@ import { UserCreateRequest, UserDTO, UserSelectResponse, UserUpdateRequest, User
 
 export interface SecreataryDTO {
     id?: string,
-    userId?: string
+    userId?: string,
 }
 
-export interface SecretaryCreateRequest {
+export interface SecretarySelectResponse extends SecreataryDTO {
+    id: string,
+    user: UserSelectResponse
+}
+
+export interface SecretaryCreateRequest extends SecreataryDTO {
     userId: string
 }
 
-export interface SecretaryCreateResponse {
-    userId: string
+export interface SecretaryCreateResponse extends SecreataryDTO {
+    user: UserSelectResponse
 }
 
-export interface SecretaryUpdateRequest {
+export interface SecretaryUpdateRequest extends SecreataryDTO {
     id: string
-}
-
-export interface SecreataryUpdateRequest {
     user: UserUpdateRequest
 }
 
-export interface SecreataryUpdateResponse {
+export interface SecretaryUpdateResponse extends SecreataryDTO {
     user: UserUpdateResponse
+}
+
+export interface SecretaryRemoveRequest extends SecreataryDTO {
+    id: string
+}
+
+export interface SecretaryRemoveResponse extends SecreataryDTO {
+    id: string
 }

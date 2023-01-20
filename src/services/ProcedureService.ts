@@ -21,10 +21,9 @@ export default class ProcedureService {
      * @param filter 
      * @returns 
      */
-    async findAll(filter: {}) {
+    async findAll() {
         try {
             const response = await this.prisma.procedure.findMany()
-            console.log(response)
             return response
         } catch (e: any) {
             return {
