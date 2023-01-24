@@ -1,146 +1,58 @@
-import { HealthInsurance, PrismaClient } from "@prisma/client";
-import { HealthInsuranceCreateRequest, HealthInsuranceCreateResponse, HealthInsuranceDTO } from "../interfaces/dto/health-insurance/HealthInsuranceDTO";
+import { HealthInsuranceCreateRequest, HealthInsuranceCreateResponse, HealthInsuranceSelectResponse, HealthInsuranceUpdateRequest, HealthInsuranceUpdateResponse, HealthInsuranteRemoveRequest, HealthInsuranteRemoveResponse } from "../interfaces/dto/health-insurance/HealthInsuranceDTO";
+import HealthInsuranceRepository from "../repository/HealthInsuranceRepository";
 
-/**
- * -----------------------
- * HealthInsurance service
- * -----------------------
- * @author codethebasics
- */
 export default class HealthInsuranceService {
-    private prisma: PrismaClient;
+    private healthInsuranceRepository: HealthInsuranceRepository
 
     constructor () {    
-        this.prisma = new PrismaClient()
+        this.healthInsuranceRepository = new HealthInsuranceRepository()
     }
 
-    /**
-     * --------
-     * Find all
-     * --------
-     * @param filter 
-     * @returns 
-     */
-    async findAll(options: {
-        includePatient: boolean
-    }): Promise<HealthInsuranceCreateResponse[]> {
+    async findAll(): Promise<HealthInsuranceCreateResponse[]> {
         try {
-            const response = await this.prisma.healthInsurance.findMany({
-                select: {
-                    id: true,
-                    name: true,
-                    code: true,
-                    PatientHealthInsurance: options.includePatient && {
-                        select: {
-                            patient: true
-                        }
-                    }
-                }
-            })
-            return response
+            return await this.healthInsuranceRepository.findAll()
         } catch (e: any) {
             console.error(e)
             throw e
         }
-        
     }
 
-    /**
-     * ------------
-     * Find by name
-     * ------------
-     * @param code 
-     * @returns 
-     */
-    async findByCode(code: string): Promise<HealthInsuranceDTO> {
+    async findByCode(code: string): Promise<HealthInsuranceSelectResponse> {
         try {
             if (!code) {
                 throw "O código deve ser informado"
-            }
-            
-            return await this.prisma.healthInsurance.findUniqueOrThrow({
-                where: {
-                    code: code
-                },
-                select: {
-                    id: true,
-                    name: true,
-                    code: true
-                }
-            })
+            }            
+            return await this.healthInsuranceRepository.findByCode(code)
         } catch (e: any) {
             console.error(e)
             throw e
         }
     }
 
-    /**
-     * ------
-     * Create
-     * ------
-     * @param healthInsurance 
-     * @returns 
-     */
-    async create(healthInsurance: HealthInsuranceCreateRequest) {
+    async create(healthInsurance: HealthInsuranceCreateRequest): Promise<HealthInsuranceCreateResponse> {
         try {            
-            return await this.prisma.healthInsurance.create({
-                data: {
-                    name: healthInsurance.name,
-                    code: healthInsurance.code
-                }
-            })
+            return await this.healthInsuranceRepository.save(healthInsurance)
         } catch (e: any) {
             console.log(e)
             throw e
         }
     }
 
-    /**
-     * ------
-     * Update
-     * ------
-     * @param healthInsurance 
-     * @returns 
-     */
-    async update(healthInsurance: HealthInsurance) {
+    async update(healthInsurance: HealthInsuranceUpdateRequest): Promise<HealthInsuranceUpdateResponse> {
         try {
-            return await this.prisma.healthInsurance.update({
-                data: healthInsurance,
-                where: {
-                    id: healthInsurance.id
-                }
-            })
-        } catch (e: any) {
-            return {
-                status: 500,
-                message: "Não foi possível atualizar o convênio",
-                data: healthInsurance,
-                error: e.message
-            }
+            return await this.healthInsuranceRepository.update(healthInsurance)
+        } catch (e) {
+            console.error(e)
+            throw e
         }
     }
 
-    /**
-     * ------
-     * Delete
-     * ------
-     * @param healthInsurance 
-     * @returns 
-     */
-    async remove(healthInsurance: HealthInsurance) {
+    async remove(healthInsurance: HealthInsuranteRemoveRequest): Promise<HealthInsuranteRemoveResponse> {
         try {
-            return await this.prisma.healthInsurance.delete({
-                where: {
-                    id: healthInsurance.id
-                }
-            })
+            return await this.healthInsuranceRepository.remove(healthInsurance)
         } catch (e: any) {
-            return {
-                status: 500,
-                message: "Não foi possível remover o convênio",
-                data: healthInsurance,
-                error: e.message
-            }
+            console.error(e)
+            throw e
         }
     }
 }

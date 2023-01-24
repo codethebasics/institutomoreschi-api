@@ -1,156 +1,55 @@
-import { Dentist, PrismaClient } from "@prisma/client";
-import { DentistCreateRequest, DentistCreateResponse } from "../interfaces/dto/dentist/DentistDTO";
+import { DentistCreateRequest, DentistCreateResponse, DentistRemoveByIdRequest, DentistRemoveResponse, DentistSelectResponse, DentistUpdateRequest, DentistUpdateResponse } from "../interfaces/dto/dentist/DentistDTO";
+import DentistRepository from "../repository/DentistRepository";
 
-/**
- * ---------------
- * dentist service
- * ---------------
- * @author codethebasics
- */
 export default class DentistService {
-    private prisma: PrismaClient;
+    private dentistRepository: DentistRepository
 
     constructor () {    
-        this.prisma = new PrismaClient()
+        this.dentistRepository = new DentistRepository()
     }
 
-    /**
-     * --------
-     * Find all
-     * --------
-     * @param filter 
-     * @returns 
-     */
     async findAll() {
         try {
-            const response = await this.prisma.dentist.findMany({
-                select: {
-                    id: true,
-                    cro: true,
-                    user: {
-                        select: {
-                            id: true,
-                            name: true,
-                            email: true,
-                            created_at: true,
-                            updated_at: true,
-                            active: true
-                        }
-                    }
-                }
-            })
-            return response
+            return await this.dentistRepository.findAll()
         } catch (e: any) {
             console.error(e)
             throw e
-        }
-        
+        }        
     }
 
-    /**
-     * ------------
-     * Find by name
-     * ------------
-     * @param cro 
-     * @returns 
-     */
-    async findByCRO(cro: string): Promise<Dentist | null> {
+    async findByCRO(cro: string): Promise<DentistSelectResponse> {
         try {
-            return await this.prisma.dentist.findUnique({
-                where: {
-                    cro: cro
-                },
-                include: {
-                    user: true
-                }
-            })
+            return await this.dentistRepository.findByCRO(cro)
         } catch (e: any) {
             console.error(e)
             throw e
         }
     }
 
-    /**
-     * ------
-     * Create
-     * ------
-     * @param dentist 
-     * @returns 
-     */
-     async create(dentist: DentistCreateRequest): Promise<DentistCreateResponse> {        
+    async create(dentist: DentistCreateRequest): Promise<DentistCreateResponse> {        
         try {
-            return await this.prisma.dentist.create({
-                data: {
-                    cro: dentist.cro,
-                    userId: dentist.userId
-                },
-                select: {
-                    id: true,
-                    cro: true,
-                    user: {
-                        select: {
-                            id: true,
-                            name: true,
-                            email: true,
-                            created_at: true,
-                            updated_at: true,
-                            active: true,
-                        }
-                    }
-                }
-            })
+            return await this.dentistRepository.save(dentist)
         } catch (e: any) {
             console.error(e)
             throw e
         }
     }
 
-    /**
-     * ------
-     * Update
-     * ------
-     * @param dentist 
-     * @returns 
-     */
-    async update(dentist: Dentist) {
+    async update(dentist: DentistUpdateRequest): Promise<DentistUpdateResponse> {
         try {
-            return await this.prisma.dentist.update({
-                data: dentist,
-                where: {
-                    id: dentist.id
-                }
-            })
+            return await this.dentistRepository.update(dentist)
         } catch (e: any) {
-            return {
-                status: 500,
-                message: "Não foi possível atualizar o dentista",
-                data: dentist,
-                error: e.message
-            }
+            console.error(e)
+            throw e
         }
     }
 
-    /**
-     * ------
-     * Delete
-     * ------
-     * @param dentist 
-     * @returns 
-     */
-    async remove(dentist: Dentist) {
+    async remove(dentist: DentistRemoveByIdRequest): Promise<DentistRemoveResponse> {
         try {
-            return await this.prisma.dentist.delete({
-                where: {
-                    id: dentist.id
-                }
-            })
-        } catch (e: any) {
-            return {
-                status: 500,
-                message: "Não foi possível remover o dentista",
-                data: dentist,
-                error: e.message
-            }
+            return await this.dentistRepository.remove(dentist)
+        } catch (e) {
+            console.error(e)
+            throw e
         }
     }
 }

@@ -39,5 +39,6 @@ export interface DentistRemoveByCRORequest extends DentistDTO {
 }
 
 export interface DentistRemoveResponse extends DentistDTO {
-    id: string
+    id: string,
+    cro: string
 }

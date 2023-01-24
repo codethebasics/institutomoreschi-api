@@ -1,183 +1,52 @@
-import { PrismaClient, Secretary } from "@prisma/client";
-import { SecretaryCreateRequest } from "../interfaces/dto/secretary/SecretaryDTO";
+import { SecretaryCreateRequest, SecretaryCreateResponse, SecretaryRemoveRequest, SecretaryRemoveResponse, SecretarySelectResponse, SecretaryUpdateRequest, SecretaryUpdateResponse } from "../interfaces/dto/secretary/SecretaryDTO";
+import SecretaryRepository from "../repository/SecretaryRepository";
 
-/**
- * -----------------
- * Secretary service
- * -----------------
- * @author codethebasics
- */
 export default class SecretaryService {
-    private prisma: PrismaClient
+    private secretaryRepository: SecretaryRepository
 
     constructor() {
-        this.prisma = new PrismaClient();
+        this.secretaryRepository = new SecretaryRepository()
     }
 
-    /**
-     * --------
-     * Find all
-     * --------
-     * @param filter 
-     */
-    async findAll(filter: {}) {
+    async findAll(): Promise<SecretarySelectResponse[]> {
         try {
-            return await this.prisma.secretary.findMany({
-                include: {
-                    user: {
-                        select: {
-                            id: true,
-                            name: true,
-                            email: true
-                        }
-                    },
-                }
-            })
+            return await this.secretaryRepository.findAll()
         } catch (e) {
             console.error(e)
             throw "Erro durante a listagem das secretárias"
         }
     }
 
-    /**
-     * ------------
-     * Find by name
-     * ------------
-     * @param name 
-     */
-    async findByName(name: string) {
+    async findByName(name: string): Promise<SecretarySelectResponse[]> {
         try {
-            return await this.prisma.secretary.findMany({
-                where: {
-                    user: {
-                        name: {
-                            contains: name
-                        }
-                    }
-                },
-                include: {
-                    user: {
-                        select: {
-                            id: true,
-                            name: true,
-                            email: true
-                        }
-                    }
-                }
-            })
-        } catch (e: any) {
-            return {
-                status: 500,
-                message: "Não foi possível criar o usuário",
-                data: name,
-                error: e.message
-            }
-        }
-    }
-
-    /**
-     * ------------
-     * Find by name
-     * ------------
-     * @param email 
-     */
-     async findByEmail(email: string) {
-        try {
-            const response = await this.prisma.secretary.findMany({
-                where: {
-                    user: {
-                        email: email
-                    }
-                },
-                select: {
-                    id: true,
-                    user: {
-                        select: {
-                            id: true,
-                            name: true,
-                            email: true,
-                            user_role: {
-                                select: {
-                                    role: {
-                                        select: {
-                                            name: true
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }  
-            })
-            return response[0]
+            return await this.secretaryRepository.findByName(name)
         } catch (e: any) {
             console.error(e)
             throw e
         }
     }
 
-    /**
-     * ------
-     * Create
-     * ------
-     * @param secretary
-     */
-    async create(secretary: SecretaryCreateRequest) {        
+    async create(secretary: SecretaryCreateRequest): Promise<SecretaryCreateResponse> {        
         try {
-            return await this.prisma.secretary.create({
-                data: {                    
-                    userId: secretary.userId
-                }
-            })
+            return await this.secretaryRepository.save(secretary)
         } catch (e: any) {
-            return {
-                status: 500,
-                message: "Não foi possível criar a secretaria",
-                data: secretary,
-                error: e.message
-            }
+            console.error(e)
+            throw e
         }
     }
 
-    /**
-     * ------
-     * Update
-     * ------
-     * @param secretary 
-     */
-    async update(secretary: Secretary) {
+    async update(secretary: SecretaryUpdateRequest): Promise<SecretaryUpdateResponse> {
         try {
-            return await this.prisma.secretary.update({
-                data: {
-                    
-                },
-                where: {
-                    id: secretary.id
-                }
-            })
+            return await this.secretaryRepository.update(secretary)
         } catch (e: any) {
-            return {
-                status: 500,
-                message: "Não foi possível atualizar a secretaria",
-                data: secretary,
-                error: e.message
-            }
+            console.error(e)
+            throw e
         }
     }
 
-    /**
-     * ------
-     * Delete
-     * ------
-     * @param secretary 
-     */
-    async remove(secretary: Secretary) {
+    async remove(secretary: SecretaryRemoveRequest): Promise<SecretaryRemoveResponse> {
         try {
-            return await this.prisma.secretary.delete({
-                where: {
-                    id: secretary.id
-                }
-            })
+            return await this.secretaryRepository.remove(secretary)
         } catch (e) {
             console.error(e)
             throw "Erro durante a remoção da secretária"

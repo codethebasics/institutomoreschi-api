@@ -45,6 +45,7 @@ export default class PatientRepository {
     return await this.prisma.patient.create({
       data: {
         birth_date: patient.birth_date,
+        health_insurance_card_number: patient.health_insurance_card_number,          
         user: {
           connect: {
             id: patient.userId

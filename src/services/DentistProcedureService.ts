@@ -1,29 +1,89 @@
-import { DentistProcedure, PrismaClient } from "@prisma/client";
+import { DentistProcedureCreateRequest, DentistProcedureCreateResponse, DentistProcedureRemoveRequest, DentistProcedureRemoveResponse, DentistProcedureSelectResponse, DentistProcedureUpdateRequest, DentistProcedureUpdateResponse } from "../interfaces/dto/dentist-procedure/DentistProcedureDTO";
+import DentistProcedureRepository from "../repository/DenstistProcedureRepository";
 
 export default class DentistProcedureService {
-    private prisma: PrismaClient
+    private dentistProcedureRepository: DentistProcedureRepository
 
     constructor() {
-        this.prisma = new PrismaClient()
+        this.dentistProcedureRepository = new DentistProcedureRepository()
     }
 
-    async addProcedureToDentistAndPatient(
-        procedureId: string, 
-        dentistId: string, 
-        patientId: string): Promise<DentistProcedure | null>
-    {
+    async listProcedureToDentistAndPatient(): Promise<DentistProcedureSelectResponse[]> {
         try {
-            return await this.prisma.dentistProcedure.create({
-                data: {
-                    procedureId: procedureId,
-                    dentistId: dentistId,
-                    patientId: patientId,
-                    scheduled_for: new Date('2023-01-07'),
-                }
-            })        
+            return await this.dentistProcedureRepository.findAll()
+        } catch (e) {
+            console.error(e);
+            throw e;
+        }
+    }
+
+    async findProcedureToDentistAndPatientById(
+        procedureId: string,
+        dentistId: string,
+        patientId: string
+    ): Promise<DentistProcedureSelectResponse> {
+        try {
+            let valid = dentistId
+                && patientId
+                && procedureId
+
+            if (!valid) {
+                throw "Todos os parâmetros devem ser informados"
+            }
+
+            return await this.dentistProcedureRepository.findById(procedureId, dentistId, patientId)
+        } catch (e) {
+            console.error(e);
+            throw e;
+        }
+    }
+
+    async addProcedureToDentistAndPatient(dentistProcedure: DentistProcedureCreateRequest): Promise<DentistProcedureCreateResponse> {
+        try {
+            let valid = dentistProcedure.dentistId
+                && dentistProcedure.patientId
+                && dentistProcedure.procedureId
+
+            if (!valid) {
+                throw "Todos os parâmetros devem ser informados"
+            }
+
+            return await this.dentistProcedureRepository.save(dentistProcedure)            
         } catch (e) {
             console.error(e)
             throw e
         }
+    }
+
+    async removeProcedureFromDentistAndPatient(dentistProcedure: DentistProcedureRemoveRequest): Promise<DentistProcedureRemoveResponse> {
+        try {   
+            let valid = dentistProcedure.dentistId
+                && dentistProcedure.patientId
+                && dentistProcedure.procedureId
+
+            if (!valid) {
+                throw "Todos os parâmetros devem ser informados"
+            } 
+            return await this.dentistProcedureRepository.remove(dentistProcedure)            
+        } catch (e) {
+            console.error(e)
+            throw e
+        }
+    }
+
+    async updateProcedureFromDentistAndPatient(dentistProcedure: DentistProcedureUpdateRequest): Promise<DentistProcedureUpdateResponse> {
+        try {
+            let valid = dentistProcedure.dentistId
+                && dentistProcedure.patientId
+                && dentistProcedure.procedureId
+
+            if (!valid) {
+                throw "Todos os parâmetros devem ser informados"
+            } 
+            return await this.dentistProcedureRepository.update(dentistProcedure)
+        } catch(e) {
+            console.error(e)
+            throw e
+        }     
     }
 }

@@ -8,7 +8,7 @@ export default class RoleRepository {
     this.prisma = new PrismaClient()
   }
 
-  async findAll(): Promise<RoleDTO[]> {
+  async findAll(): Promise<RoleSelectResponse[]> {
     return await this.prisma.role.findMany({        
       select: {
         id: true,

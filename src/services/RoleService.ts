@@ -1,30 +1,16 @@
-import { PrismaClient, Role } from "@prisma/client";
-import { RoleCreateRequest, RoleCreateResponse } from "../interfaces/dto/role/RoleDTO";
+import { RoleCreateRequest, RoleCreateResponse, RoleRemoveRequest, RoleRemoveResponse, RoleSelectResponse, RoleUpdateRequest, RoleUpdateResponse } from "../interfaces/dto/role/RoleDTO";
+import RoleRepository from "../repository/RoleRepository";
 
-/**
- * ------------
- * role service
- * ------------
- * @author codethebasics
- */
 export default class RoleService {
-    private prisma: PrismaClient;
+    private roleRepository: RoleRepository
 
     constructor () {    
-        this.prisma = new PrismaClient()
+        this.roleRepository = new RoleRepository()
     }
 
-    /**
-     * --------
-     * Find all
-     * --------
-     * @param filter 
-     * @returns 
-     */
-    async findAll(filter: {}) {
+    async findAll(): Promise<RoleSelectResponse[]> {
         try {
-            const response = await this.prisma.role.findMany()
-            return response
+            return await this.roleRepository.findAll()
         } catch (e: any) {
             console.error(e)
             throw e
@@ -32,97 +18,39 @@ export default class RoleService {
         
     }
 
-    /**
-     * ------------
-     * Find by name
-     * ------------
-     * @param _name 
-     * @returns 
-     */
-    async findByName(_name: string): Promise<Role> {
+    async findByName(name: string): Promise<RoleSelectResponse> {
         try {
-            const response = await this.prisma.role.findUnique({
-                where: {
-                    name: _name
-                }
-            })
-            if (!response) {
-                throw "Não foi possível encontrar a permissão"
-            }
-            return response
+            return await this.roleRepository.findByName(name)
         } catch (e: any) {
             console.error(e)
             throw e
         }
     }    
 
-    /**
-     * ------
-     * Create
-     * ------
-     * @param role 
-     * @returns 
-     */
     async create(role: RoleCreateRequest): Promise<RoleCreateResponse> {
         try {
-            return await this.prisma.role.create({
-                data: {
-                    name: role.name,
-                    description: role.description
-                }
-            })            
+            return await this.roleRepository.save(role)
         } catch (e: any) {
             console.error(e)
             throw e
         }
     }
 
-    /**
-     * ------
-     * Update
-     * ------
-     * @param role 
-     * @returns 
-     */
-    async update(role: Role) {
+    async update(role: RoleUpdateRequest): Promise<RoleUpdateResponse> {
         try {
-            return await this.prisma.role.update({
-                data: role,
-                where: {
-                    id: role.id
-                }
-            })
+            return await this.roleRepository.update(role)
         } catch (e: any) {
-            return {
-                status: 500,
-                message: "Não foi possível atualizar o procedimento",
-                data: role,
-                error: e.message
-            }
+            console.error(e)
+            throw e
         }
     }
 
-    /**
-     * ------
-     * Delete
-     * ------
-     * @param role 
-     * @returns 
-     */
-    async remove(role: Role) {
+    async remove(role: RoleRemoveRequest): Promise<RoleRemoveResponse> {
         try {
-            return await this.prisma.role.delete({
-                where: {
-                    id: role.id
-                }
-            })
+            return await this.roleRepository.remove(role)
         } catch (e: any) {
-            return {
-                status: 500,
-                message: "Não foi possível remover o procedimento",
-                data: role,
-                error: e.message
-            }
+            console.error(e)
+            throw e
         }
     }
 }

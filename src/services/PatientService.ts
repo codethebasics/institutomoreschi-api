@@ -1,176 +1,56 @@
 import { Patient, PrismaClient } from "@prisma/client";
-import { PatientCreateRequest } from "../interfaces/dto/patient/PatientDTO";
+import { PatientCreateRequest, PatientCreateResponse, PatientRemoveRequest, PatientRemoveResponse, PatientSelectResponse, PatientUpdateRequest, PatientUpdateResponse } from "../interfaces/dto/patient/PatientDTO";
 import RoleService from "./RoleService";
 import UserRoleService from "./UserRoleService";
+import PatientRepository from "../repository/PatientRepository";
 
-/**
- * ---------------
- * patient service
- * ---------------
- * @author codethebasics
- */
+
 export default class PatientService {
-    private prisma: PrismaClient;
-    private roleService: RoleService;
-    private userRoleService: UserRoleService;
+    private prisma: PrismaClient
+    private patientRepository: PatientRepository
+    private roleService: RoleService
+    private userRoleService: UserRoleService
 
     constructor () {    
-        this.prisma = new PrismaClient();
-        this.roleService = new RoleService();
-        this.userRoleService = new UserRoleService();
+        this.prisma = new PrismaClient()
+        this.patientRepository = new PatientRepository()
+        this.roleService = new RoleService()
+        this.userRoleService = new UserRoleService()
     }
 
-    /**
-     * --------
-     * Find all
-     * --------
-     * @param filter 
-     * @returns 
-     */
-    async findAll() {
+    async findAll(): Promise<PatientSelectResponse[]> {
         try {
-            return await this.prisma.patient.findMany({
-                select: {
-                    id: true,
-                    birth_date: true,
-                    health_insurance_card_number: true,
-                    user: {
-                        select: {
-                            id: true,
-                            name: true,
-                            email: true,
-                            active: true
-                        }
-                    }
-                }
-            })
-            
-        } catch (e: any) {
-            return {
-                status: 500,
-                message: "Erro durante a listagem dos pacientes",
-                error: e.message
-            }
-        }
-        
-    }
-
-    /**
-     * ------------
-     * Find by name
-     * ------------
-     * @param _name 
-     * @returns 
-     */
-    async findByName(_name: string) {
-        try {
-            return await this.prisma.patient.findMany({
-                where: {
-                    user: {
-                        name: {
-                            contains: _name
-                        }
-                    }
-                },
-                select: {
-                    id: true,
-                    birth_date: true,
-                    health_insurance_card_number: true,
-                    user: {
-                        select: {
-                            id: true,
-                            name: true,
-                            email: true,
-                            active: true
-                        }
-                    }
-                }
-            })
-        } catch (e: any) {
-            return {
-                status: 500,
-                message: "Erro durante a listagem dos pacientes",
-                data: _name,
-                error: e.message
-            }
-        }
-    }
-
-    /**
-     * ------------
-     * Find by name
-     * ------------
-     * @param email 
-     * @returns 
-     */
-     async findByEmail(email: string): Promise<Patient | undefined> {
-        try {
-            const response = await this.prisma.patient.findMany({
-                where: {
-                    user: {
-                        email: email
-                    },
-                },
-            })
-            return response[0];
+            return await this.patientRepository.findAll()            
         } catch (e: any) {
             console.error(e)
-            return undefined
+            throw e
         }
     }
 
-    /**
-     * ------
-     * Create
-     * ------
-     * @param patient 
-     * @returns 
-     */
-    async create(patient: PatientCreateRequest): Promise<Patient | undefined> {
-        try {                        
-            const patientCreated = await this.prisma.patient.create({
-                data: {
-                    birth_date: patient.birth_date,
-                    health_insurance_card_number: patient.health_insurance_card_number,          
-                    user: {
-                        connect: {
-                            id: patient.userId
-                        }
-                    }          
-                }
-            })
-
-            return patientCreated;
-
-        } catch (e: any) {
-            console.error(e);      
-        }
-        
-        return undefined
-    }
-
-    /**
-     * ------
-     * Update
-     * ------
-     * @param patient 
-     * @returns 
-     */
-    async update(patient: Patient) {
+    async findByName(name: string): Promise<PatientSelectResponse[]> {
         try {
-            return await this.prisma.patient.update({
-                data: patient,
-                where: {
-                    id: patient.id
-                }
-            })
+            return await this.patientRepository.findByName(name)
         } catch (e: any) {
-            return {
-                status: 500,
-                message: "Não foi possível atualizar o paciente",
-                data: patient,
-                error: e.message
-            }
+            console.error(e)
+            throw e
+        }
+    }
+
+    async create(patient: PatientCreateRequest): Promise<PatientCreateResponse> {
+        try {                        
+            return await this.patientRepository.save(patient)
+        } catch (e: any) {
+            console.error(e)
+            throw e
+        }
+    }
+
+    async update(patient: PatientUpdateRequest): Promise<PatientUpdateResponse> {
+        try {
+            return await this.patientRepository.update(patient)
+        } catch (e: any) {
+            console.error(e)
+            throw e
         }
     }
 
@@ -181,20 +61,12 @@ export default class PatientService {
      * @param patient 
      * @returns 
      */
-    async remove(patient: Patient) {
+    async remove(patient: PatientRemoveRequest): Promise<PatientRemoveResponse> {
         try {
-            return await this.prisma.patient.delete({
-                where: {
-                    id: patient.id
-                }
-            })
-        } catch (e: any) {
-            return {
-                status: 500,
-                message: "Não foi possível remover o paciente",
-                data: patient,
-                error: e.message
-            }
+            return await this.patientRepository.remove(patient)
+        } catch (e) {
+            console.error(e)
+            throw e
         }
     }
 }

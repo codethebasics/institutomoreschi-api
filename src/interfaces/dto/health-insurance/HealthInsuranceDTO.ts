@@ -14,7 +14,7 @@ export interface HealthInsuranceCreateRequest extends HealthInsuranceDTO {
 }
 
 export interface HealthInsuranceCreateResponse extends HealthInsuranceDTO {
-    id: string
+
 }
 
 export interface HealthInsuranceUpdateRequest extends HealthInsuranceDTO {

@@ -1,146 +1,56 @@
-import { PrismaClient, Procedure } from "@prisma/client";
-import { ProcedureCreateRequest, ProcedureCreateResponse } from "../interfaces/dto/procedure/ProcedureDTO";
+import { ProcedureCreateRequest, ProcedureCreateResponse, ProcedureRemoveRequest, ProcedureRemoveResponse, ProcedureSelectResponse, ProcedureUpdateRequest, ProcedureUpdateResponse } from "../interfaces/dto/procedure/ProcedureDTO";
+import ProcedureRepository from "../repository/ProcedureRepository";
 
-/**
- * -----------------
- * procedure service
- * -----------------
- * @author codethebasics
- */
 export default class ProcedureService {
-    private prisma: PrismaClient;
+    private procedureRepository: ProcedureRepository
 
     constructor () {    
-        this.prisma = new PrismaClient()
+        this.procedureRepository = new ProcedureRepository()
     }
 
-    /**
-     * --------
-     * Find all
-     * --------
-     * @param filter 
-     * @returns 
-     */
-    async findAll() {
+    async findAll(): Promise<ProcedureSelectResponse[]> {
         try {
-            const response = await this.prisma.procedure.findMany()
-            return response
+            return await this.procedureRepository.findAll()
         } catch (e: any) {
-            return {
-                status: 500,
-                message: "Erro durante a listagem dos procedimentos",
-                error: e.message
-            }
+            console.error(e)
+            throw e
         }
         
     }
 
-    /**
-     * ------------
-     * Find by name
-     * ------------
-     * @param _name 
-     * @returns 
-     */
-    async findByName(_name: string): Promise<Procedure | null> {
+    async findByName(name: string): Promise<ProcedureSelectResponse[]> {
         try {
-            return await this.prisma.procedure.findUnique({
-                where: {
-                    name: _name
-                }
-            })
+            return await this.procedureRepository.findByName(name)
         } catch (e: any) {
             console.error(e)
             throw e
         }
     }
 
-    /**
-     * ------
-     * Create
-     * ------
-     * @param procedure 
-     * @returns 
-     */
     async create(procedure: ProcedureCreateRequest): Promise<ProcedureCreateResponse> {
         try {
-            return await this.prisma.procedure.create({
-                data: {
-                    name: procedure.name,
-                    price: procedure.price
-                }
-            })
+            return await this.procedureRepository.save(procedure)
         } catch (e: any) {
             console.error(e)
             throw e
         }
     }
 
-    /**
-     * -----------
-     * Create many
-     * -----------
-     * @param procedure 
-     * @returns 
-     */
-     async createMany(procedures: ProcedureCreateRequest[]) {
+    async update(procedure: ProcedureUpdateRequest): Promise<ProcedureUpdateResponse> {
         try {
-            const response = await this.prisma.procedure.createMany({
-                data: procedures
-            })
-            return response
+            return this.procedureRepository.update(procedure)
         } catch (e: any) {
             console.error(e)
             throw e
         }
     }
 
-    /**
-     * ------
-     * Update
-     * ------
-     * @param procedure 
-     * @returns 
-     */
-    async update(procedure: Procedure) {
+    async remove(procedure: ProcedureRemoveRequest): Promise<ProcedureRemoveResponse> {
         try {
-            return await this.prisma.procedure.update({
-                data: procedure,
-                where: {
-                    id: procedure.id
-                }
-            })
+            return await this.procedureRepository.remove(procedure)
         } catch (e: any) {
-            return {
-                status: 500,
-                message: "Não foi possível atualizar o procedimento",
-                data: procedure,
-                error: e.message
-            }
-        }
-    }
-
-    /**
-     * ------
-     * Delete
-     * ------
-     * @param procedure 
-     * @returns 
-     */
-    async remove(procedure: Procedure) {
-        try {
-            return await this.prisma.procedure.delete({
-                where: {
-                    id: procedure.id
-                }
-            })
-        } catch (e: any) {
-            return {
-                status: 500,
-                message: "Não foi possível remover o procedimento",
-                data: procedure,
-                error: e.message
-            }
+            console.error(e)
+            throw e
         }
     }
 }
