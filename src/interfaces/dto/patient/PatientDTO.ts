@@ -1,4 +1,4 @@
-import { UserCreateRequest, UserCreateResponse, UserDTO } from '../user/UserDTO'
+import { UserCreateResponse, UserDTO } from '../user/UserDTO'
 
 export interface PatientDTO {
     id?: string,

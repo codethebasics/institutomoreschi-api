@@ -29,7 +29,7 @@ export default class PatientRepository {
       select: {
         id: true,
         birth_date: true,
-        user: true
+        user: true,
       },
       where: {
         user: {
