@@ -26,6 +26,15 @@ export default class SecretaryService {
         }
     }
 
+    async findByEmail(name: string): Promise<SecretarySelectResponse | null> {
+        try {
+            return await this.secretaryRepository.findByEmail(name)
+        } catch (e: any) {
+            console.error(e)
+            throw e
+        }
+    }
+
     async create(secretary: SecretaryCreateRequest): Promise<SecretaryCreateResponse> {        
         try {
             return await this.secretaryRepository.save(secretary)

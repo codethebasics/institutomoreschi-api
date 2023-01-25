@@ -1,4 +1,5 @@
-import { PrismaClient, Role } from "@prisma/client";
+import { PrismaClient } from "@prisma/client";
+import { RoleSelectResponse } from "../interfaces/dto/role/RoleDTO";
 
 export default class UserRoleService {    
     private prisma: PrismaClient;
@@ -7,7 +8,7 @@ export default class UserRoleService {
         this.prisma = new PrismaClient();
     }
 
-    async addRoleToUser(role: Role[], user: any): Promise<Boolean> {
+    async addRoleToUser(role: RoleSelectResponse[], user: any): Promise<Boolean> {
         try {
             for (let r of role) {
                 await this.prisma.userRole.create({

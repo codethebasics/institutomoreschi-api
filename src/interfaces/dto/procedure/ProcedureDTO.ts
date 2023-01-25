@@ -5,7 +5,9 @@ export interface ProcedureDTO {
 }
 
 export interface ProcedureSelectResponse extends ProcedureDTO {
-    
+    id: string,
+    name: string,
+    price: number
 }
 
 export interface ProcedureCreateRequest extends ProcedureDTO {

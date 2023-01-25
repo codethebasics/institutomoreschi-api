@@ -30,27 +30,18 @@ const patientHealthInsuranceService = new PacientHealthInsuranceService()
 const dentistProcedureService = new DentistProcedureService()
 const medicalHistoryService = new MedicalHistoryService()
 
-// =======
-// USER #1
-// =======
 let bruno: UserCreateRequest = {
     name: 'Bruno Carneiro',
     email: 'bruno.carneiro@gmail.com',
     password: randomUUID()
 };
 
-// =======
-// USER #2
-// =======
 let pepe: UserCreateRequest = {
     name: 'João Pedro',
     email: 'pepe@gmail.com',
     password: randomUUID()
 };
 
-// =======
-// USER #3
-// =======
 let gabi: UserCreateRequest = {
     name: 'Gabriela Moreschi',
     email: 'gabi@gmail.com',
@@ -144,9 +135,6 @@ async function addRoleToUser() {
     const dentistaGabi = await dentistService.findByCRO('1234567')
     const secretariaJoao = await secretaryService.findByEmail('pepe@gmail.com')
 
-
-
-
     if (!pacienteBruno || !dentistaGabi || !secretariaJoao) {
         throw "ERRO: Não foi possível encontrar os usuários"
     }
@@ -161,8 +149,31 @@ async function addRoleToUser() {
         throw "Não foi possível encontrar a permissão"
     }
     
-    const pacienteUser = await userService.findById(pacienteBruno.userId)
-    const dentistaUser = await userService.findById(dentistaGabi.userId)
+    if (!pacienteBruno.id || !dentistaGabi.id || !secretariaJoao.id) {
+        throw "Não foi possível recuperar o id do usuário"
+    }
+
+    let pacienteUserIsValid = pacienteBruno 
+        && pacienteBruno.user 
+        && pacienteBruno.user.id
+
+    let dentistaUserIsValid = dentistaGabi
+        && dentistaGabi.user
+        && dentistaGabi.user.id
+
+    let secretariaUserIsValid = secretariaJoao
+        && secretariaJoao.user.id
+
+    let valid = pacienteUserIsValid 
+        && dentistaUserIsValid 
+        && secretariaUserIsValid
+
+    if (!valid) {
+        throw "ERRO: Não foi possível encontrar o usuário do paciente"
+    }
+
+    const pacienteUser = await userService.findById(pacienteBruno.user!.id)
+    const dentistaUser = await userService.findById(dentistaGabi.user.id)
     const secretariaUser = await userService.findById(secretariaJoao.user.id)
 
     if (!pacienteUser || !dentistaUser || !secretariaUser) {
@@ -196,9 +207,10 @@ async function createProcedures() {
         price: 200
     }
 
-    const procedures = [periodontia, ortodontia, endodontia]
+    await procedureService.create(periodontia)
+    await procedureService.create(ortodontia)
+    await procedureService.create(endodontia)
 
-    await procedureService.createMany(procedures)
 }
 
 /**
@@ -232,7 +244,7 @@ async function addPatientToHealhInsurance() {
     try {
         const patientBruno = await patientService.findByEmail('bruno.carneiro@gmail.com')
 
-        if (!patientBruno) {
+        if (!patientBruno || !patientBruno.id) {
             throw "Não foi possível encontrar o paciente"
         }
     
@@ -269,12 +281,14 @@ async function addProcedureToDentist() {
     if (!ortodontia || !dentistGabi || !patientBruno) {
         throw "Erro ao buscar registros"
     }
-    
+
     await dentistProcedureService
-        .addProcedureToDentistAndPatient(
-            ortodontia.id, 
-            dentistGabi.id, 
-            patientBruno.id)
+        .addProcedureToDentistAndPatient({
+            dentistId: dentistGabi.id,
+            procedureId: ortodontia.id,
+            scheduled_for: new Date(),
+            patientId: patientBruno.id
+        })
 }
 
 /**

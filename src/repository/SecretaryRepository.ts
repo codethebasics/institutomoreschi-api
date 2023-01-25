@@ -47,6 +47,20 @@ export default class SecretaryRepository {
     })
   }
 
+  async findByEmail(email: string): Promise<SecretarySelectResponse | null> {
+    return await this.prisma.secretary.findFirst({
+      select: {
+        id: true,
+        user: true
+      },
+      where: {
+        user: {
+          email: email
+        }
+      }
+    })
+  }
+
   async save(secretary: SecretaryCreateRequest): Promise<SecretaryCreateResponse> {
     return await this.prisma.secretary.create({
       data: {

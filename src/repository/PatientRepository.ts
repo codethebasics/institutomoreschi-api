@@ -41,6 +41,19 @@ export default class PatientRepository {
     })
   }
 
+  async findByEmail(email: string): Promise<any> {
+    return this.prisma.patient.findFirst({
+      include: {
+        user: true
+      },
+      where: {
+        user: {
+          email: email
+        }
+      }
+    })
+  }
+
   async save(patient: PatientCreateRequest): Promise<PatientCreateResponse> {
     return await this.prisma.patient.create({
       data: {

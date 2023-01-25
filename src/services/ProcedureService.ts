@@ -18,7 +18,7 @@ export default class ProcedureService {
         
     }
 
-    async findByName(name: string): Promise<ProcedureSelectResponse[]> {
+    async findByName(name: string): Promise<ProcedureSelectResponse> {
         try {
             return await this.procedureRepository.findByName(name)
         } catch (e: any) {

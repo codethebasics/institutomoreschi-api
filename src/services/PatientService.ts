@@ -1,21 +1,21 @@
-import { Patient, PrismaClient } from "@prisma/client";
-import { PatientCreateRequest, PatientCreateResponse, PatientRemoveRequest, PatientRemoveResponse, PatientSelectResponse, PatientUpdateRequest, PatientUpdateResponse } from "../interfaces/dto/patient/PatientDTO";
-import RoleService from "./RoleService";
-import UserRoleService from "./UserRoleService";
 import PatientRepository from "../repository/PatientRepository";
+
+import { 
+    PatientCreateRequest, 
+    PatientCreateResponse, 
+    PatientRemoveRequest, 
+    PatientRemoveResponse, 
+    PatientSelectResponse, 
+    PatientUpdateRequest, 
+    PatientUpdateResponse 
+} from "../interfaces/dto/patient/PatientDTO";
 
 
 export default class PatientService {
-    private prisma: PrismaClient
     private patientRepository: PatientRepository
-    private roleService: RoleService
-    private userRoleService: UserRoleService
-
+    
     constructor () {    
-        this.prisma = new PrismaClient()
         this.patientRepository = new PatientRepository()
-        this.roleService = new RoleService()
-        this.userRoleService = new UserRoleService()
     }
 
     async findAll(): Promise<PatientSelectResponse[]> {
@@ -31,6 +31,15 @@ export default class PatientService {
         try {
             return await this.patientRepository.findByName(name)
         } catch (e: any) {
+            console.error(e)
+            throw e
+        }
+    }
+
+    async findByEmail(email: string): Promise<PatientSelectResponse> {
+        try {
+            return await this.patientRepository.findByEmail(email)
+        } catch(e) {
             console.error(e)
             throw e
         }
@@ -54,13 +63,6 @@ export default class PatientService {
         }
     }
 
-    /**
-     * ------
-     * Delete
-     * ------
-     * @param patient 
-     * @returns 
-     */
     async remove(patient: PatientRemoveRequest): Promise<PatientRemoveResponse> {
         try {
             return await this.patientRepository.remove(patient)

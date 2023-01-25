@@ -18,8 +18,8 @@ export default class ProcedureRepository {
     })
   }
 
-  async findByName(name: string): Promise<ProcedureSelectResponse[]> {
-    return await this.prisma.procedure.findMany({
+  async findByName(name: string): Promise<ProcedureSelectResponse> {
+    return await this.prisma.procedure.findUniqueOrThrow({
       select: {
         id: true,
         name: true,

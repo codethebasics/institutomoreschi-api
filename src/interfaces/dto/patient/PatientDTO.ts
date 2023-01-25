@@ -1,13 +1,14 @@
-import { UserCreateResponse, UserDTO } from '../user/UserDTO'
+import { UserCreateResponse, UserSelectResponse } from '../user/UserDTO'
 
 export interface PatientDTO {
     id?: string,
     birth_date?: Date,
     health_insurance_card_number?: string,
-    user?: UserDTO
+    user?: UserSelectResponse
 }
 
 export interface PatientSelectResponse extends PatientDTO {
+    id: string,
     birth_date: Date
 }
 
@@ -19,7 +20,7 @@ export interface PatientCreateRequest extends PatientDTO {
 export interface PatientCreateResponse extends PatientDTO {
     id: string,
     birth_date: Date,
-    user: UserCreateResponse
+    user: UserSelectResponse
 }
 
 export interface PatientUpdateRequest extends PatientDTO {
