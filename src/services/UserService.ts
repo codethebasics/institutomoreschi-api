@@ -65,10 +65,7 @@ export default class UserService {
     }
 
     async update(user: UserUpdateRequest): Promise<UserUpdateResponse> {
-        try {
-            if (user.password && argon2.needsRehash(user.password)) {
-                user.password = await argon2.hash(user.password)
-            }
+        try {            
             return await this.userRepository.update(user)
         } catch (e: any) {
             console.error(e)

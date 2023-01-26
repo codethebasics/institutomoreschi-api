@@ -1,5 +1,6 @@
 import { PrismaClient } from "@prisma/client";
 import { UserCreateRequest, UserRemoveRequest, UserRemoveResponse, UserSelectResponse, UserUpdateRequest, UserUpdateResponse } from "../interfaces/dto/user/UserDTO";
+import argon2 from "argon2";
 
 export default class UserRepository {
   private prisma: PrismaClient
