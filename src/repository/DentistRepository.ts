@@ -1,3 +1,5 @@
+import argon2 from 'argon2';
+
 import { PrismaClient } from "@prisma/client";
 import { DentistCreateRequest, DentistCreateResponse, DentistRemoveByCRORequest, DentistRemoveByIdRequest, DentistRemoveResponse, DentistSelectResponse, DentistUpdateRequest, DentistUpdateResponse } from "../interfaces/dto/dentist/DentistDTO";
 
@@ -41,23 +43,40 @@ export default class DentistRepository {
   }
 
   async save(dentist: DentistCreateRequest): Promise<DentistCreateResponse> {
-    return await this.prisma.dentist.create({
-      data: {
-        cro: dentist.cro,
-        userId: dentist.userId
-      },
-      select: {
-        id: true,
-        cro: true,
-        user: {
-          select: {
-            id: true,
-            name: true,
-            email: true
+    try {
+      return await this.prisma.dentist.create({
+        data: {
+          cro: dentist.cro,
+          user: {
+            connectOrCreate: {
+              create: {
+                name: dentist.user?.name,
+                email: dentist.user?.email,
+                password: await argon2.hash(dentist.user?.password)
+              },
+              where: {
+                email: dentist.user.email
+              }
+            }
+          }
+        },
+        select: {
+          id: true,
+          cro: true,
+          user: {
+            select: {
+              id: true,
+              name: true,
+              email: true,
+              password: true
+            }
           }
         }
-      }
-    })
+      })
+    } catch (e) {
+      console.error(e)
+      throw e
+    }
   }
 
   async update(dentist: DentistUpdateRequest): Promise<DentistUpdateResponse> {

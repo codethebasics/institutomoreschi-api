@@ -119,7 +119,11 @@ async function createDentists() {
     if (gabiRecovered) {
         const dentistGabi: DentistCreateRequest = {
             cro: '1234567',
-            userId: gabiRecovered.id
+            user: {
+                name: gabiRecovered.name,
+                email: gabiRecovered.email,
+                password: "newpass"
+            }
         }
         await dentistService.create(dentistGabi)
     }

@@ -1,14 +1,14 @@
-import { UserSelectResponse } from "../user/UserDTO"
+import { UserCreateRequest, UserDTO, UserSelectResponse } from "../user/UserDTO"
 
 export interface DentistDTO {
     id?: string,
     cro?: string,
-    user?: UserSelectResponse
+    user?: UserDTO
 }
 
 export interface DentistCreateRequest extends DentistDTO {
     cro: string,
-    userId: string
+    user: UserCreateRequest
 }
 
 export interface DentistSelectResponse extends DentistDTO {
@@ -18,7 +18,7 @@ export interface DentistSelectResponse extends DentistDTO {
 }
 
 export interface DentistCreateResponse extends DentistDTO {
-    user?: UserSelectResponse
+    user?: UserCreateRequest
 }
 
 export interface DentistUpdateRequest extends DentistDTO {

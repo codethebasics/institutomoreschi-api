@@ -135,8 +135,8 @@ model MedicalHistory {
   dentistId   String
   patientId   String
   updated_at  DateTime @updatedAt
-  dentist     Dentist  @relation(fields: [dentistId], references: [id])
-  patient     Patient  @relation(fields: [patientId], references: [id])
+  dentist     Dentist  @relation(fields: [dentistId], references: [id], onDelete: Cascade)
+  patient     Patient  @relation(fields: [patientId], references: [id], onDelete: Cascade)
 
   @@index([dentistId], map: "historico_medico_dentistId_fkey")
   @@index([patientId], map: "historico_medico_patientId_fkey")
