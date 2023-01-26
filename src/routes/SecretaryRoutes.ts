@@ -12,7 +12,7 @@ router
         if (name) {
             res.json(await secretaryService.findByName(name.toString()))
         } else {
-            res.json(await secretaryService.findAll(req.body))
+            res.json(await secretaryService.findAll())
         }        
     })
     .post  (async (req, res) => res.json(await secretaryService.create (req.body)))

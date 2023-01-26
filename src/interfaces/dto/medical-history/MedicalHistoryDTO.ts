@@ -19,8 +19,8 @@ export interface MedicalHistorySelectResponse  {
 
 export interface MedicalHistoryCreateRequest extends MedicalHistoryDTO {
   description: string,
-  dentist: DentistSelectResponse,
-  patient: PatientSelectResponse
+  dentistId: string,
+  patientId: string
 }
 
 export interface MedicalHistoryCreateResponse extends MedicalHistoryDTO {
@@ -36,9 +36,7 @@ export interface MedicalHistoryUpdateRequest extends MedicalHistoryDTO {
 
 export interface MedicalHistoryUpdateResponse extends MedicalHistoryDTO {
   id: string,
-  description: string,
-  dentist: DentistSelectResponse,
-  patient: PatientSelectResponse
+  description: string
 }
 
 export interface MedicalHistoryRemoveRequest extends MedicalHistoryDTO {
@@ -47,7 +45,5 @@ export interface MedicalHistoryRemoveRequest extends MedicalHistoryDTO {
 
 export interface MedicalHistoryRemoveResponse extends MedicalHistoryDTO {
   id: string,
-  description: string,
-  dentist: DentistSelectResponse,
-  patient: PatientSelectResponse
+  description: string
 }

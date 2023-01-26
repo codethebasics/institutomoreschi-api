@@ -6,7 +6,7 @@ const healthInsuranceService = new HealthInsuranceService();
 
 router
     .route ('/')
-    .get   (async (req, res) => res.json(await healthInsuranceService.findAll(req.body)))
+    .get   (async (req, res) => res.json(await healthInsuranceService.findAll()))
     .post  (async (req, res) => res.json(await healthInsuranceService.create (req.body)))
     .put   (async (req, res) => res.json(await healthInsuranceService.update (req.body)))
     .delete(async (req, res) => res.json(await healthInsuranceService.remove (req.body)))

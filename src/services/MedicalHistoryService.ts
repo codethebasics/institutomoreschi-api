@@ -1,67 +1,17 @@
-import { PrismaClient } from "@prisma/client";
+import { MedicalHistoryCreateResponse, MedicalHistoryRemoveRequest, MedicalHistoryRemoveResponse, MedicalHistorySelectResponse, MedicalHistoryUpdateRequest, MedicalHistoryUpdateResponse } from "../interfaces/dto/medical-history/MedicalHistoryDTO";
+import medicalHistoryRepository from "../repository/MedicalHistoryRepository";
 
-/**
- * -----------------------
- * Medical history service
- * -----------------------
- * @author codethebasics
- */
 export default class MedicalHistoryService {
-    private prisma: PrismaClient;
+
+    private medicalHistoryRepository: medicalHistoryRepository
 
     constructor () {    
-        this.prisma = new PrismaClient()
+        this.medicalHistoryRepository = new medicalHistoryRepository()
     }
 
-    /**
-     * --------
-     * Find all
-     * --------
-     * @param filter 
-     * @returns 
-     */
-    async findAll() {
+    async findAll(): Promise<MedicalHistorySelectResponse[]> {
         try {
-            const response = await this.prisma.medicalHistory.findMany({
-                select: {
-                    id: true,
-                    description: true,
-                    created_at: true,
-                    updated_at: true,
-                    patient: {
-                        select: {
-                            id: true,
-                            birth_date: true,
-                            user: {
-                                select: {
-                                    id: true,
-                                    name: true,
-                                    email: true,
-                                    created_at: true,
-                                    updated_at: true,
-                                    active: true
-                                }
-                            }
-                        }
-                    },
-                    dentist: {
-                        select: {
-                            id: true,
-                            cro: true,
-                            user: {
-                                select: {
-                                    id: true,
-                                    name: true,
-                                    email: true,
-                                    created_at: true,
-                                    updated_at: true,
-                                    active: true
-                                }
-                            }
-                        }
-                    }
-                },                
-            })
+            const response = await this.medicalHistoryRepository.findAll()
             return response
         } catch (e: any) {
             console.error(e)
@@ -69,31 +19,39 @@ export default class MedicalHistoryService {
         }
     }
 
-    /**
-     * ------
-     * Create
-     * ------
-     * @param procedure 
-     * @returns 
-     */
     async create(medicalHistory: {
         patientId: string,
         dentistId: string,
-        description: string,
-    }): Promise<any> {
+        description: string
+    }): Promise<MedicalHistoryCreateResponse> {
         try {
-            return await this.prisma.medicalHistory.create({
-                data: {
-                    patientId: medicalHistory.patientId,
-                    dentistId: medicalHistory.dentistId,
-                    description: medicalHistory.description,
-                },
-                select: {
-                    id: true,
-                    patientId: true,
-                    dentistId: true,
-                    description: true
-                }
+            return await this.medicalHistoryRepository.save({
+                dentistId: medicalHistory.dentistId,
+                patientId: medicalHistory.patientId,
+                description: medicalHistory.description,
+            })
+        } catch (e: any) {
+            console.error(e)
+            throw e
+        }
+    }
+
+    async update(medicalHistory: MedicalHistoryUpdateRequest): Promise<MedicalHistoryUpdateResponse> {
+        try {
+            return await this.medicalHistoryRepository.update({
+                id: medicalHistory.id,
+                description: medicalHistory.description,
+            })
+        } catch (e: any) {
+            console.error(e)
+            throw e
+        }
+    }
+
+    async remove(medicalHistory: MedicalHistoryRemoveRequest): Promise<MedicalHistoryRemoveResponse> {
+        try {
+            return await this.medicalHistoryRepository.remove({
+                id: medicalHistory.id,
             })
         } catch (e: any) {
             console.error(e)
