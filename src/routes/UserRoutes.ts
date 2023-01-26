@@ -1,7 +1,9 @@
 import express from "express";
 import UserService from "../services/UserService";
+import UserController from "../controllers/UserController";
 
 const router = express.Router();
+const userController = new UserController()
 const userService = new UserService();
 
 router
@@ -20,9 +22,19 @@ router
         }
         
     })
-    .post  (async (req, res) => res.json(await userService.create (req.body)))
-    .put   (async (req, res) => res.json(await userService.update (req.body)))
-    .delete(async (req, res) => res.json(await userService.remove (req.body)))
+    .post(async (req, res) => {
+        try {
+            res.json(await userController.create(req.body))
+        } catch (e) {
+            res.json({
+                status: 500,
+                message: 'Erro durante a criação do usuário',
+                cause: e
+            })
+        }
+    })
+    .put   (async (req, res) => res.json(await userService.update(req.body)))
+    .delete(async (req, res) => res.json(await userService.remove(req.body)))
 
 router
     .route('/id/:id')

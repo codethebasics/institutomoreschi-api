@@ -6,7 +6,7 @@ const medicalHistoryService = new MedicalHistoryService()
 
 router
     .route ('/')
-    .get   (async (req, res) => res.json(await medicalHistoryService.findAll(req.body)))
+    .get   (async (req, res) => res.json(await medicalHistoryService.findAll()))
     .post  (async (req, res) => res.json(await medicalHistoryService.create (req.body)))
     .put   (async (req, res) => res.json(await medicalHistoryService.update (req.body)))
     .delete(async (req, res) => res.json(await medicalHistoryService.remove (req.body)))

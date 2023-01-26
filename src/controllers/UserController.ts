@@ -1,100 +1,33 @@
+import { UserCreateResponse, UserSelectResponse } from "../interfaces/dto/user/UserDTO";
+import ResponseWrapper from "../interfaces/dto/wrapper/ResponseWrapper";
 import UserService from "../services/UserService";
-import { UserCreateRequest, UserRemoveRequest, UserUpdateRequest } from "../interfaces/dto/user/UserDTO";
 
 export default class UserController {
-  private userService: UserService;
-  private isFetching: boolean = false;
+  private userService: UserService
 
   constructor() {
-    this.userService = new UserService()
+    this.userService = new UserService();
   }
 
-  async findAll() {    
-    return await this.userService.findAll();
-  }
+  async create(req: any) {
+    try {
+      const user = req.data.user
 
-  findById(id: string) {
-    this.isFetching = true
-    this.userService.findById(id)
-      .catch(e => {
-        return {
-          message: 'Erro durante a busca de usuário pelo id',
-          cause: e
-        }
-      })
-      .finally(() => this.isFetching = false)
-  }
+      if (!user) {
+        throw "O usuário deve ser informado no corpo da requisição"
+      }
 
- findByName(name: string) {
-  this.isFetching = true
-    this.userService.findByName(name)
-      .catch(e => {
-        return {
-          message: 'Erro durante a busca de usuário pelo nome',
-          cause: e
-        }
-      })
-      .finally(() => this.isFetching = false)
-  }
+      const response = await this.userService.create(user)
+      response.password = undefined;
 
- findByEmail(email: string) {
-    this.isFetching = true
-    this.userService.findByEmail(email)
-      .catch(e => {
-        return {
-          message: 'Erro durante a busca de usuário pelo email',
-          cause: e
-        }
-      })
-      .finally(() => this.isFetching = false)
+      return {
+        status: 200,
+        message: 'Usuário criado com sucesso',
+        body: response
+      }
+    } catch (e) {
+      console.error(e)
+      throw e
+    }
   }
-
- create(user: UserCreateRequest) {
-    this.isFetching = true
-    this.userService.create(user)
-      .catch(e => {
-        return {
-          message: 'Erro durante a criação do usuário',
-          cause: e
-        }
-      })
-      .finally(() => this.isFetching = false)
-  }
-
-  update(user: UserUpdateRequest) {
-    this.isFetching = true
-    this.userService.update(user)
-      .catch(e => {
-        return {
-          message: 'Erro durante a atualização do usuário',
-          cause: e
-        }
-      })
-      .finally(() => this.isFetching = false)
-  }
-
-  remove(user: UserRemoveRequest) {
-    this.isFetching = true
-    this.userService.remove(user)
-      .catch(e => {
-        return {
-          message: 'Erro durante a remoção do usuário',
-          cause: e
-        }
-    })
-    .finally(() => this.isFetching = false)
-  }
-
-  removeByEmail(email: string) {
-    this.isFetching = true
-    this.userService.removeByEmail(email)
-      .catch(e => {
-        return {
-          message: 'Erro durante a remoção do usuário pelo email',
-          cause: e
-        }
-      })
-      .finally(() => this.isFetching = false)
-  }
-
 }

@@ -79,7 +79,8 @@ export default class PatientRepository {
   async update(patient: PatientUpdateRequest): Promise<PatientUpdateResponse> {
     return await this.prisma.patient.update({
       data: {
-        birth_date: patient.birth_date
+        birth_date: patient.birth_date,
+        health_insurance_card_number: patient.health_insurance_card_number
       },
       where: {
         id: patient.id
@@ -100,7 +101,14 @@ export default class PatientRepository {
       select: {
         id: true,
         birth_date: true,
-        user: true
+        user: {
+          select: {
+            id: true,
+            name: true,
+            email: true,
+            active: true
+          }
+        }
       },
     })
   }

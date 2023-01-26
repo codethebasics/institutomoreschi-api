@@ -56,7 +56,10 @@ export default class UserService {
     }
 
     async create(user: UserCreateRequest): Promise<UserCreateResponse> {        
-        try {
+        try {            
+            if (!user.password) {
+                throw "Os parâmetros do usuário devem ser informados corretamente"
+            }
             return await this.userRepository.save(user)     
         } catch (e: any) {
             console.error(e)

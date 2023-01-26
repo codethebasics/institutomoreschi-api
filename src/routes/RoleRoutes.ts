@@ -6,7 +6,7 @@ const roleService = new RoleService();
 
 router
     .route ('/')
-    .get   (async (req, res) => res.json(await roleService.findAll(req.body)))
+    .get   (async (req, res) => res.json(await roleService.findAll()))
     .post  (async (req, res) => res.json(await roleService.create (req.body)))
     .put   (async (req, res) => res.json(await roleService.update (req.body)))
     .delete(async (req, res) => res.json(await roleService.remove (req.body)))

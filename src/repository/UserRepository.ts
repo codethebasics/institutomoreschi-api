@@ -89,10 +89,10 @@ export default class UserRepository {
       data: {
         name: user.name,
         email: user.email,
-        password: user.password,
+        password: await argon2.hash(user.password),
         active: user?.active,
         created_at: new Date(),
-        updated_at: new Date()
+        updated_at: new Date(),
       }
     })
   }
