@@ -13,7 +13,16 @@ export default class DentistRepository {
       select: {
         id: true,
         cro: true,
-        user: true
+        user: {
+          select: {
+            id: true,
+            name: true,
+            email: true,
+            created_at: true,
+            updated_at: true,
+            active: true
+        }
+        }
       }      
     })
   }

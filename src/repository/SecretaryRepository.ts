@@ -24,7 +24,10 @@ export default class SecretaryRepository {
           select: {
             id: true,
             name: true,
-            email: true
+            email: true,
+            created_at: true,
+            updated_at: true,
+            active: true
           }
         }
       }      

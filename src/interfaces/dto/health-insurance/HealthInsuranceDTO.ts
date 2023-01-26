@@ -25,11 +25,11 @@ export interface HealthInsuranceUpdateResponse extends HealthInsuranceDTO {
 
 }
 
-export interface HealthInsuranteRemoveRequest extends HealthInsuranceDTO {
+export interface HealthInsuranceRemoveRequest extends HealthInsuranceDTO {
     id: string
 }
 
-export interface HealthInsuranteRemoveResponse extends HealthInsuranceDTO {
+export interface HealthInsuranceRemoveResponse extends HealthInsuranceDTO {
     
 }
 

@@ -1,4 +1,4 @@
-import { HealthInsuranceCreateRequest, HealthInsuranceCreateResponse, HealthInsuranceSelectResponse, HealthInsuranceUpdateRequest, HealthInsuranceUpdateResponse, HealthInsuranteRemoveRequest, HealthInsuranteRemoveResponse } from "../interfaces/dto/health-insurance/HealthInsuranceDTO";
+import { HealthInsuranceCreateRequest, HealthInsuranceCreateResponse, HealthInsuranceSelectResponse, HealthInsuranceUpdateRequest, HealthInsuranceUpdateResponse, HealthInsuranceRemoveRequest, HealthInsuranceRemoveResponse } from "../interfaces/dto/health-insurance/HealthInsuranceDTO";
 import HealthInsuranceRepository from "../repository/HealthInsuranceRepository";
 
 export default class HealthInsuranceService {
@@ -47,8 +47,11 @@ export default class HealthInsuranceService {
         }
     }
 
-    async remove(healthInsurance: HealthInsuranteRemoveRequest): Promise<HealthInsuranteRemoveResponse> {
+    async remove(healthInsurance: HealthInsuranceRemoveRequest): Promise<HealthInsuranceRemoveResponse> {
         try {
+            if (!healthInsurance || !healthInsurance.id) {
+                throw "O id do convênio deve ser informado"
+            }
             return await this.healthInsuranceRepository.remove(healthInsurance)
         } catch (e: any) {
             console.error(e)

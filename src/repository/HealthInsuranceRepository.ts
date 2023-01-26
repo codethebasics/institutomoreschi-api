@@ -1,12 +1,14 @@
-import { PrismaClient } from "@prisma/client";
+import { Prisma, PrismaClient } from "@prisma/client";
 import { 
   HealthInsuranceCreateRequest, 
   HealthInsuranceCreateResponse, 
   HealthInsuranceSelectResponse, 
   HealthInsuranceUpdateRequest, 
-  HealthInsuranteRemoveRequest, 
-  HealthInsuranteRemoveResponse 
+  HealthInsuranceRemoveRequest, 
+  HealthInsuranceRemoveResponse 
 } from "../interfaces/dto/health-insurance/HealthInsuranceDTO";
+import e from "express";
+import { PrismaClientKnownRequestError } from "@prisma/client/runtime";
 
 export default class HealthInsuranceRepository {
   private prisma: PrismaClient
@@ -72,17 +74,30 @@ export default class HealthInsuranceRepository {
     })
   }
 
-  async remove(healthInsurance: HealthInsuranteRemoveRequest): Promise<HealthInsuranteRemoveResponse> {
-    return await this.prisma.healthInsurance.delete({
-      where: {
-        id: healthInsurance.id
-      },
-      select: {
-        id: true,
-        name: true,
-        code: true
-      },
-    })
+  async remove(healthInsurance: HealthInsuranceRemoveRequest): Promise<HealthInsuranceRemoveResponse> {
+    try {
+      return await this.prisma.healthInsurance.delete({
+        where: {
+          id: healthInsurance.id
+        },
+        select: {
+          id: true,
+          name: true,
+          code: true
+        },
+      })
+    } catch(e) {
+      if (e instanceof Prisma.PrismaClientKnownRequestError) {
+        if(e.code === 'P2025') {
+          console.error('Not found')
+        } else {
+          console.error('Prisma error')
+        }
+      } else {
+        console.error(e)
+      }
+      throw e
+    }
   }
 
 }

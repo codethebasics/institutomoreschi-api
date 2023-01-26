@@ -135,7 +135,11 @@ async function addRoleToUser() {
     const dentistaGabi = await dentistService.findByCRO('1234567')
     const secretariaJoao = await secretaryService.findByEmail('pepe@gmail.com')
 
-    if (!pacienteBruno || !dentistaGabi || !secretariaJoao) {
+    const usersValid = !pacienteBruno 
+        || !dentistaGabi 
+        || !secretariaJoao
+
+    if (usersValid) {
         throw "ERRO: Não foi possível encontrar os usuários"
     }
 
@@ -144,8 +148,12 @@ async function addRoleToUser() {
     const roleSecretaria = await roleService.findByName('secretaria')
     const roleDentista = await roleService.findByName('dentista')
     
+    const rolesValid = !rolePaciente 
+        || !roleAdmin 
+        || !roleSecretaria 
+        || !roleDentista
     
-    if (!rolePaciente || !roleAdmin || !roleSecretaria || !roleDentista) {
+    if (rolesValid) {
         throw "Não foi possível encontrar a permissão"
     }
     
@@ -153,18 +161,18 @@ async function addRoleToUser() {
         throw "Não foi possível recuperar o id do usuário"
     }
 
-    let pacienteUserIsValid = pacienteBruno 
+    const pacienteUserIsValid = pacienteBruno 
         && pacienteBruno.user 
         && pacienteBruno.user.id
 
-    let dentistaUserIsValid = dentistaGabi
+    const dentistaUserIsValid = dentistaGabi
         && dentistaGabi.user
         && dentistaGabi.user.id
 
-    let secretariaUserIsValid = secretariaJoao
+    const secretariaUserIsValid = secretariaJoao
         && secretariaJoao.user.id
 
-    let valid = pacienteUserIsValid 
+    const valid = pacienteUserIsValid 
         && dentistaUserIsValid 
         && secretariaUserIsValid
 
@@ -363,6 +371,9 @@ async function main() {
     
     await createMedicalHistory();
     console.log('Criando histórico médico ....................................... [✔]')    
+
+    console.log()
+    console.log('Done!')
 }
 
 main()
