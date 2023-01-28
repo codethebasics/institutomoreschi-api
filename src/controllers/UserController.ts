@@ -1,5 +1,3 @@
-import { UserCreateResponse, UserSelectResponse } from "../interfaces/dto/user/UserDTO";
-import ResponseWrapper from "../interfaces/dto/wrapper/ResponseWrapper";
 import UserService from "../services/UserService";
 
 export default class UserController {
