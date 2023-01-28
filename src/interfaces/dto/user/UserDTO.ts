@@ -24,7 +24,7 @@ export interface UserCreateRequest extends UserDTO {
 
 export interface UserCreateResponse extends UserDTO {
     id: string,
-    created_at: Date
+    created_at: Date,
 }
 
 export interface UserUpdateRequest extends UserDTO {

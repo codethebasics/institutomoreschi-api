@@ -24,9 +24,9 @@ router
     })
     .post(async (req, res) => {
         try {
-            res.json(await userController.create(req.body))
+            res.status(200).json(await userController.create(req.body))
         } catch (e) {
-            res.json({
+            res.status(500).json({
                 status: 500,
                 message: 'Erro durante a criação do usuário',
                 cause: e
