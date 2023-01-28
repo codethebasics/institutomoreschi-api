@@ -11,8 +11,13 @@ export default class UserController {
     try {
       const user = req.data.user
 
-      if (!user) {
-        throw "O usuário deve ser informado no corpo da requisição"
+      const valid = user 
+        && user.name
+        && user.email
+        && user.password
+
+      if (!valid) {
+        throw "O dados do usuário devem ser informados no corpo da requisição"
       }
 
       const response = await this.userService.create(user)
