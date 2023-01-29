@@ -1,3 +1,5 @@
+import { UserCreateResponse } from "../interfaces/dto/user/UserDTO";
+import ResponseWrapper from "../interfaces/dto/wrapper/ResponseWrapper";
 import UserService from "../services/UserService";
 
 export default class UserController {
@@ -23,11 +25,11 @@ export default class UserController {
       const response = await this.userService.create(user)
       response.password = undefined;
 
-      return {
-        status: 200,
-        message: 'Usuário criado com sucesso',
-        body: response
-      }
+      return new ResponseWrapper<UserCreateResponse>(
+        200, 
+        'Usuário criado com sucesso', 
+        response
+      )
     } catch (e) {
       console.error(e)
       throw e
