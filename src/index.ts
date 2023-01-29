@@ -22,6 +22,7 @@ app.use("/secretaries", Routes.SecretaryRoutes);
 app.use("/procedures", Routes.ProcedureRoutes);
 app.use("/health-insurance", Routes.HealthInsuranceRoutes);
 app.use("/medical-history", Routes.MedicalHistoryRoutes);
+app.use("/auth", Routes.AuthRoutes)
 
 app.use(route)
 

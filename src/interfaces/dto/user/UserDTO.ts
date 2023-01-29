@@ -13,7 +13,15 @@ export interface UserDTO {
 export interface UserSelectResponse extends UserDTO {
     id: string,
     name: string,
-    email: string    
+    email: string,
+    password?: string 
+}
+
+export interface UserLoginResponse extends UserDTO {
+    id: string,
+    name: string,
+    email: string,
+    password: string
 }
 
 export interface UserCreateRequest extends UserDTO {
