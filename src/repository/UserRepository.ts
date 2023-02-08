@@ -1,6 +1,13 @@
-import { PrismaClient } from "@prisma/client";
-import { UserCreateRequest, UserRemoveRequest, UserRemoveResponse, UserSelectResponse, UserUpdateRequest, UserUpdateResponse } from "../interfaces/dto/user/UserDTO";
-import argon2 from "argon2";
+import { PrismaClient } from "@prisma/client"
+import {
+  UserCreateRequest,
+  UserRemoveRequest,
+  UserRemoveResponse,
+  UserSelectResponse,
+  UserUpdateRequest,
+  UserUpdateResponse,
+} from "../interfaces/dto/user/UserDTO"
+import argon2 from "argon2"
 
 export default class UserRepository {
   private prisma: PrismaClient
@@ -10,33 +17,33 @@ export default class UserRepository {
   }
 
   async findAll(): Promise<UserSelectResponse[]> {
-    return await this.prisma.user.findMany({        
+    return await this.prisma.user.findMany({
       select: {
-          id: true,
-          name: true,
-          email: true,
-          created_at: true,
-          updated_at: true,
-          active: true,
-          user_role: {
+        id: true,
+        name: true,
+        email: true,
+        created_at: true,
+        updated_at: true,
+        active: true,
+        user_role: {
+          select: {
+            role: {
               select: {
-                  role: {
-                      select: {
-                          id: true,
-                          name: true,
-                          description: true
-                      }
-                  }
-              }
-          }
-      }
+                id: true,
+                name: true,
+                description: true,
+              },
+            },
+          },
+        },
+      },
     })
   }
 
   async findById(id: string): Promise<UserSelectResponse> {
     return await this.prisma.user.findUniqueOrThrow({
       where: {
-        id: id
+        id: id,
       },
       select: {
         id: true,
@@ -45,15 +52,24 @@ export default class UserRepository {
         created_at: true,
         updated_at: true,
         active: true,
-        user_role: true
-      }
+        user_role: {
+          select: {
+            role: {
+              select: {
+                id: true,
+                name: true,
+              },
+            },
+          },
+        },
+      },
     })
   }
 
   async findByName(name: string): Promise<UserSelectResponse[]> {
     return await this.prisma.user.findMany({
       where: {
-        name: name
+        name: name,
       },
       select: {
         id: true,
@@ -62,15 +78,15 @@ export default class UserRepository {
         created_at: true,
         updated_at: true,
         active: true,
-        user_role: true
-      }
+        user_role: true,
+      },
     })
   }
 
   async findByEmail(email: string): Promise<UserSelectResponse> {
     return await this.prisma.user.findUniqueOrThrow({
       where: {
-        email: email
+        email: email,
       },
       select: {
         id: true,
@@ -79,8 +95,8 @@ export default class UserRepository {
         created_at: true,
         updated_at: true,
         active: true,
-        user_role: true
-      }
+        user_role: true,
+      },
     })
   }
 
@@ -93,33 +109,33 @@ export default class UserRepository {
         active: user?.active,
         created_at: new Date(),
         updated_at: new Date(),
-      }
+      },
     })
   }
 
   async remove(user: UserRemoveRequest): Promise<UserRemoveResponse> {
     return await this.prisma.user.delete({
       where: {
-          id: user.id
+        id: user.id,
       },
       select: {
-          id: true,
-          name: true,
-          email: true
-      }
+        id: true,
+        name: true,
+        email: true,
+      },
     })
   }
 
   async removeByEmail(email: string): Promise<UserRemoveResponse> {
     return await this.prisma.user.delete({
       where: {
-          email: email
+        email: email,
       },
       select: {
-          id: true,
-          name: true,
-          email: true
-      }
+        id: true,
+        name: true,
+        email: true,
+      },
     })
   }
 
@@ -127,9 +143,8 @@ export default class UserRepository {
     return await this.prisma.user.update({
       data: user,
       where: {
-          id: user.id
-      }
+        id: user.id,
+      },
     })
   }
-  
 }

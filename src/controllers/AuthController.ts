@@ -36,7 +36,7 @@ export default class AuthController {
     this.password = password
   }
 
-  async login(): Promise<ResponseWrapper<AuthResponse | AuthResponseError>> {
+  async login(): Promise<ResponseWrapper<AuthResponse>> {
     try {
       const loginResponse = await this.authService.login({
         email: this.email,
@@ -51,13 +51,7 @@ export default class AuthController {
         loginResponse
       )
     } catch (e: any) {
-      return new ResponseWrapper<AuthResponseError>(
-        500,
-        "Erro durante a autenticação do usuário",
-        {
-          message: e.message,
-        }
-      )
+      throw new Error(e)
     }
   }
 

@@ -1,8 +1,8 @@
-import jwt from 'jsonwebtoken'
-import AuthRepository from "../repository/AuthRepository";
-import argon2 from 'argon2'
+import jwt from "jsonwebtoken"
+import AuthRepository from "../repository/AuthRepository"
+import argon2 from "argon2"
 
-import { AuthRequest, AuthResponse } from "../interfaces/dto/auth/AuthDTO";
+import { AuthRequest, AuthResponse } from "../interfaces/dto/auth/AuthDTO"
 
 export interface IAuthService {
   login(data: AuthRequest): Promise<AuthResponse>
@@ -16,13 +16,12 @@ export default class AuthService implements IAuthService {
     this.authRepository = new AuthRepository()
   }
 
-
   async login(data: AuthRequest): Promise<AuthResponse> {
     try {
-      console.log('AuthService.login() > data', data)
-      
+      console.log("AuthService.login() > data", data)
+
       const { email, password } = data
-      
+
       if (!email || !password) {
         throw new Error("Os dados de autenticação devem ser informados")
       }
@@ -36,30 +35,30 @@ export default class AuthService implements IAuthService {
       const passwordMatches = await argon2.verify(_user.password, password)
 
       if (_user && passwordMatches) {
-        const token = jwt.sign({
-          name: _user.name,
-          email: _user.email
-        }, process.env.JWT_SECRET || '', {expiresIn: 5000})
+        const token = jwt.sign(
+          {
+            id: _user.id,
+            name: _user.name,
+            email: _user.email,
+          },
+          process.env.JWT_SECRET || "",
+          { expiresIn: 5000 }
+        )
 
         return {
           user: _user,
-          token: token
+          token: token,
         }
-      } else {        
+      } else {
         throw "Credenciais inválidas"
       }
-
-      
-    } catch (e) {
-      console.error(e)
-      throw new Error(`Não foi possível autenticar o usuário`);
+    } catch (e: any) {
+      throw e
     }
-
   }
 
   async logout(): Promise<Boolean> {
-    console.log('AuthService.login() > logout')
+    console.log("AuthService.login() > logout")
     return true
   }
-
 }
