@@ -1,7 +1,16 @@
-import argon2 from 'argon2';
+import argon2 from "argon2"
 
-import { PrismaClient } from "@prisma/client";
-import { DentistCreateRequest, DentistCreateResponse, DentistRemoveByCRORequest, DentistRemoveByIdRequest, DentistRemoveResponse, DentistSelectResponse, DentistUpdateRequest, DentistUpdateResponse } from "../interfaces/dto/dentist/DentistDTO";
+import { PrismaClient } from "@prisma/client"
+import {
+  DentistCreateRequest,
+  DentistCreateResponse,
+  DentistRemoveByCRORequest,
+  DentistRemoveByIdRequest,
+  DentistRemoveResponse,
+  DentistSelectResponse,
+  DentistUpdateRequest,
+  DentistUpdateResponse,
+} from "../interfaces/dto/dentist/DentistDTO"
 
 export default class DentistRepository {
   private prisma: PrismaClient
@@ -22,10 +31,11 @@ export default class DentistRepository {
             email: true,
             created_at: true,
             updated_at: true,
-            active: true
-        }
-        }
-      }      
+            active: true,
+            phone: true,
+          },
+        },
+      },
     })
   }
 
@@ -34,11 +44,11 @@ export default class DentistRepository {
       select: {
         id: true,
         cro: true,
-        user: true
+        user: true,
       },
       where: {
-        cro: cro
-      }
+        cro: cro,
+      },
     })
   }
 
@@ -52,13 +62,14 @@ export default class DentistRepository {
               create: {
                 name: dentist.user?.name,
                 email: dentist.user?.email,
-                password: await argon2.hash(dentist.user?.password)
+                password: await argon2.hash(dentist.user?.password),
+                phone: dentist.user?.phone,
               },
               where: {
-                email: dentist.user.email
-              }
-            }
-          }
+                email: dentist.user.email,
+              },
+            },
+          },
         },
         select: {
           id: true,
@@ -68,10 +79,11 @@ export default class DentistRepository {
               id: true,
               name: true,
               email: true,
-              password: true
-            }
-          }
-        }
+              password: true,
+              phone: true,
+            },
+          },
+        },
       })
     } catch (e) {
       console.error(e)
@@ -82,10 +94,10 @@ export default class DentistRepository {
   async update(dentist: DentistUpdateRequest): Promise<DentistUpdateResponse> {
     return await this.prisma.dentist.update({
       data: {
-        cro: dentist.cro
+        cro: dentist.cro,
       },
       where: {
-        id: dentist.id
+        id: dentist.id,
       },
       select: {
         id: true,
@@ -94,35 +106,39 @@ export default class DentistRepository {
           select: {
             id: true,
             name: true,
-            email: true
-          }
-        }
-      }
+            email: true,
+            phone: true,
+          },
+        },
+      },
     })
   }
 
-  async remove(dentist: DentistRemoveByIdRequest): Promise<DentistRemoveResponse> {
+  async remove(
+    dentist: DentistRemoveByIdRequest
+  ): Promise<DentistRemoveResponse> {
     return await this.prisma.dentist.delete({
       where: {
-        id: dentist.id
+        id: dentist.id,
       },
       select: {
         id: true,
         cro: true,
-      }
+      },
     })
   }
 
-  async removeByCRO(dentist: DentistRemoveByCRORequest): Promise<DentistRemoveResponse> {
+  async removeByCRO(
+    dentist: DentistRemoveByCRORequest
+  ): Promise<DentistRemoveResponse> {
     return await this.prisma.dentist.delete({
       where: {
-        cro: dentist.cro
+        cro: dentist.cro,
       },
       select: {
         id: true,
         cro: true,
-      }
+      },
     })
   }
-
 }

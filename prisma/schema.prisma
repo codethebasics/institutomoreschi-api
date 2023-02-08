@@ -19,6 +19,7 @@ model User {
   updated_at DateTime    @updatedAt
   active     UserStatus  @default(INACTIVE)
   name       String
+  phone      String      @unique
   Dentist    Dentist[]
   Patient    Patient[]
   Secretary  Secretary[]

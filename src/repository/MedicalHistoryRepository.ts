@@ -1,15 +1,22 @@
-import { PrismaClient } from "@prisma/client";
-import { 
-  UserCreateRequest, 
-  UserRemoveRequest, 
-  UserRemoveResponse, 
-  UserSelectResponse, 
-  UserUpdateRequest, 
-  UserUpdateResponse 
-} from "../interfaces/dto/user/UserDTO";
-import { MedicalHistoryCreateRequest, MedicalHistoryRemoveRequest, MedicalHistoryRemoveResponse, MedicalHistorySelectResponse, MedicalHistoryUpdateRequest, MedicalHistoryUpdateResponse } from "../interfaces/dto/medical-history/MedicalHistoryDTO";
-import { PatientSelectResponse } from "../interfaces/dto/patient/PatientDTO";
-import { DentistSelectResponse } from "../interfaces/dto/dentist/DentistDTO";
+import { PrismaClient } from "@prisma/client"
+import {
+  UserCreateRequest,
+  UserRemoveRequest,
+  UserRemoveResponse,
+  UserSelectResponse,
+  UserUpdateRequest,
+  UserUpdateResponse,
+} from "../interfaces/dto/user/UserDTO"
+import {
+  MedicalHistoryCreateRequest,
+  MedicalHistoryRemoveRequest,
+  MedicalHistoryRemoveResponse,
+  MedicalHistorySelectResponse,
+  MedicalHistoryUpdateRequest,
+  MedicalHistoryUpdateResponse,
+} from "../interfaces/dto/medical-history/MedicalHistoryDTO"
+import { PatientSelectResponse } from "../interfaces/dto/patient/PatientDTO"
+import { DentistSelectResponse } from "../interfaces/dto/dentist/DentistDTO"
 
 export default class medicalHistoryRepository {
   private prisma: PrismaClient
@@ -19,39 +26,40 @@ export default class medicalHistoryRepository {
   }
 
   async findAll(): Promise<MedicalHistorySelectResponse[]> {
-    return await this.prisma.medicalHistory.findMany({        
+    return await this.prisma.medicalHistory.findMany({
       select: {
-          id: true,
-          description: true,
-          dentist: {
-            select: {
-              id: true,
-              cro: true,
-              user: {
-                select: {
-                  id: true,
-                  name: true,
-                  email: true,
-                }
-              }
-            }
+        id: true,
+        description: true,
+        dentist: {
+          select: {
+            id: true,
+            cro: true,
+            user: {
+              select: {
+                id: true,
+                name: true,
+                email: true,
+                phone: true,
+              },
+            },
           },
-          patient: {
-            select: {
-              id: true,
-              birth_date: true,
-              health_insurance_card_number: true,
-              userId: true
-            }
-          }
-      }
+        },
+        patient: {
+          select: {
+            id: true,
+            birth_date: true,
+            health_insurance_card_number: true,
+            userId: true,
+          },
+        },
+      },
     })
   }
 
   async findById(id: string): Promise<MedicalHistorySelectResponse> {
     return await this.prisma.medicalHistory.findUniqueOrThrow({
       where: {
-        id: id
+        id: id,
       },
       select: {
         id: true,
@@ -65,28 +73,31 @@ export default class medicalHistoryRepository {
                 id: true,
                 name: true,
                 email: true,
-              }
-            }
-          }
+                phone: true,
+              },
+            },
+          },
         },
         patient: {
           select: {
             id: true,
             birth_date: true,
             health_insurance_card_number: true,
-            userId: true
-          }
-        }
-      }
+            userId: true,
+          },
+        },
+      },
     })
   }
 
-  async findByDescription(description: string): Promise<MedicalHistorySelectResponse[]> {
+  async findByDescription(
+    description: string
+  ): Promise<MedicalHistorySelectResponse[]> {
     return await this.prisma.medicalHistory.findMany({
       where: {
         description: {
-          contains: description
-        }
+          contains: description,
+        },
       },
       select: {
         id: true,
@@ -100,26 +111,29 @@ export default class medicalHistoryRepository {
                 id: true,
                 name: true,
                 email: true,
-              }
-            }
-          }
+                phone: true,
+              },
+            },
+          },
         },
         patient: {
           select: {
             id: true,
             birth_date: true,
             health_insurance_card_number: true,
-            userId: true
-          }
-        }
-      }
+            userId: true,
+          },
+        },
+      },
     })
   }
 
-  async findByPatient(patient: PatientSelectResponse): Promise<MedicalHistorySelectResponse[]> {
+  async findByPatient(
+    patient: PatientSelectResponse
+  ): Promise<MedicalHistorySelectResponse[]> {
     return await this.prisma.medicalHistory.findMany({
       where: {
-        id: patient.id
+        id: patient.id,
       },
       select: {
         id: true,
@@ -133,26 +147,29 @@ export default class medicalHistoryRepository {
                 id: true,
                 name: true,
                 email: true,
-              }
-            }
-          }
+                phone: true,
+              },
+            },
+          },
         },
         patient: {
           select: {
             id: true,
             birth_date: true,
             health_insurance_card_number: true,
-            userId: true
-          }
-        }
-      }
+            userId: true,
+          },
+        },
+      },
     })
   }
 
-  async findByDentist(dentist: DentistSelectResponse): Promise<MedicalHistorySelectResponse[]> {
+  async findByDentist(
+    dentist: DentistSelectResponse
+  ): Promise<MedicalHistorySelectResponse[]> {
     return await this.prisma.medicalHistory.findMany({
       where: {
-        id: dentist.id
+        id: dentist.id,
       },
       select: {
         id: true,
@@ -166,19 +183,20 @@ export default class medicalHistoryRepository {
                 id: true,
                 name: true,
                 email: true,
-              }
-            }
-          }
+                phone: true,
+              },
+            },
+          },
         },
         patient: {
           select: {
             id: true,
             birth_date: true,
             health_insurance_card_number: true,
-            userId: true
-          }
-        }
-      }
+            userId: true,
+          },
+        },
+      },
     })
   }
 
@@ -189,13 +207,13 @@ export default class medicalHistoryRepository {
         created_at: new Date(),
         dentist: {
           connect: {
-            id: medicalHistory.dentistId
-          }
+            id: medicalHistory.dentistId,
+          },
         },
         patient: {
           connect: {
-            id: medicalHistory.patientId
-          }
+            id: medicalHistory.patientId,
+          },
         },
       },
       select: {
@@ -210,43 +228,48 @@ export default class medicalHistoryRepository {
                 id: true,
                 name: true,
                 email: true,
-              }
-            }
-          }
+                phone: true,
+              },
+            },
+          },
         },
         patient: {
           select: {
             id: true,
             birth_date: true,
-            userId: true
-          }
-        }
-      }
+            userId: true,
+          },
+        },
+      },
     })
   }
 
-  async update(medicalHistory: MedicalHistoryUpdateRequest): Promise<MedicalHistoryUpdateResponse> {
+  async update(
+    medicalHistory: MedicalHistoryUpdateRequest
+  ): Promise<MedicalHistoryUpdateResponse> {
     return await this.prisma.medicalHistory.update({
       data: {
         description: medicalHistory.description,
         dentistId: medicalHistory.dentist?.id,
-        patientId: medicalHistory.patient?.id
+        patientId: medicalHistory.patient?.id,
       },
       where: {
-        id: medicalHistory.id
-      }
+        id: medicalHistory.id,
+      },
     })
   }
 
-  async remove(medicalHistory: MedicalHistoryRemoveRequest): Promise<MedicalHistoryRemoveResponse> {
+  async remove(
+    medicalHistory: MedicalHistoryRemoveRequest
+  ): Promise<MedicalHistoryRemoveResponse> {
     return await this.prisma.medicalHistory.delete({
       where: {
-        id: medicalHistory.id
+        id: medicalHistory.id,
       },
       select: {
         id: true,
-        description: true
-      }
+        description: true,
+      },
     })
   }
 }

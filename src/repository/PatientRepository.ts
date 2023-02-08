@@ -1,5 +1,13 @@
-import { PrismaClient } from "@prisma/client";
-import { PatientCreateRequest, PatientCreateResponse, PatientRemoveRequest, PatientRemoveResponse, PatientSelectResponse, PatientUpdateRequest, PatientUpdateResponse } from "../interfaces/dto/patient/PatientDTO";
+import { PrismaClient } from "@prisma/client"
+import {
+  PatientCreateRequest,
+  PatientCreateResponse,
+  PatientRemoveRequest,
+  PatientRemoveResponse,
+  PatientSelectResponse,
+  PatientUpdateRequest,
+  PatientUpdateResponse,
+} from "../interfaces/dto/patient/PatientDTO"
 
 export default class PatientRepository {
   private prisma: PrismaClient
@@ -20,10 +28,11 @@ export default class PatientRepository {
             email: true,
             created_at: true,
             updated_at: true,
-            active: true
-          }
-        }
-      }      
+            active: true,
+            phone: true,
+          },
+        },
+      },
     })
   }
 
@@ -37,23 +46,23 @@ export default class PatientRepository {
       where: {
         user: {
           name: {
-            contains: name
-          }
-        }
-      }
+            contains: name,
+          },
+        },
+      },
     })
   }
 
   async findByEmail(email: string): Promise<any> {
     return this.prisma.patient.findFirst({
       include: {
-        user: true
+        user: true,
       },
       where: {
         user: {
-          email: email
-        }
-      }
+          email: email,
+        },
+      },
     })
   }
 
@@ -61,17 +70,17 @@ export default class PatientRepository {
     return await this.prisma.patient.create({
       data: {
         birth_date: patient.birth_date,
-        health_insurance_card_number: patient.health_insurance_card_number,          
+        health_insurance_card_number: patient.health_insurance_card_number,
         user: {
           connect: {
-            id: patient.userId
-          }
-        }
+            id: patient.userId,
+          },
+        },
       },
       select: {
         id: true,
         birth_date: true,
-        user: true
+        user: true,
       },
     })
   }
@@ -80,15 +89,15 @@ export default class PatientRepository {
     return await this.prisma.patient.update({
       data: {
         birth_date: patient.birth_date,
-        health_insurance_card_number: patient.health_insurance_card_number
+        health_insurance_card_number: patient.health_insurance_card_number,
       },
       where: {
-        id: patient.id
+        id: patient.id,
       },
       select: {
         id: true,
         birth_date: true,
-        user: true
+        user: true,
       },
     })
   }
@@ -96,7 +105,7 @@ export default class PatientRepository {
   async remove(patient: PatientRemoveRequest): Promise<PatientRemoveResponse> {
     return await this.prisma.patient.delete({
       where: {
-        id: patient.id
+        id: patient.id,
       },
       select: {
         id: true,
@@ -106,11 +115,11 @@ export default class PatientRepository {
             id: true,
             name: true,
             email: true,
-            active: true
-          }
-        }
+            active: true,
+            phone: true,
+          },
+        },
       },
     })
   }
-
 }
