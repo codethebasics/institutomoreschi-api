@@ -1,13 +1,13 @@
-import { PrismaClient } from "@prisma/client";
-import { 
-  SecretaryCreateRequest, 
-  SecretaryCreateResponse, 
-  SecretaryRemoveRequest, 
-  SecretaryRemoveResponse, 
-  SecretarySelectResponse, 
-  SecretaryUpdateRequest, 
-  SecretaryUpdateResponse 
-} from "../interfaces/dto/secretary/SecretaryDTO";
+import { PrismaClient } from "@prisma/client"
+import {
+  SecretaryCreateRequest,
+  SecretaryCreateResponse,
+  SecretaryRemoveRequest,
+  SecretaryRemoveResponse,
+  SecretarySelectResponse,
+  SecretaryUpdateRequest,
+  SecretaryUpdateResponse,
+} from "../interfaces/dto/secretary/SecretaryDTO"
 
 export default class SecretaryRepository {
   private prisma: PrismaClient
@@ -27,26 +27,27 @@ export default class SecretaryRepository {
             email: true,
             created_at: true,
             updated_at: true,
-            active: true
-          }
-        }
-      }      
+            active: true,
+            phone: true,
+          },
+        },
+      },
     })
   }
 
   async findByName(name: string): Promise<SecretarySelectResponse[]> {
     return await this.prisma.secretary.findMany({
       select: {
-        id: true,        
-        user: true
+        id: true,
+        user: true,
       },
       where: {
         user: {
           name: {
-            contains: name
-          }
-        }
-      }
+            contains: name,
+          },
+        },
+      },
     })
   }
 
@@ -54,21 +55,23 @@ export default class SecretaryRepository {
     return await this.prisma.secretary.findFirst({
       select: {
         id: true,
-        user: true
+        user: true,
       },
       where: {
         user: {
-          email: email
-        }
-      }
+          email: email,
+        },
+      },
     })
   }
 
-  async save(secretary: SecretaryCreateRequest): Promise<SecretaryCreateResponse> {
+  async save(
+    secretary: SecretaryCreateRequest
+  ): Promise<SecretaryCreateResponse> {
     return await this.prisma.secretary.create({
       data: {
         id: secretary.id,
-        userId: secretary.userId
+        userId: secretary.userId,
       },
       select: {
         id: true,
@@ -76,20 +79,23 @@ export default class SecretaryRepository {
           select: {
             id: true,
             name: true,
-            email: true
-          }
-        }
+            email: true,
+            phone: true,
+          },
+        },
       },
     })
   }
 
-  async update(secretary: SecretaryUpdateRequest): Promise<SecretaryUpdateResponse> {
+  async update(
+    secretary: SecretaryUpdateRequest
+  ): Promise<SecretaryUpdateResponse> {
     return await this.prisma.secretary.update({
       data: {
-        id: secretary.id
+        id: secretary.id,
       },
       where: {
-        id: secretary.id
+        id: secretary.id,
       },
       select: {
         id: true,
@@ -98,17 +104,20 @@ export default class SecretaryRepository {
             id: true,
             name: true,
             email: true,
-            updated_at: true
-          }
-        }
+            updated_at: true,
+            phone: true,
+          },
+        },
       },
     })
   }
 
-  async remove(secretary: SecretaryRemoveRequest): Promise<SecretaryRemoveResponse> {
+  async remove(
+    secretary: SecretaryRemoveRequest
+  ): Promise<SecretaryRemoveResponse> {
     return await this.prisma.secretary.delete({
       where: {
-        id: secretary.id
+        id: secretary.id,
       },
       select: {
         id: true,
@@ -116,10 +125,9 @@ export default class SecretaryRepository {
           select: {
             name: true,
             email: true,
-          }
-        }
+          },
+        },
       },
     })
   }
-
 }

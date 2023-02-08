@@ -25,6 +25,7 @@ export default class UserRepository {
         created_at: true,
         updated_at: true,
         active: true,
+        phone: true,
         user_role: {
           select: {
             role: {
@@ -52,6 +53,7 @@ export default class UserRepository {
         created_at: true,
         updated_at: true,
         active: true,
+        phone: true,
         user_role: {
           select: {
             role: {
@@ -79,6 +81,7 @@ export default class UserRepository {
         updated_at: true,
         active: true,
         user_role: true,
+        phone: true,
       },
     })
   }
@@ -96,6 +99,7 @@ export default class UserRepository {
         updated_at: true,
         active: true,
         user_role: true,
+        phone: true,
       },
     })
   }
@@ -109,6 +113,7 @@ export default class UserRepository {
         active: user?.active,
         created_at: new Date(),
         updated_at: new Date(),
+        phone: user?.phone,
       },
     })
   }
@@ -122,6 +127,7 @@ export default class UserRepository {
         id: true,
         name: true,
         email: true,
+        phone: true,
       },
     })
   }
@@ -135,6 +141,7 @@ export default class UserRepository {
         id: true,
         name: true,
         email: true,
+        phone: true,
       },
     })
   }
