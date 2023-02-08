@@ -6,6 +6,7 @@ import PatientRoutes from './PatientRoutes'
 import HealthInsuranceRoutes from './HealthInsuranceRoutes'
 import ProcedureRoutes from './ProcedureRoutes'
 import MedicalHistoryRoutes from './MedicalHistoryRoutes'
+import AuthRoutes from './AuthRoutes'
 
 export default {
     UserRoutes,
@@ -15,5 +16,6 @@ export default {
     PatientRoutes,
     HealthInsuranceRoutes,
     ProcedureRoutes,
-    MedicalHistoryRoutes
+    MedicalHistoryRoutes,
+    AuthRoutes
 }
