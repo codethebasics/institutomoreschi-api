@@ -1,12 +1,11 @@
-import ResponseWrapper from "../interfaces/dto/wrapper/ResponseWrapper"
-import AuthService from "../services/AuthService"
 import {
   AuthRequest,
   AuthResponse,
-  AuthResponseError,
   SignOutResponse,
   SignOutResponseError,
 } from "../interfaces/dto/auth/AuthDTO"
+import ResponseWrapper from "../interfaces/dto/wrapper/ResponseWrapper"
+import AuthService from "../services/AuthService"
 
 export default class AuthController {
   private email: string
@@ -14,9 +13,9 @@ export default class AuthController {
 
   private authService: AuthService
 
-  constructor(request: AuthRequest) {
-    this.email = request.email
-    this.password = request.password
+  constructor({ email, password }: AuthRequest) {
+    this.email = email
+    this.password = password
     this.authService = new AuthService()
   }
 

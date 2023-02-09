@@ -24,6 +24,7 @@ model User {
   Patient    Patient[]
   Secretary  Secretary[]
   user_role  UserRole[]
+  UserAddress UserAddress[]
 
   @@map("usuarios")
 }
@@ -142,6 +143,29 @@ model MedicalHistory {
   @@index([dentistId], map: "historico_medico_dentistId_fkey")
   @@index([patientId], map: "historico_medico_patientId_fkey")
   @@map("historico_medico")
+}
+
+model Address {
+  id          String @id @default(cuid())
+  cep         String
+  logradouro  String
+  complemento String
+  bairro      String
+  cidade      String
+  uf          String @db.VarChar(2)
+  UserAddress UserAddress[]
+
+  @@map("enderecos")
+}
+
+model UserAddress {
+  userId    String
+  addressId String
+  user      User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  address   Address @relation(fields: [addressId], references: [id], onDelete: Cascade)
+
+  @@id([userId, addressId])
+  @@map("usuarios_enderecos")
 }
 
 enum UserStatus {
