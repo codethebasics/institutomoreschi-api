@@ -22,7 +22,7 @@ model User {
   phone      String      @unique
   Dentist    Dentist[]
   Patient    Patient[]
-  Secretary  Secretary[]
+  Secretary  Secretary[]  
   user_role  UserRole[]
   UserAddress UserAddress[]
 
@@ -110,10 +110,14 @@ model Patient {
   birth_date                   DateTime
   health_insurance_card_number String?
   userId                       String
+  cpf                          String                   @unique
   DentistProcedure             DentistProcedure[]
   MedicalHistory               MedicalHistory[]
   user                         User                     @relation(fields: [userId], references: [id], onDelete: Cascade)
   PatientHealthInsurance       PatientHealthInsurance[]
+  Anamnese   Anamnese[]
+  ExtraOralExam ExtraOralExam[]
+  IntraOralExam IntraOralExam[]
 
   @@index([userId], map: "pacientes_userId_fkey")
   @@map("pacientes")
@@ -166,6 +170,79 @@ model UserAddress {
 
   @@id([userId, addressId])
   @@map("usuarios_enderecos")
+}
+
+model Anamnese {
+  id                                               String  @id @default(cuid())
+  patientId                                        String
+  patient                                          Patient @relation(fields: [patientId], references: [id], onDelete: Cascade)
+  reasonForConsultation                            String  @map("motivo_da_consulta")
+  isUnderMedicalTreatment                          Boolean @map("esta_dob_tratamento_medico")
+  takeSomeMedicine                                 Boolean @map("toma_algum_medicamento")
+  medicationsUsed                                  String  @map("toma_quais_medicamentos")
+  familyHistoryOfIllnesses                         String  @map("historico_de_doencas_da_familia")
+  everHadHypertensionHeartAttackOrOther            Boolean @map("ja_teve_hipertensao_infarto_ou_outros")
+  everHadHypertensionHeartAttackOrOtherDescription String  @map("hipertensao_infarto_ou_outros_descricao")
+  everHadRheumaticFever                            Boolean @map("ja_teve_febre_reumatica")
+  everHadRheumaticFeverDescription                 String  @map("ja_teve_febre_reumatica_descricao")
+  everHadCancer                                    Boolean @map("ja_teve_cancer")
+  everHadCancerDescription                         String  @map("ja_teve_cancer_descricao")
+  everHadDiabetes                                  Boolean @map("ja_teve_diabetes")
+  everHadDiabetesDescription                       String  @map("ja_teve_diabetes_descricao")
+  everHadClottingRelatedProblems                   Boolean @map("ja_teve_problemas_coagulacao")
+  everHadClottingRelatedProblemsDescription        String  @map("ja_teve_problemas_coagulacao_descricao")
+  everHadReactionToPenicillin                      Boolean @map("ja_teve_reacao_contra_penincilina")
+  everHadReactionToPenicillinDescription           String  @map("ja_teve_reacao_contra_penincilina_descricao")
+  everHadHepatitis                                 Boolean @map("ja_teve_hepatite")
+  everHadHepatitisDescription                      String  @map("ja_teve_hepatite_descricao")
+  haveBeenVaccinatedAgainstHepatitisB              Boolean @map("ja_foi_vacinado_contra_hepatite_b")
+  anyLiverProblems                                 Boolean @map("algum_problema_hepatico")
+  anyLiverProblemsDescription                      Boolean @map("algum_problema_hepatico_descricao")
+  anyKidneyProblems                                Boolean @map("algum_problema_renal")
+  anyKidneyProblemsDescription                     Boolean @map("algum_problema_renal_descricao")
+  everHadReactionAgainstAnesthesia                 Boolean @map("ja_teve_reacao_com_anestesia")
+  everHadReactionAgainstAnesthesiaDescription      Boolean @map("ja_teve_reacao_com_anestesia_descricao")
+  isPregnant                                       Boolean @map("gestante")
+  isPregnantDescription                            String  @map("gestanteDescricao")
+  wasSmoker                                        Boolean @map("foi_fumante")
+  wasSmokerDescription                             String  @map("foi_fumante_descricao")
+  isSmoker                                         Boolean @map("is_fumante")
+  isSmokerDescription                              String  @map("is_fumante_descricao")
+  drinksAlchol                                     Boolean @map("bebe_alcool")
+  drinksAlcholDescription                          String  @map("bebe_alcool_descricao")
+  useDrugs                                         Boolean @map("usa_drogas")
+  useDrugsDescription                              String  @map("usa_drogas_descricao")
+
+  @@map("anamnese")
+}
+
+model ExtraOralExam {
+  id                 String @id @default(cuid())
+  patientId          String
+  patient            Patient @relation(fields: [patientId], references: [id], onDelete: Cascade)
+  skin               String @map("pele")
+  facialSimmetry     String @map("simetria_facial")
+  earJawArticulation String @map("articulacao_temporomandibular")
+  linfonodos         String @map("linfonodos")
+
+  @@map("exame_fisico_extra_oral")
+}
+
+model IntraOralExam {
+  id String @id @default(cuid())
+  patientId            String
+  patient              Patient @relation(fields: [patientId], references: [id], onDelete: Cascade)
+  lips                 String @map("labios")
+  tongue               String @map("lingual")
+  buccalFloor          String @map("assoalho_bucal")
+  hardPalate           String @map("palato_duro")
+  softPalate           String @map("palato_mole")
+  mucosaJugal          String @map("mucosa_jugal")
+  mucosaAleolar        String @map("mucosa_aleolar")
+  orofaringeRetromolar String @map("orofaringe_retromolar")
+  injuryDescription    String @map("descricao_da_lesao")
+
+  @@map("exame_fisico_intra_oral")
 }
 
 enum UserStatus {
