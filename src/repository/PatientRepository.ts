@@ -70,6 +70,7 @@ export default class PatientRepository {
     return await this.prisma.patient.create({
       data: {
         birth_date: patient.birth_date,
+        cpf: patient.cpf,
         health_insurance_card_number: patient.health_insurance_card_number,
         user: {
           connect: {
@@ -80,6 +81,7 @@ export default class PatientRepository {
       select: {
         id: true,
         birth_date: true,
+        cpf: true,
         user: true,
       },
     })

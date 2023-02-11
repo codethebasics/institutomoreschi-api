@@ -92,6 +92,7 @@ async function createPatients() {
       birth_date: new Date("1987-07-29"),
       health_insurance_card_number: "7777777",
       userId: brunoRecovered.id,
+      cpf: "00825346169",
     }
     await patientService.create(patientBruno)
   }
