@@ -1,12 +1,5 @@
 import { PrismaClient } from "@prisma/client"
-import {
-  UserCreateRequest,
-  UserRemoveRequest,
-  UserRemoveResponse,
-  UserSelectResponse,
-  UserUpdateRequest,
-  UserUpdateResponse,
-} from "../interfaces/dto/user/UserDTO"
+import { DentistSelectResponse } from "../interfaces/dto/dentist/DentistDTO"
 import {
   MedicalHistoryCreateRequest,
   MedicalHistoryRemoveRequest,
@@ -16,7 +9,6 @@ import {
   MedicalHistoryUpdateResponse,
 } from "../interfaces/dto/medical-history/MedicalHistoryDTO"
 import { PatientSelectResponse } from "../interfaces/dto/patient/PatientDTO"
-import { DentistSelectResponse } from "../interfaces/dto/dentist/DentistDTO"
 
 export default class medicalHistoryRepository {
   private prisma: PrismaClient
@@ -50,6 +42,7 @@ export default class medicalHistoryRepository {
             birth_date: true,
             health_insurance_card_number: true,
             userId: true,
+            cpf: true,
           },
         },
       },
@@ -84,6 +77,7 @@ export default class medicalHistoryRepository {
             birth_date: true,
             health_insurance_card_number: true,
             userId: true,
+            cpf: true,
           },
         },
       },
@@ -122,6 +116,7 @@ export default class medicalHistoryRepository {
             birth_date: true,
             health_insurance_card_number: true,
             userId: true,
+            cpf: true,
           },
         },
       },
@@ -158,6 +153,7 @@ export default class medicalHistoryRepository {
             birth_date: true,
             health_insurance_card_number: true,
             userId: true,
+            cpf: true,
           },
         },
       },
@@ -194,6 +190,7 @@ export default class medicalHistoryRepository {
             birth_date: true,
             health_insurance_card_number: true,
             userId: true,
+            cpf: true,
           },
         },
       },

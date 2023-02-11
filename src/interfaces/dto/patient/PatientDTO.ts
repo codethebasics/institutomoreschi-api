@@ -1,40 +1,38 @@
-import { UserCreateResponse, UserSelectResponse } from '../user/UserDTO'
+import { UserCreateResponse, UserSelectResponse } from "../user/UserDTO"
 
 export interface PatientDTO {
-    id?: string,
-    birth_date?: Date,
-    health_insurance_card_number?: string,
-    user?: UserSelectResponse
+  id?: string
+  birth_date?: Date
+  health_insurance_card_number?: string
+  user?: UserSelectResponse
+  cpf?: string
 }
 
 export interface PatientSelectResponse extends PatientDTO {
-    id: string,
-    birth_date: Date
+  id: string
+  birth_date: Date
 }
 
 export interface PatientCreateRequest extends PatientDTO {
-    birth_date: Date,
-    userId: string
+  birth_date: Date
+  userId: string
+  cpf: string
 }
 
 export interface PatientCreateResponse extends PatientDTO {
-    id: string,
-    birth_date: Date,
-    user: UserSelectResponse
+  id: string
+  birth_date: Date
+  user: UserSelectResponse
 }
 
 export interface PatientUpdateRequest extends PatientDTO {
-    id: string
+  id: string
 }
 
-export interface PatientUpdateResponse extends PatientDTO {
-
-}
+export interface PatientUpdateResponse extends PatientDTO {}
 
 export interface PatientRemoveRequest extends PatientDTO {
-    id: string
+  id: string
 }
 
-export interface PatientRemoveResponse extends PatientDTO {
-    
-}
+export interface PatientRemoveResponse extends PatientDTO {}
