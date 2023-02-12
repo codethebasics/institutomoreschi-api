@@ -21,6 +21,7 @@ export default class PatientRepository {
       select: {
         id: true,
         birth_date: true,
+        cpf: true,
         user: {
           select: {
             id: true,
@@ -41,6 +42,7 @@ export default class PatientRepository {
       select: {
         id: true,
         birth_date: true,
+        cpf: true,
         user: true,
       },
       where: {

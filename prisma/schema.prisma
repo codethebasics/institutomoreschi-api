@@ -12,19 +12,19 @@ datasource db {
 }
 
 model User {
-  id         String      @id @default(cuid())
-  email      String      @unique
-  password   String
-  created_at DateTime    @default(now())
-  updated_at DateTime    @updatedAt
-  active     UserStatus  @default(INACTIVE)
-  name       String
-  phone      String      @unique
-  Dentist    Dentist[]
-  Patient    Patient[]
-  Secretary  Secretary[]  
-  user_role  UserRole[]
+  id          String        @id @default(cuid())
+  email       String        @unique
+  password    String
+  created_at  DateTime      @default(now())
+  updated_at  DateTime      @updatedAt
+  active      UserStatus    @default(INACTIVE)
+  name        String
+  phone       String        @unique
+  Dentist     Dentist[]
+  Patient     Patient[]
+  Secretary   Secretary[]
   UserAddress UserAddress[]
+  user_role   UserRole[]
 
   @@map("usuarios")
 }
@@ -111,13 +111,13 @@ model Patient {
   health_insurance_card_number String?
   userId                       String
   cpf                          String                   @unique
+  Anamnese                     Anamnese[]
   DentistProcedure             DentistProcedure[]
+  ExtraOralExam                ExtraOralExam[]
+  IntraOralExam                IntraOralExam[]
   MedicalHistory               MedicalHistory[]
   user                         User                     @relation(fields: [userId], references: [id], onDelete: Cascade)
   PatientHealthInsurance       PatientHealthInsurance[]
-  Anamnese   Anamnese[]
-  ExtraOralExam ExtraOralExam[]
-  IntraOralExam IntraOralExam[]
 
   @@index([userId], map: "pacientes_userId_fkey")
   @@map("pacientes")
@@ -150,13 +150,13 @@ model MedicalHistory {
 }
 
 model Address {
-  id          String @id @default(cuid())
+  id          String        @id @default(cuid())
   cep         String
   logradouro  String
   complemento String
   bairro      String
   cidade      String
-  uf          String @db.VarChar(2)
+  uf          String        @db.VarChar(2)
   UserAddress UserAddress[]
 
   @@map("enderecos")
@@ -165,17 +165,16 @@ model Address {
 model UserAddress {
   userId    String
   addressId String
-  user      User @relation(fields: [userId], references: [id], onDelete: Cascade)
   address   Address @relation(fields: [addressId], references: [id], onDelete: Cascade)
+  user      User    @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@id([userId, addressId])
+  @@index([addressId], map: "usuarios_enderecos_addressId_fkey")
   @@map("usuarios_enderecos")
 }
 
 model Anamnese {
   id                                               String  @id @default(cuid())
-  patientId                                        String
-  patient                                          Patient @relation(fields: [patientId], references: [id], onDelete: Cascade)
   reasonForConsultation                            String  @map("motivo_da_consulta")
   isUnderMedicalTreatment                          Boolean @map("esta_dob_tratamento_medico")
   takeSomeMedicine                                 Boolean @map("toma_algum_medicamento")
@@ -197,11 +196,11 @@ model Anamnese {
   everHadHepatitisDescription                      String  @map("ja_teve_hepatite_descricao")
   haveBeenVaccinatedAgainstHepatitisB              Boolean @map("ja_foi_vacinado_contra_hepatite_b")
   anyLiverProblems                                 Boolean @map("algum_problema_hepatico")
-  anyLiverProblemsDescription                      Boolean @map("algum_problema_hepatico_descricao")
+  anyLiverProblemsDescription                      String  @map("algum_problema_hepatico_descricao")
   anyKidneyProblems                                Boolean @map("algum_problema_renal")
-  anyKidneyProblemsDescription                     Boolean @map("algum_problema_renal_descricao")
+  anyKidneyProblemsDescription                     String  @map("algum_problema_renal_descricao")
   everHadReactionAgainstAnesthesia                 Boolean @map("ja_teve_reacao_com_anestesia")
-  everHadReactionAgainstAnesthesiaDescription      Boolean @map("ja_teve_reacao_com_anestesia_descricao")
+  everHadReactionAgainstAnesthesiaDescription      String  @map("ja_teve_reacao_com_anestesia_descricao")
   isPregnant                                       Boolean @map("gestante")
   isPregnantDescription                            String  @map("gestanteDescricao")
   wasSmoker                                        Boolean @map("foi_fumante")
@@ -212,36 +211,41 @@ model Anamnese {
   drinksAlcholDescription                          String  @map("bebe_alcool_descricao")
   useDrugs                                         Boolean @map("usa_drogas")
   useDrugsDescription                              String  @map("usa_drogas_descricao")
+  patientId                                        String
+  patient                                          Patient @relation(fields: [patientId], references: [id], onDelete: Cascade)
 
+  @@index([patientId], map: "anamnese_patientId_fkey")
   @@map("anamnese")
 }
 
 model ExtraOralExam {
-  id                 String @id @default(cuid())
+  id                 String  @id @default(cuid())
+  skin               String? @map("pele")
+  facialSimmetry     String? @map("simetria_facial")
+  earJawArticulation String? @map("articulacao_temporomandibular")
+  linfonodos         String? @map("linfonodos")
   patientId          String
   patient            Patient @relation(fields: [patientId], references: [id], onDelete: Cascade)
-  skin               String @map("pele")
-  facialSimmetry     String @map("simetria_facial")
-  earJawArticulation String @map("articulacao_temporomandibular")
-  linfonodos         String @map("linfonodos")
 
+  @@index([patientId], map: "exame_fisico_extra_oral_patientId_fkey")
   @@map("exame_fisico_extra_oral")
 }
 
 model IntraOralExam {
-  id String @id @default(cuid())
+  id                   String  @id @default(cuid())
+  lips                 String? @map("labios")
+  tongue               String? @map("lingual")
+  buccalFloor          String? @map("assoalho_bucal")
+  hardPalate           String? @map("palato_duro")
+  softPalate           String? @map("palato_mole")
+  mucosaJugal          String? @map("mucosa_jugal")
+  mucosaAleolar        String? @map("mucosa_aleolar")
+  orofaringeRetromolar String? @map("orofaringe_retromolar")
+  injuryDescription    String? @map("descricao_da_lesao")
   patientId            String
   patient              Patient @relation(fields: [patientId], references: [id], onDelete: Cascade)
-  lips                 String @map("labios")
-  tongue               String @map("lingual")
-  buccalFloor          String @map("assoalho_bucal")
-  hardPalate           String @map("palato_duro")
-  softPalate           String @map("palato_mole")
-  mucosaJugal          String @map("mucosa_jugal")
-  mucosaAleolar        String @map("mucosa_aleolar")
-  orofaringeRetromolar String @map("orofaringe_retromolar")
-  injuryDescription    String @map("descricao_da_lesao")
 
+  @@index([patientId], map: "exame_fisico_intra_oral_patientId_fkey")
   @@map("exame_fisico_intra_oral")
 }
 

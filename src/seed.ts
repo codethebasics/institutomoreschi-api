@@ -16,6 +16,8 @@ import RoleService from "./services/RoleService"
 import SecretaryService from "./services/SecretaryService"
 import UserRoleService from "./services/UserRoleService"
 import UserService from "./services/UserService"
+import ExameFisicoExtraOralService from "./services/ExameFisicoExtraOralService"
+import ExameFisicoIntraOralService from "./services/ExameFisicoIntraOralService"
 
 const prisma = new PrismaClient()
 const userService = new UserService()
@@ -29,6 +31,8 @@ const healthInsuranceService = new HealthInsuranceService()
 const patientHealthInsuranceService = new PacientHealthInsuranceService()
 const dentistProcedureService = new DentistProcedureService()
 const medicalHistoryService = new MedicalHistoryService()
+const exameFisicoExtraOralService = new ExameFisicoExtraOralService()
+const exameFisicoIntraOralService = new ExameFisicoIntraOralService()
 
 let bruno: UserCreateRequest = {
   name: "Bruno Carneiro",
@@ -304,6 +308,53 @@ async function addProcedureToDentist() {
 
 /**
  * ======================
+ * CREATE EXTRA ORAL EXAM
+ * ======================
+ */
+async function createExameFisicoExtraOral() {
+  const patient = await patientService.findByEmail("bruno.carneiro@gmail.com")
+
+  if (!patient) throw "Patient not found"
+
+  const extraOralExam = {
+    patientId: patient.id,
+    skin: "pardo",
+    facialSimmetry: "moderado",
+    earJawArticulation: "normal",
+    linfonodos: "nenhum",
+  }
+
+  await exameFisicoExtraOralService.create(extraOralExam)
+}
+
+/**
+ * ======================
+ * CREATE INTRA ORAL EXAM
+ * ======================
+ */
+async function createExameFisicoIntraOral() {
+  const patient = await patientService.findByEmail("bruno.carneiro@gmail.com")
+
+  if (!patient) throw "Patient not found"
+
+  const intraOralExam = {
+    patientId: patient.id,
+    lips: "labios normais",
+    tongue: "lingua normal",
+    buccalFloor: "assoalho normal",
+    hardPalate: "palato duro normal",
+    softPalate: "palato mole normal",
+    mucosaJugal: "mucosa julgal normal",
+    mucosaAleolar: "mucosa aleolar normal",
+    orofaringeRetromolar: "normal",
+    injuryDescription: "nenhuma lesão",
+  }
+
+  await exameFisicoIntraOralService.create(intraOralExam)
+}
+
+/**
+ * ======================
  * CREATE MEDICAL HISTORY
  * ======================
  */
@@ -390,6 +441,16 @@ async function main() {
   await addProcedureToDentist()
   console.log(
     "Adicionando procedimento ao dentista ........................... [✔]"
+  )
+
+  await createExameFisicoIntraOral()
+  console.log(
+    "Criando exame intra oral ....................................... [✔]"
+  )
+
+  await createExameFisicoExtraOral()
+  console.log(
+    "Criando exame extra oral ....................................... [✔]"
   )
 
   await createMedicalHistory()

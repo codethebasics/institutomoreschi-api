@@ -235,6 +235,7 @@ export default class medicalHistoryRepository {
             id: true,
             birth_date: true,
             userId: true,
+            cpf: true,
           },
         },
       },

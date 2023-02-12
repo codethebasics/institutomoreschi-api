@@ -1,14 +1,16 @@
 import { PatientSelectResponse } from "../patient/PatientDTO"
 
 export interface ExameFisicoDTO {
-  id: String
-  patient: PatientSelectResponse
+  id?: String
+  patient?: PatientSelectResponse
 }
 
 export interface ExameFisicoExtraOral extends ExameFisicoDTO {
-  pele?: String
-  simetria_facial?: String
-  articulacao_temporomandibular?: String
+  id: String
+  patient: PatientSelectResponse
+  skin?: String
+  facialSimmetry?: String
+  earJawArticulation?: String
   linfonodos?: String
 }
 
