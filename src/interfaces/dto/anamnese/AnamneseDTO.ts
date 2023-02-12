@@ -1,41 +1,44 @@
 import { UserSelectResponse } from "../user/UserDTO"
 
 export interface AnamneseDTO {
-  id?: String
-  user: UserSelectResponse
-  reasonForConsultation?: String
-  isUnderMedicalTreatment?: Boolean
-  takeSomeMedicine?: Boolean
-  medicationsUsed?: String
-  familyHistoryOfIllnesses?: String
-  everHadHypertensionHeartAttackOrOther?: Boolean
-  everHadHypertensionHeartAttackOrOtherDescription?: String
-  everHadRheumaticFever?: Boolean
-  everHadRheumaticFeverDescription?: String
-  everHadCancer?: Boolean
-  everHadCancerDescription?: String
-  everHadDiabetes?: Boolean
-  everHadClottingRelatedProblems?: Boolean
-  everHadClottingRelatedProblemsDescription?: String
-  everHadReactionToPenicillin?: Boolean
-  everHadReactionToPenicillinDescription?: String
-  everHadHepatitis?: Boolean
-  haveBeenVaccinatedAgainstHepatitisB?: String
-  anyLiverProblems?: Boolean
-  anyLiverProblemsDescription?: String
-  anyKidneyProblems?: Boolean
-  everHadReactionAgainstAnesthesia?: Boolean
-  everHadReactionAgainstAnesthesiaDescription?: String
-  isPregnant?: Boolean
-  isPregnantDescription?: String
-  wasSmoker?: Boolean
-  wasSmokerDescription?: String
-  isSmoker?: Boolean
-  isSmokerDescription?: String
-  drinksAlchol?: Boolean
-  drinksAlcholDescription?: String
-  useDrugs?: Boolean
-  useDrugsDescription?: String
+  id?: string
+  patientId: string
+  reasonForConsultation?: string
+  isUnderMedicalTreatment?: boolean
+  takeSomeMedicine?: boolean
+  medicationsUsed?: string
+  familyHistoryOfIllnesses?: string
+  everHadHypertensionHeartAttackOrOther?: boolean
+  everHadHypertensionHeartAttackOrOtherDescription?: string
+  everHadRheumaticFever?: boolean
+  everHadRheumaticFeverDescription?: string
+  everHadCancer?: boolean
+  everHadCancerDescription?: string
+  everHadDiabetes?: boolean
+  everHadDiabetesDescription?: string
+  everHadClottingRelatedProblems?: boolean
+  everHadClottingRelatedProblemsDescription?: string
+  everHadReactionToPenicillin?: boolean
+  everHadReactionToPenicillinDescription?: string
+  everHadHepatitis?: boolean
+  everHadHepatitisDescription: string
+  haveBeenVaccinatedAgainstHepatitisB?: string
+  anyLiverProblems?: boolean
+  anyLiverProblemsDescription?: string
+  anyKidneyProblems?: boolean
+  anyKidneyProblemsDescription?: string
+  everHadReactionAgainstAnesthesia?: boolean
+  everHadReactionAgainstAnesthesiaDescription?: string
+  isPregnant?: boolean
+  isPregnantDescription?: string
+  wasSmoker?: boolean
+  wasSmokerDescription?: string
+  isSmoker?: boolean
+  isSmokerDescription?: string
+  drinksAlchol?: boolean
+  drinksAlcholDescription?: string
+  useDrugs?: boolean
+  useDrugsDescription?: string
 }
 
 export interface AnamneseCreateRequest extends AnamneseDTO {
@@ -54,4 +57,8 @@ export interface AnamneseUpdateRequest extends AnamneseDTO {
 export interface AnamneseUpdateResponse extends AnamneseDTO {
   id: string
   user: UserSelectResponse
+}
+
+export interface AnamneseDeleteRequest extends AnamneseDTO {
+  id: string
 }

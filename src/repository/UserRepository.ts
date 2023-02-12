@@ -113,7 +113,7 @@ export default class UserRepository {
         active: user?.active,
         created_at: new Date(),
         updated_at: new Date(),
-        phone: user?.phone,
+        phone: user.phone,
       },
     })
   }

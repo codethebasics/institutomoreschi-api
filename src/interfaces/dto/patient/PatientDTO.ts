@@ -11,6 +11,7 @@ export interface PatientDTO {
 export interface PatientSelectResponse extends PatientDTO {
   id: string
   birth_date: Date
+  cpf: string
 }
 
 export interface PatientCreateRequest extends PatientDTO {

@@ -8,7 +8,7 @@ export interface UserDTO {
   created_at?: Date
   updated_at?: Date
   active?: UserStatus
-  phone: string
+  phone?: string
 }
 
 export interface UserSelectResponse extends UserDTO {
@@ -16,6 +16,7 @@ export interface UserSelectResponse extends UserDTO {
   name: string
   email: string
   password?: string
+  phone: string
 }
 
 export interface UserLoginResponse extends UserDTO {
@@ -29,6 +30,7 @@ export interface UserCreateRequest extends UserDTO {
   name: string
   email: string
   password: string
+  phone: string
 }
 
 export interface UserCreateResponse extends UserDTO {
