@@ -24,6 +24,7 @@ model User {
   Patient     Patient[]
   Secretary   Secretary[]
   UserAddress UserAddress[]
+  Archive     Archive[]
   user_role   UserRole[]
 
   @@map("usuarios")
@@ -247,6 +248,18 @@ model IntraOralExam {
 
   @@index([patientId], map: "exame_fisico_intra_oral_patientId_fkey")
   @@map("exame_fisico_intra_oral")
+}
+
+model Archive {
+  id String @id @default(cuid())
+  userId String
+  user   User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  title String
+  extension String
+  blob Bytes
+  checksum String
+
+  @@map("arquivo")
 }
 
 enum UserStatus {
