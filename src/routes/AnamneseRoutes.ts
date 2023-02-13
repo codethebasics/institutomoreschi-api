@@ -11,8 +11,41 @@ router
 
 router
   .route("/id/:id")
-  .get(async (req, res) => res.json(await anamneseService.findById(req.body)))
-  .put(async (req, res) => res.json(await anamneseService.update(req.body)))
-  .delete(async (req, res) => res.json(await anamneseService.remove(req.body)))
+  .get(async (req, res) => await findById(req, res))
+  .put(async (req, res) => await update(req, res))
+  .delete(async (req, res) => await remove(req, res))
 
 export default router
+
+async function findById(req: any, res: any) {
+  const { id } = req.params
+  if (!id) {
+    res.status(400).json({ message: "O id da anamnese deve ser informado" })
+  }
+  const response = await anamneseService.findById(id)
+  res.status(200).json(response)
+}
+
+async function update(req: any, res: any) {
+  try {
+    const { id } = req.params
+    if (!id) {
+      throw new Error("O id da anamnese deve ser informado")
+    }
+    const response = await anamneseService.update({ ...req.body, id: id })
+    res.status(200).json(response)
+  } catch (e: any) {
+    res.status(400).json({ message: e.message })
+  }
+}
+
+async function remove(req: any, res: any) {
+  const { id } = req.params
+  if (!id) {
+    res.status(400).json({ message: "O id da anamnese deve ser informado" })
+  }
+  const response = await anamneseService.remove({
+    id: id,
+  })
+  res.status(200).json(response)
+}
