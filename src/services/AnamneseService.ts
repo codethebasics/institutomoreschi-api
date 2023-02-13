@@ -20,7 +20,16 @@ export default class AnamneseService {
   }
 
   async update(anamnese: any): Promise<any> {
-    return this.anamneseRepository.update(anamnese)
+    if (!anamnese || !anamnese.id) {
+      throw new Error("O id da anamnese deve ser informado")
+    }
+
+    const findAnamnese = await this.findById(anamnese.id)
+    if (!findAnamnese) {
+      throw new Error("A anamnese com o id informado não foi encontrada")
+    }
+
+    return this.anamneseRepository.update({ ...anamnese })
   }
 
   async remove(anamnese: any): Promise<any> {
