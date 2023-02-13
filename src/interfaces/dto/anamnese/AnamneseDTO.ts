@@ -22,7 +22,7 @@ export interface AnamneseDTO {
   everHadReactionToPenicillinDescription?: string
   everHadHepatitis?: boolean
   everHadHepatitisDescription: string
-  haveBeenVaccinatedAgainstHepatitisB?: string
+  haveBeenVaccinatedAgainstHepatitisB?: boolean
   anyLiverProblems?: boolean
   anyLiverProblemsDescription?: string
   anyKidneyProblems?: boolean
@@ -41,13 +41,9 @@ export interface AnamneseDTO {
   useDrugsDescription?: string
 }
 
-export interface AnamneseCreateRequest extends AnamneseDTO {
-  user: UserSelectResponse
-}
+export interface AnamneseCreateRequest extends AnamneseDTO {}
 
-export interface AnamneseCreateResponse extends AnamneseDTO {
-  user: UserSelectResponse
-}
+export interface AnamneseCreateResponse extends AnamneseDTO {}
 
 export interface AnamneseUpdateRequest extends AnamneseDTO {
   id: string

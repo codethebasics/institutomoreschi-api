@@ -18,6 +18,10 @@ import UserRoleService from "./services/UserRoleService"
 import UserService from "./services/UserService"
 import ExameFisicoExtraOralService from "./services/ExameFisicoExtraOralService"
 import ExameFisicoIntraOralService from "./services/ExameFisicoIntraOralService"
+import { AnamneseCreateRequest } from "./interfaces/dto/anamnese/AnamneseDTO"
+import AnamneseService from "./services/AnamneseService"
+import ArchiveService from "./services/ArchiveService"
+import { ArchiveCreateRequest } from "./interfaces/dto/archive/ArchiveDTO"
 
 const prisma = new PrismaClient()
 const userService = new UserService()
@@ -33,6 +37,8 @@ const dentistProcedureService = new DentistProcedureService()
 const medicalHistoryService = new MedicalHistoryService()
 const exameFisicoExtraOralService = new ExameFisicoExtraOralService()
 const exameFisicoIntraOralService = new ExameFisicoIntraOralService()
+const anamneseService = new AnamneseService()
+const archiveService = new ArchiveService()
 
 let bruno: UserCreateRequest = {
   name: "Bruno Carneiro",
@@ -388,6 +394,70 @@ async function createMedicalHistory() {
   }
 }
 
+async function createAnamnese() {
+  const patientBruno = await patientService.findByEmail(
+    "bruno.carneiro@gmail.com"
+  )
+
+  const anamneseCreateRequest: AnamneseCreateRequest = {
+    reasonForConsultation: "dor de dente",
+    isUnderMedicalTreatment: false,
+    takeSomeMedicine: true,
+    medicationsUsed: "Alopurinol / Colchicina",
+    familyHistoryOfIllnesses: "Gota, Diabetes, Problemas Renais",
+    everHadHypertensionHeartAttackOrOther: false,
+    everHadHypertensionHeartAttackOrOtherDescription: "",
+    everHadRheumaticFever: false,
+    everHadRheumaticFeverDescription: "",
+    everHadCancer: false,
+    everHadCancerDescription: "",
+    everHadDiabetes: false,
+    everHadDiabetesDescription: "",
+    everHadClottingRelatedProblems: false,
+    everHadClottingRelatedProblemsDescription: "",
+    everHadReactionToPenicillin: false,
+    everHadReactionToPenicillinDescription: "",
+    everHadHepatitis: false,
+    everHadHepatitisDescription: "",
+    haveBeenVaccinatedAgainstHepatitisB: true,
+    anyLiverProblems: false,
+    anyLiverProblemsDescription: "",
+    anyKidneyProblems: true,
+    anyKidneyProblemsDescription: "kidney stones",
+    everHadReactionAgainstAnesthesia: false,
+    everHadReactionAgainstAnesthesiaDescription: "",
+    isPregnant: false,
+    isPregnantDescription: "",
+    wasSmoker: false,
+    wasSmokerDescription: "",
+    isSmoker: false,
+    isSmokerDescription: "",
+    drinksAlchol: true,
+    drinksAlcholDescription: "um dia por semana aos finais de semana",
+    useDrugs: false,
+    useDrugsDescription: "",
+    patientId: patientBruno.id,
+  }
+
+  await anamneseService.create(anamneseCreateRequest)
+}
+
+async function createArchive() {
+  const userBruno = await userService.findByEmail("bruno.carneiro@gmail.com")
+
+  const buffer = Buffer.from("")
+
+  const archiveCreateRequest: ArchiveCreateRequest = {
+    userId: userBruno.id,
+    title: "perfil",
+    extension: "jpg",
+    blob: buffer,
+    checksum: "",
+  }
+
+  await archiveService.create(archiveCreateRequest)
+}
+
 async function main() {
   console.log()
   console.log("Seeding database ...")
@@ -456,6 +526,16 @@ async function main() {
   await createMedicalHistory()
   console.log(
     "Criando histórico médico ....................................... [✔]"
+  )
+
+  await createAnamnese()
+  console.log(
+    "Criando anamnese ............................................... [✔]"
+  )
+
+  await createArchive()
+  console.log(
+    "Criando arquivo ................................................ [✔]"
   )
 
   console.log()

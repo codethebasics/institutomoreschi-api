@@ -20,11 +20,11 @@ model User {
   active      UserStatus    @default(INACTIVE)
   name        String
   phone       String        @unique
+  Archive     Archive[]
   Dentist     Dentist[]
   Patient     Patient[]
   Secretary   Secretary[]
   UserAddress UserAddress[]
-  Archive     Archive[]
   user_role   UserRole[]
 
   @@map("usuarios")
@@ -251,14 +251,15 @@ model IntraOralExam {
 }
 
 model Archive {
-  id String @id @default(cuid())
-  userId String
-  user   User    @relation(fields: [userId], references: [id], onDelete: Cascade)
-  title String
+  id        String @id @default(cuid())
+  userId    String
+  title     String
   extension String
-  blob Bytes
-  checksum String
+  blob      Bytes
+  checksum  String
+  user      User   @relation(fields: [userId], references: [id], onDelete: Cascade)
 
+  @@index([userId], map: "arquivo_userId_fkey")
   @@map("arquivo")
 }
 

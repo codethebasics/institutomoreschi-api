@@ -9,7 +9,7 @@ export default class ExameFisicoExtraOralRepository {
     this.prisma = new PrismaClient()
   }
 
-  async findAll(): Promise<ExameFisicoExtraOralDTO[]> {
+  async findAll(): Promise<any> {
     return await this.prisma.extraOralExam.findMany({
       select: {
         id: true,
