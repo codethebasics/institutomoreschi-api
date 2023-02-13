@@ -23,6 +23,8 @@ import AnamneseService from "./services/AnamneseService"
 import ArchiveService from "./services/ArchiveService"
 import { ArchiveCreateRequest } from "./interfaces/dto/archive/ArchiveDTO"
 
+import checksum from "checksum"
+
 const prisma = new PrismaClient()
 const userService = new UserService()
 const patientService = new PatientService()
@@ -445,14 +447,15 @@ async function createAnamnese() {
 async function createArchive() {
   const userBruno = await userService.findByEmail("bruno.carneiro@gmail.com")
 
-  const buffer = Buffer.from("")
+  const buffer = Buffer.from("check")
+  const hash = checksum(buffer)
 
   const archiveCreateRequest: ArchiveCreateRequest = {
     userId: userBruno.id,
     title: "perfil",
     extension: "jpg",
     blob: buffer,
-    checksum: "",
+    checksum: hash,
   }
 
   await archiveService.create(archiveCreateRequest)
