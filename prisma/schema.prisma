@@ -20,6 +20,7 @@ model User {
   active      UserStatus    @default(INACTIVE)
   name        String
   phone       String        @unique
+  Archive     Archive[]
   Dentist     Dentist[]
   Patient     Patient[]
   Secretary   Secretary[]
@@ -247,6 +248,19 @@ model IntraOralExam {
 
   @@index([patientId], map: "exame_fisico_intra_oral_patientId_fkey")
   @@map("exame_fisico_intra_oral")
+}
+
+model Archive {
+  id        String @id @default(cuid())
+  userId    String
+  title     String
+  extension String
+  blob      Bytes
+  checksum  String
+  user      User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId], map: "arquivo_userId_fkey")
+  @@map("arquivo")
 }
 
 enum UserStatus {

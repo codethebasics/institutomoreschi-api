@@ -22,3 +22,5 @@ router
 router
   .route("/id/:id")
   .get(async (req, res) => await exameFisicoIntraOralService.findById(req.body))
+
+export default router
