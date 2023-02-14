@@ -8,22 +8,42 @@ export default class ExameFisicoExtraOralService {
   }
 
   async findAll(): Promise<any> {
-    return await this.exameFisicoExtraOralRepository.findAll()
+    try {
+      return this.exameFisicoExtraOralRepository.findAll()
+    } catch (e: any) {
+      throw e
+    }
   }
 
   async findById(id: string): Promise<any> {
-    return await this.exameFisicoExtraOralRepository.findById(id)
+    try {
+      return await this.exameFisicoExtraOralRepository.findById(id)
+    } catch (e) {
+      throw e
+    }
   }
 
   async create(extraOralExam: any): Promise<any> {
-    return await this.exameFisicoExtraOralRepository.create(extraOralExam)
+    try {
+      return await this.exameFisicoExtraOralRepository.create(extraOralExam)
+    } catch (e) {
+      throw e
+    }
   }
 
   async update(extraOralExam: any): Promise<any> {
-    return await this.exameFisicoExtraOralRepository.update(extraOralExam)
+    try {
+      return await this.exameFisicoExtraOralRepository.update(extraOralExam)
+    } catch (e) {
+      throw e
+    }
   }
 
   async remove(extraOralExam: any): Promise<any> {
-    return await this.exameFisicoExtraOralRepository.remove(extraOralExam)
+    try {
+      return await this.exameFisicoExtraOralRepository.remove(extraOralExam)
+    } catch (e) {
+      throw e
+    }
   }
 }
