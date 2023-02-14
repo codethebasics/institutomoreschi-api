@@ -106,12 +106,6 @@ export default class ExameFisicoExtraOralRepository {
       where: {
         id: extraOralExam.id,
       },
-      select: {
-        skin: extraOralExam.skin,
-        facialSimmetry: extraOralExam.facialSimmetry,
-        earJawArticulation: extraOralExam.earJawArticulation,
-        linfonodos: extraOralExam.linfonodos,
-      },
     })
   }
 }
