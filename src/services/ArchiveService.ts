@@ -1,3 +1,4 @@
+import { throws } from "assert"
 import ArchiveRepository from "../repository/ArchiveRepository"
 
 export default class ArchiveService {
@@ -8,22 +9,42 @@ export default class ArchiveService {
   }
 
   async findAll(): Promise<any> {
-    return await this.archiveRepository.findAll()
+    try {
+      return await this.archiveRepository.findAll()
+    } catch (e: any) {
+      throw new Error(e)
+    }
   }
 
   async findById(id: string): Promise<any> {
-    return await this.archiveRepository.findById(id)
+    try {
+      return await this.archiveRepository.findById(id)
+    } catch (e: any) {
+      throw new Error(e)
+    }
   }
 
   async create(archive: any): Promise<any> {
-    return await this.archiveRepository.create(archive)
+    try {
+      return await this.archiveRepository.create(archive)
+    } catch (e: any) {
+      throw new Error(e)
+    }
   }
 
   async update(archive: any): Promise<any> {
-    return await this.archiveRepository.update(archive)
+    try {
+      return await this.archiveRepository.update(archive)
+    } catch (e: any) {
+      throw new Error(e)
+    }
   }
 
   async remove(archive: any): Promise<any> {
-    return await this.archiveRepository.remove(archive)
+    try {
+      return await this.archiveRepository.remove(archive)
+    } catch (e: any) {
+      throw new Error(e)
+    }
   }
 }

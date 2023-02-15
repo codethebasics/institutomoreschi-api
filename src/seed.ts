@@ -24,6 +24,8 @@ import ArchiveService from "./services/ArchiveService"
 import { ArchiveCreateRequest } from "./interfaces/dto/archive/ArchiveDTO"
 
 import checksum from "checksum"
+import AddressService from "./services/AddressService"
+import { AddressCreateRequest } from "./interfaces/dto/address/AddressDTO"
 
 const prisma = new PrismaClient()
 const userService = new UserService()
@@ -41,6 +43,7 @@ const exameFisicoExtraOralService = new ExameFisicoExtraOralService()
 const exameFisicoIntraOralService = new ExameFisicoIntraOralService()
 const anamneseService = new AnamneseService()
 const archiveService = new ArchiveService()
+const addressService = new AddressService()
 
 let bruno: UserCreateRequest = {
   name: "Bruno Carneiro",
@@ -372,13 +375,6 @@ type MedicalHistoryRequestType = {
   dentistId: string
 }
 
-type MedicalHistoryResponseType = {
-  id: string
-  description: string
-  patientId: string
-  dentistId: string
-}
-
 async function createMedicalHistory() {
   const patientBruno = await patientService.findByEmail(
     "bruno.carneiro@gmail.com"
@@ -396,6 +392,11 @@ async function createMedicalHistory() {
   }
 }
 
+/**
+ * ===============
+ * CREATE ANAMNESE
+ * ===============
+ */
 async function createAnamnese() {
   const patientBruno = await patientService.findByEmail(
     "bruno.carneiro@gmail.com"
@@ -444,6 +445,11 @@ async function createAnamnese() {
   await anamneseService.create(anamneseCreateRequest)
 }
 
+/**
+ * ==============
+ * CREATE ARCHIVE
+ * ==============
+ */
 async function createArchive() {
   const userBruno = await userService.findByEmail("bruno.carneiro@gmail.com")
 
@@ -459,6 +465,27 @@ async function createArchive() {
   }
 
   await archiveService.create(archiveCreateRequest)
+}
+
+/**
+ * ==============
+ * CREATE ADDRESS
+ * ==============
+ */
+async function createAddress() {
+  const userBruno = await userService.findByEmail("bruno.carneiro@gmail.com")
+
+  const address: AddressCreateRequest = {
+    cep: "70765110",
+    logradouro: "SQN 312 BL K",
+    complemento: "APT 102",
+    bairro: "Asa Norte",
+    cidade: "Brasília",
+    uf: "DF",
+    userId: userBruno.id,
+  }
+
+  await addressService.create(address)
 }
 
 async function main() {
@@ -541,6 +568,10 @@ async function main() {
     "Criando arquivo ................................................ [✔]"
   )
 
+  await createAddress()
+  console.log(
+    "Criando endereço ............................................... [✔]"
+  )
   console.log()
   console.log("Done!")
 }

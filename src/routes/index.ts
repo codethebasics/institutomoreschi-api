@@ -11,6 +11,7 @@ import AnamneseRoutes from "./AnamneseRoutes"
 import ArchiveRoutes from "./ArchiveRoutes"
 import ExameFisicoExtraOralRoutes from "./ExameFisicoExtraOralRoutes"
 import ExameFisicoIntraOralRoutes from "./ExameFisicoIntraOralRoutes"
+import AddressRoutes from "./AddressRoutes"
 
 export default {
   UserRoutes,
@@ -26,4 +27,5 @@ export default {
   ArchiveRoutes,
   ExameFisicoExtraOralRoutes,
   ExameFisicoIntraOralRoutes,
+  AddressRoutes,
 }

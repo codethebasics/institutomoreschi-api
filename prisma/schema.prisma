@@ -12,20 +12,20 @@ datasource db {
 }
 
 model User {
-  id          String        @id @default(cuid())
-  email       String        @unique
-  password    String
-  created_at  DateTime      @default(now())
-  updated_at  DateTime      @updatedAt
-  active      UserStatus    @default(INACTIVE)
-  name        String
-  phone       String        @unique
-  Archive     Archive[]
-  Dentist     Dentist[]
-  Patient     Patient[]
-  Secretary   Secretary[]
-  UserAddress UserAddress[]
-  user_role   UserRole[]
+  id         String      @id @default(cuid())
+  email      String      @unique
+  password   String
+  created_at DateTime    @default(now())
+  updated_at DateTime    @updatedAt
+  active     UserStatus  @default(INACTIVE)
+  name       String
+  phone      String      @unique
+  Archive    Archive[]
+  Dentist    Dentist[]
+  address    Address[]
+  Patient    Patient[]
+  Secretary  Secretary[]
+  user_role  UserRole[]
 
   @@map("usuarios")
 }
@@ -151,27 +151,18 @@ model MedicalHistory {
 }
 
 model Address {
-  id          String        @id @default(cuid())
+  id          String @id @default(cuid())
   cep         String
   logradouro  String
   complemento String
   bairro      String
   cidade      String
-  uf          String        @db.VarChar(2)
-  UserAddress UserAddress[]
+  uf          String @db.VarChar(2)
+  userId      String
+  user        User   @relation(fields: [userId], references: [id], onDelete: Cascade)
 
+  @@index([userId], map: "enderecos_userId_fkey")
   @@map("enderecos")
-}
-
-model UserAddress {
-  userId    String
-  addressId String
-  address   Address @relation(fields: [addressId], references: [id], onDelete: Cascade)
-  user      User    @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  @@id([userId, addressId])
-  @@index([addressId], map: "usuarios_enderecos_addressId_fkey")
-  @@map("usuarios_enderecos")
 }
 
 model Anamnese {
