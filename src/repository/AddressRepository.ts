@@ -17,19 +17,15 @@ export default class AddressRepository {
         bairro: true,
         cidade: true,
         uf: true,
-        UserAddress: {
+        user: {
           select: {
-            user: {
-              select: {
-                id: true,
-                name: true,
-                email: true,
-                phone: true,
-                active: true,
-                created_at: true,
-                updated_at: true,
-              },
-            },
+            id: true,
+            name: true,
+            email: true,
+            phone: true,
+            active: true,
+            created_at: true,
+            updated_at: true,
           },
         },
       },
@@ -46,19 +42,15 @@ export default class AddressRepository {
         bairro: true,
         cidade: true,
         uf: true,
-        UserAddress: {
+        user: {
           select: {
-            user: {
-              select: {
-                id: true,
-                name: true,
-                email: true,
-                phone: true,
-                active: true,
-                created_at: true,
-                updated_at: true,
-              },
-            },
+            id: true,
+            name: true,
+            email: true,
+            phone: true,
+            active: true,
+            created_at: true,
+            updated_at: true,
           },
         },
       },
@@ -78,28 +70,20 @@ export default class AddressRepository {
         bairro: true,
         cidade: true,
         uf: true,
-        UserAddress: {
+        user: {
           select: {
-            user: {
-              select: {
-                id: true,
-                name: true,
-                email: true,
-                phone: true,
-                active: true,
-                created_at: true,
-                updated_at: true,
-              },
-            },
+            id: true,
+            name: true,
+            email: true,
+            phone: true,
+            active: true,
+            created_at: true,
+            updated_at: true,
           },
         },
       },
       where: {
-        UserAddress: {
-          some: {
-            user: user,
-          },
-        },
+        userId: user.id,
       },
     })
   }
@@ -113,6 +97,7 @@ export default class AddressRepository {
         bairro: address.bairro,
         cidade: address.cidade,
         uf: address.uf,
+        userId: address.userId,
       },
     })
   }
