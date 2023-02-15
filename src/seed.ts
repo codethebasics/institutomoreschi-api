@@ -485,7 +485,7 @@ async function createAddress() {
     userId: userBruno.id,
   }
 
-  const response = await addressService.create(address)
+  await addressService.create(address)
 }
 
 async function main() {
