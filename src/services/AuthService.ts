@@ -18,8 +18,6 @@ export default class AuthService implements IAuthService {
 
   async login(data: AuthRequest): Promise<AuthResponse> {
     try {
-      console.log("AuthService.login() > data", data)
-
       const { email, password } = data
 
       if (!email || !password) {
@@ -40,6 +38,7 @@ export default class AuthService implements IAuthService {
             id: _user.id,
             name: _user.name,
             email: _user.email,
+            phone: _user.phone,
           },
           process.env.JWT_SECRET || "",
           { expiresIn: 5000 }
@@ -58,7 +57,6 @@ export default class AuthService implements IAuthService {
   }
 
   async logout(): Promise<Boolean> {
-    console.log("AuthService.login() > logout")
     return true
   }
 }

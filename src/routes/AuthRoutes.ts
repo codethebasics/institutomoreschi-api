@@ -10,7 +10,7 @@ router.route("/signout").post(async (req, res) => await signOut(req, res))
 
 async function signIn(req: any, res: any) {
   try {
-    const { email, password } = req.body
+    const { email, password } = req.body.data
     const authController = new AuthController({ email, password })
     res.status(200).json(await authController.login())
   } catch (e: any) {

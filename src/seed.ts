@@ -1,12 +1,17 @@
 import { PrismaClient } from "@prisma/client"
-import { randomUUID } from "crypto"
 import { DentistCreateRequest } from "./interfaces/dto/dentist/DentistDTO"
 import { PatientCreateRequest } from "./interfaces/dto/patient/PatientDTO"
 import { SecretaryCreateRequest } from "./interfaces/dto/secretary/SecretaryDTO"
 import { UserCreateRequest } from "./interfaces/dto/user/UserDTO"
 
+import { AnamneseCreateRequest } from "./interfaces/dto/anamnese/AnamneseDTO"
+import { ArchiveCreateRequest } from "./interfaces/dto/archive/ArchiveDTO"
+import AnamneseService from "./services/AnamneseService"
+import ArchiveService from "./services/ArchiveService"
 import DentistProcedureService from "./services/DentistProcedureService"
 import DentistService from "./services/DentistService"
+import ExameFisicoExtraOralService from "./services/ExameFisicoExtraOralService"
+import ExameFisicoIntraOralService from "./services/ExameFisicoIntraOralService"
 import HealthInsuranceService from "./services/HealthInsuranceService"
 import MedicalHistoryService from "./services/MedicalHistoryService"
 import PacientHealthInsuranceService from "./services/PacientHealthInsuranceService"
@@ -16,16 +21,10 @@ import RoleService from "./services/RoleService"
 import SecretaryService from "./services/SecretaryService"
 import UserRoleService from "./services/UserRoleService"
 import UserService from "./services/UserService"
-import ExameFisicoExtraOralService from "./services/ExameFisicoExtraOralService"
-import ExameFisicoIntraOralService from "./services/ExameFisicoIntraOralService"
-import { AnamneseCreateRequest } from "./interfaces/dto/anamnese/AnamneseDTO"
-import AnamneseService from "./services/AnamneseService"
-import ArchiveService from "./services/ArchiveService"
-import { ArchiveCreateRequest } from "./interfaces/dto/archive/ArchiveDTO"
 
 import checksum from "checksum"
-import AddressService from "./services/AddressService"
 import { AddressCreateRequest } from "./interfaces/dto/address/AddressDTO"
+import AddressService from "./services/AddressService"
 
 const prisma = new PrismaClient()
 const userService = new UserService()
@@ -48,21 +47,21 @@ const addressService = new AddressService()
 let bruno: UserCreateRequest = {
   name: "Bruno Carneiro",
   email: "bruno.carneiro@gmail.com",
-  password: randomUUID(),
+  password: "senhabruno",
   phone: "61985770401",
 }
 
 let pepe: UserCreateRequest = {
   name: "João Pedro",
   email: "pepe@gmail.com",
-  password: randomUUID(),
+  password: "senhapepe",
   phone: "6177777777",
 }
 
 let gabi: UserCreateRequest = {
   name: "Gabriela Moreschi",
   email: "gabi@gmail.com",
-  password: randomUUID(),
+  password: "senhagabi",
   phone: "6188888888",
 }
 
