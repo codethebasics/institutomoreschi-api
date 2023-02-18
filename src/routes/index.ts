@@ -12,6 +12,7 @@ import ArchiveRoutes from "./ArchiveRoutes"
 import ExameFisicoExtraOralRoutes from "./ExameFisicoExtraOralRoutes"
 import ExameFisicoIntraOralRoutes from "./ExameFisicoIntraOralRoutes"
 import AddressRoutes from "./AddressRoutes"
+import ImageRouter from "./ImageRouter"
 
 export default {
   UserRoutes,
@@ -28,4 +29,5 @@ export default {
   ExameFisicoExtraOralRoutes,
   ExameFisicoIntraOralRoutes,
   AddressRoutes,
+  ImageRouter,
 }
