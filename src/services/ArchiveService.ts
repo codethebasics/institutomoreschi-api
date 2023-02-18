@@ -1,5 +1,6 @@
 import { throws } from "assert"
 import ArchiveRepository from "../repository/ArchiveRepository"
+import { ArchiveCreateRequest } from "../interfaces/dto/archive/ArchiveDTO"
 
 export default class ArchiveService {
   private archiveRepository: ArchiveRepository
@@ -24,7 +25,7 @@ export default class ArchiveService {
     }
   }
 
-  async create(archive: any): Promise<any> {
+  async create(archive: ArchiveCreateRequest): Promise<any> {
     try {
       return await this.archiveRepository.create(archive)
     } catch (e: any) {

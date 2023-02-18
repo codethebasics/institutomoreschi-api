@@ -28,6 +28,7 @@ app.use("/archive", Routes.ArchiveRoutes)
 app.use("/exame-fisico-extra-oral", Routes.ExameFisicoExtraOralRoutes)
 app.use("/exame-fisico-intra-oral", Routes.ExameFisicoIntraOralRoutes)
 app.use("/address", Routes.AddressRoutes)
+app.use("/upload", Routes.ImageRouter)
 
 app.use(route)
 
