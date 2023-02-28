@@ -1,4 +1,5 @@
 import { UserStatus } from "@prisma/client"
+import { ArchiveDTO } from "../archive/ArchiveDTO"
 
 export interface UserDTO {
   id?: string
@@ -9,6 +10,7 @@ export interface UserDTO {
   updated_at?: Date
   active?: UserStatus
   phone?: string
+  archive?: ArchiveDTO
 }
 
 export interface UserSelectResponse extends UserDTO {
