@@ -64,6 +64,7 @@ export default class UserRepository {
             },
           },
         },
+        archives: true,
       },
     })
   }

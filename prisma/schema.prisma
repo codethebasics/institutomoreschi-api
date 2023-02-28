@@ -20,7 +20,7 @@ model User {
   active     UserStatus  @default(INACTIVE)
   name       String
   phone      String      @unique
-  Archive    Archive[]
+  archives   Archive[]
   Dentist    Dentist[]
   address    Address[]
   Patient    Patient[]

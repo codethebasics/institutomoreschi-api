@@ -24,7 +24,11 @@ router
 router.route("/id/:id").get(async (req, res) => await findById(req, res))
 
 async function findById(req: any, res: any): Promise<any> {
-  console.log("req", req)
+  try {
+    res.status(200).json({ message: "TODO" })
+  } catch (e: any) {
+    res.status(500).json({ message: "Erro: " + e.message })
+  }
 }
 
 export default router
