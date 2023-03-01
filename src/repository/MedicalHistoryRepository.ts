@@ -57,6 +57,7 @@ export default class medicalHistoryRepository {
       select: {
         id: true,
         description: true,
+        updated_at: true,
         dentist: {
           select: {
             id: true,
@@ -96,6 +97,7 @@ export default class medicalHistoryRepository {
       select: {
         id: true,
         description: true,
+        updated_at: true,
         dentist: {
           select: {
             id: true,
@@ -133,6 +135,7 @@ export default class medicalHistoryRepository {
       select: {
         id: true,
         description: true,
+        updated_at: true,
         dentist: {
           select: {
             id: true,
@@ -170,6 +173,7 @@ export default class medicalHistoryRepository {
       select: {
         id: true,
         description: true,
+        updated_at: true,
         dentist: {
           select: {
             id: true,
@@ -216,6 +220,7 @@ export default class medicalHistoryRepository {
       select: {
         id: true,
         description: true,
+        updated_at: true,
         dentist: {
           select: {
             id: true,
@@ -267,6 +272,7 @@ export default class medicalHistoryRepository {
       select: {
         id: true,
         description: true,
+        updated_at: true,
       },
     })
   }
