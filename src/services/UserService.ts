@@ -58,7 +58,13 @@ export default class UserService {
       if (!user.password || !user.phone) {
         throw "Os parâmetros do usuário devem ser informados corretamente"
       }
-      return await this.userRepository.save(user)
+      const createdUser = await this.userRepository.save(user)
+      const rolesAdded = await this.userRepository.addRolesToUser(
+        createdUser,
+        user.user_role
+      )
+
+      return createdUser
     } catch (e: any) {
       console.error(e)
       throw e

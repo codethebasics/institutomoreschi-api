@@ -1,6 +1,7 @@
 import { PrismaClient } from "@prisma/client"
 import {
   UserCreateRequest,
+  UserDTO,
   UserRemoveRequest,
   UserRemoveResponse,
   UserSelectResponse,
@@ -8,6 +9,7 @@ import {
   UserUpdateResponse,
 } from "../interfaces/dto/user/UserDTO"
 import argon2 from "argon2"
+import { RoleDTO } from "../interfaces/dto/role/RoleDTO"
 
 export default class UserRepository {
   private prisma: PrismaClient
@@ -117,6 +119,26 @@ export default class UserRepository {
         phone: user.phone,
       },
     })
+  }
+
+  async addRolesToUser(user: UserDTO, user_role: RoleDTO[]) {
+    const rolesAdded = []
+    for (let i = 0; i < user_role.length; i++) {
+      try {
+        const role = await this.prisma.userRole.createMany({
+          data: [
+            {
+              userId: user.id,
+              roleId: user_role[i].toString(),
+            },
+          ],
+        })
+        rolesAdded.push(role)
+      } catch (e: any) {
+        console.log("Erro ao adicionar permissão ao usuário", e.message)
+      }
+    }
+    return rolesAdded
   }
 
   async remove(user: UserRemoveRequest): Promise<UserRemoveResponse> {
