@@ -1,5 +1,6 @@
-import { UserStatus } from "@prisma/client"
+import { UserRole, UserStatus } from "@prisma/client"
 import { ArchiveDTO } from "../archive/ArchiveDTO"
+import { RoleDTO } from "../role/RoleDTO"
 
 export interface UserDTO {
   id?: string
@@ -33,6 +34,7 @@ export interface UserCreateRequest extends UserDTO {
   email: string
   password: string
   phone: string
+  user_role: RoleDTO[]
 }
 
 export interface UserCreateResponse extends UserDTO {

@@ -15,6 +15,10 @@ router
   .put(async (req, res) => await update(req, res))
   .delete(async (req, res) => await remove(req, res))
 
+router
+  .route("/patientId/:id")
+  .get(async (req, res) => await findByPatientId(req, res))
+
 export default router
 
 async function findById(req: any, res: any) {
@@ -24,6 +28,23 @@ async function findById(req: any, res: any) {
   }
   const response = await anamneseService.findById(id)
   res.status(200).json(response)
+}
+
+async function findByPatientId(req: any, res: any) {
+  const { id } = req.params
+  try {
+    if (!id) {
+      res.status(400).json({ message: "O id do paciente deve ser informado" })
+    }
+    const response = await anamneseService.findByPatientId(id)
+    res.status(200).json(response)
+  } catch (e) {
+    res
+      .status(500)
+      .json({
+        message: "Erro durante a consulta da anamnese pelo id do paciente",
+      })
+  }
 }
 
 async function update(req: any, res: any) {

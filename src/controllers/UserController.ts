@@ -67,6 +67,23 @@ export default class UserController {
     }
   }
 
+  async findByEmail(email: string) {
+    try {
+      const response = await this.userService.findByEmail(email)
+      return new ResponseWrapper<UserSelectResponse>(
+        200,
+        "Busca efetuada com sucesso",
+        response
+      )
+    } catch (e) {
+      return new ResponseWrapper<any>(
+        200,
+        "Não foi possível encontrar o usuário",
+        undefined
+      )
+    }
+  }
+
   async update(req: any) {
     try {
       const response = await this.userService.update(req)

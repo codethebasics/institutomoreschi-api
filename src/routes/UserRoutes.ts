@@ -14,6 +14,9 @@ router
   .delete(async (req, res) => await remove(req, res))
 
 router.route("/id/:id").get(async (req, res) => await findById(req, res))
+router
+  .route("/email/:email")
+  .get(async (req, res) => await findByEmail(req, res))
 
 async function list(req: any, res: any) {
   const { id, name, email } = req.query
@@ -36,6 +39,23 @@ async function findById(req: any, res: any) {
       throw "O ID do usuário precisa ser informado"
     }
     res.status(200).json(await userController.findById(id))
+  } catch (e) {
+    console.error(e)
+    res.status(500).json({
+      status: 500,
+      message: "Erro durante a consulta do usuário",
+      cause: e,
+    })
+  }
+}
+
+async function findByEmail(req: any, res: any) {
+  const { email } = req.params
+  try {
+    if (!email) {
+      throw "O Email do usuário precisa ser informado"
+    }
+    res.status(200).json(await userController.findByEmail(email))
   } catch (e) {
     console.error(e)
     res.status(500).json({

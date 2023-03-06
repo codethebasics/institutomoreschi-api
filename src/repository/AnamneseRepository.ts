@@ -106,6 +106,54 @@ export default class AnamneseRepository {
     })
   }
 
+  async findByPatientId(id: string): Promise<any> {
+    return await this.prisma.anamnese.findMany({
+      select: {
+        id: true,
+        reasonForConsultation: true,
+        isUnderMedicalTreatment: true,
+        takeSomeMedicine: true,
+        medicationsUsed: true,
+        familyHistoryOfIllnesses: true,
+        everHadHypertensionHeartAttackOrOther: true,
+        everHadHypertensionHeartAttackOrOtherDescription: true,
+        everHadRheumaticFever: true,
+        everHadRheumaticFeverDescription: true,
+        everHadCancer: true,
+        everHadCancerDescription: true,
+        everHadDiabetes: true,
+        everHadDiabetesDescription: true,
+        everHadClottingRelatedProblems: true,
+        everHadClottingRelatedProblemsDescription: true,
+        everHadReactionToPenicillin: true,
+        everHadReactionToPenicillinDescription: true,
+        everHadHepatitis: true,
+        everHadHepatitisDescription: true,
+        haveBeenVaccinatedAgainstHepatitisB: true,
+        anyLiverProblems: true,
+        anyLiverProblemsDescription: true,
+        anyKidneyProblems: true,
+        anyKidneyProblemsDescription: true,
+        everHadReactionAgainstAnesthesia: true,
+        everHadReactionAgainstAnesthesiaDescription: true,
+        isPregnant: true,
+        isPregnantDescription: true,
+        wasSmoker: true,
+        wasSmokerDescription: true,
+        isSmoker: true,
+        isSmokerDescription: true,
+        drinksAlchol: true,
+        drinksAlcholDescription: true,
+        useDrugs: true,
+        useDrugsDescription: true,
+        patient: true,
+      },
+      where: {
+        patientId: id,
+      },
+    })
+  }
+
   async create(anamnese: AnamneseCreateRequest): Promise<any> {
     return await this.prisma.anamnese.create({
       data: {
