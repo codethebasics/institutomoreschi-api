@@ -16,6 +16,30 @@ export default class PatientRepository {
     this.prisma = new PrismaClient()
   }
 
+  async findById(userId: string): Promise<PatientSelectResponse> {
+    return await this.prisma.patient.findUniqueOrThrow({
+      select: {
+        id: true,
+        birth_date: true,
+        cpf: true,
+        user: {
+          select: {
+            id: true,
+            name: true,
+            email: true,
+            created_at: true,
+            updated_at: true,
+            active: true,
+            phone: true,
+          },
+        },
+      },
+      where: {
+        id: userId,
+      },
+    })
+  }
+
   async findAll(): Promise<PatientSelectResponse[]> {
     return await this.prisma.patient.findMany({
       select: {
@@ -63,6 +87,19 @@ export default class PatientRepository {
       where: {
         user: {
           email: email,
+        },
+      },
+    })
+  }
+
+  async findByUserId(userId: string): Promise<any> {
+    return this.prisma.patient.findFirst({
+      include: {
+        user: true,
+      },
+      where: {
+        user: {
+          id: userId,
         },
       },
     })

@@ -8,11 +8,19 @@ export default class AnamneseService {
   }
 
   async findAll(): Promise<any> {
-    return this.anamneseRepository.findAll()
+    return await this.anamneseRepository.findAll()
   }
 
   async findById(id: string): Promise<any> {
-    return this.anamneseRepository.findById(id)
+    return await this.anamneseRepository.findById(id)
+  }
+
+  async findByPatientId(id: string): Promise<any> {
+    try {
+      return await this.anamneseRepository.findByPatientId(id)
+    } catch (e) {
+      throw e
+    }
   }
 
   async create(anamnese: any): Promise<any> {
