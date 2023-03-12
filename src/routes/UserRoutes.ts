@@ -6,6 +6,8 @@ const router = express.Router()
 const userController = new UserController()
 const userService = new UserService()
 
+router.route("/count").get(async (req, res) => await userService.count())
+
 router
   .route("/")
   .get(async (req, res) => await list(req, res))

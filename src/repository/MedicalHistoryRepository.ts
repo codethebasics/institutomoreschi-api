@@ -125,12 +125,12 @@ export default class medicalHistoryRepository {
     })
   }
 
-  async findByPatient(
-    patient: PatientSelectResponse
-  ): Promise<MedicalHistorySelectResponse[]> {
+  async findByPatient(patient: any): Promise<MedicalHistorySelectResponse[]> {
+    console.log("patient id from repo ===>", patient)
+
     return await this.prisma.medicalHistory.findMany({
       where: {
-        id: patient.id,
+        patientId: patient,
       },
       select: {
         id: true,

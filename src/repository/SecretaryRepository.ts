@@ -16,6 +16,10 @@ export default class SecretaryRepository {
     this.prisma = new PrismaClient()
   }
 
+  async count(): Promise<number> {
+    return await this.prisma.secretary.count()
+  }
+
   async findAll(): Promise<SecretarySelectResponse[]> {
     return await this.prisma.secretary.findMany({
       select: {

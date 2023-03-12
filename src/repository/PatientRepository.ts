@@ -16,6 +16,10 @@ export default class PatientRepository {
     this.prisma = new PrismaClient()
   }
 
+  async count(): Promise<number> {
+    return await this.prisma.patient.count()
+  }
+
   async findById(userId: string): Promise<PatientSelectResponse> {
     return await this.prisma.patient.findUniqueOrThrow({
       select: {
