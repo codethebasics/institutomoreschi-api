@@ -16,6 +16,16 @@ export default class UserService {
     this.userRepository = new UserRepository()
   }
 
+  async count(): Promise<number> {
+    try {
+      const response = await this.userRepository.count()
+      return response
+    } catch (e: any) {
+      console.error(e)
+      throw e
+    }
+  }
+
   async findAll(): Promise<UserSelectResponse[]> {
     try {
       const response = await this.userRepository.findAll()

@@ -19,6 +19,10 @@ export default class DentistRepository {
     this.prisma = new PrismaClient()
   }
 
+  async count(): Promise<number> {
+    return await this.prisma.dentist.count()
+  }
+
   async findAll(): Promise<DentistSelectResponse[]> {
     return await this.prisma.dentist.findMany({
       select: {

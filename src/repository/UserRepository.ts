@@ -18,6 +18,10 @@ export default class UserRepository {
     this.prisma = new PrismaClient()
   }
 
+  async count(): Promise<number> {
+    return await this.prisma.user.count()
+  }
+
   async findAll(): Promise<UserSelectResponse[]> {
     return await this.prisma.user.findMany({
       select: {
